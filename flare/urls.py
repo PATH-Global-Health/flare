@@ -19,6 +19,9 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('', include('message.urls')),
+    path('', include('survey.urls')),
+    path('', include('subscriber.urls')),
+    path('', include('settings.urls')),
     path('gateway/', include('gateway.urls')),
     path('admin/', admin.site.urls),
 ]
