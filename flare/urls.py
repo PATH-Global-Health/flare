@@ -19,5 +19,6 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('', include('message.urls')),
+    path('gateway/', include('gateway.urls')),
     path('admin/', admin.site.urls),
 ]
