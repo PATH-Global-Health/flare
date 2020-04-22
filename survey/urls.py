@@ -1,7 +1,8 @@
-from django.urls import path
-from . import views
+from rest_framework import routers
+from .api import SurveyViewSet, SurveyResultViewSet
 
-urlpatterns = [
-    path('', views.index, name='index'),
-    path(r'test',views.SampleOne.as_view(), name='simple_url')
-]
+router = routers.DefaultRouter()
+router.register('api/surveys', SurveyViewSet, 'surveys')
+router.register('api/results', SurveyResultViewSet, 'results')
+
+urlpatterns = router.urls
