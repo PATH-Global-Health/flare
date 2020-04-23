@@ -5,6 +5,6 @@ from .serializers import MessageSerializer
 class MessageViewSet(viewsets.ModelViewSet):
     queryset= Message.objects.all()
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     serializer_class = MessageSerializer

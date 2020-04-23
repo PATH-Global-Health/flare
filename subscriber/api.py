@@ -5,6 +5,6 @@ from .serializers import SubscriberSerializer
 class SubscriberViewSet(viewsets.ModelViewSet):
     queryset= Subscriber.objects.all()
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     serializer_class = SubscriberSerializer

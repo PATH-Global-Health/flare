@@ -5,13 +5,13 @@ from .serializers import SurveySerializer, SurveyResultSerializer
 class SurveyViewSet(viewsets.ModelViewSet):
     queryset= Survey.objects.all()
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     serializer_class = SurveySerializer
 
 class SurveyResultViewSet(viewsets.ModelViewSet):
     queryset= SurveyResult.objects.all()
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
     serializer_class = SurveyResultSerializer
