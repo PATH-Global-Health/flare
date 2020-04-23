@@ -8,3 +8,9 @@ class MessageViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticated
     ]
     serializer_class = MessageSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
