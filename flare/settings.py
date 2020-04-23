@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'subscriber',
     'ussd.apps.UssdConfig',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'knox',
 ]
 
 MIDDLEWARE = [
