@@ -142,5 +142,6 @@ CORS_ORIGIN_WHITELIST = [
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication')
 }
