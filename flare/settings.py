@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'message',
     'settings',
     'subscriber',
+    'accounts',
     'ussd.apps.UssdConfig',
     'rest_framework',
     'corsheaders',
@@ -53,11 +54,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# 'django.middleware.csrf.CsrfViewMiddleware',
 
 ROOT_URLCONF = 'flare.urls'
 
@@ -143,5 +145,5 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication')
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
 }
