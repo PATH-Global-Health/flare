@@ -1,6 +1,7 @@
 from .models import Survey, SurveyResult
 from rest_framework import viewsets, permissions
 from .serializers import SurveySerializer, SurveyResultSerializer
+from rest_framework import filters
 
 class SurveyViewSet(viewsets.ModelViewSet):
     queryset= Survey.objects.all()
@@ -8,6 +9,8 @@ class SurveyViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticated
     ]
     serializer_class = SurveySerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)

@@ -1,6 +1,7 @@
 from .models import Subscriber
 from rest_framework import viewsets, permissions
 from .serializers import SubscriberSerializer
+from rest_framework import filters
 
 class SubscriberViewSet(viewsets.ModelViewSet):
     queryset= Subscriber.objects.all()
@@ -8,6 +9,8 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticated
     ]
     serializer_class = SubscriberSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['phone_number']
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
