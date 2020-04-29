@@ -14,6 +14,7 @@ class Language(CommonModel):
    
     name = models.CharField(max_length=50, unique=True, null=False)
     code = models.CharField(max_length =10, unique=True, null=False)
+    messages = models.ManyToManyField('message.Message', related_name='languages', blank=True)
 
     def __str__(self):
         return self.name

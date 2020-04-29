@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from .models import Language
+from message.serializers import MessageSerializer
 
 class LanguageSerializer(serializers.ModelSerializer):
+
+    messages = MessageSerializer(many=True)
     
     class Meta:
         model = Language
