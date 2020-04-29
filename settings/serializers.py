@@ -4,7 +4,7 @@ from message.serializers import MessageSerializer
 
 class LanguageSerializer(serializers.ModelSerializer):
 
-    messages = MessageSerializer(many=True)
+    messages = MessageSerializer(many=True, read_only=True)
     
     class Meta:
         model = Language
