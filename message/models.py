@@ -7,7 +7,7 @@ class Message(CommonModel):
     celery_id = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
-        ordering = ('created_at',)
+        ordering = ['created_at']
 
     def __unicode__(self):
         return self.name

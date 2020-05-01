@@ -9,8 +9,10 @@ class MessageViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticated
     ]
     serializer_class = MessageSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['content', 'status']
+    ordering_fields = ['created_at', 'status']
+    ordering = ['-created_at']
 
     def perform_create(self, serializer):
         serializer.save(status='started')
