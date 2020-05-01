@@ -13,11 +13,9 @@ class MessageConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         # Disables a channel named `self.channel_name`
         # from the group `message`
-        print("=============DISCONNECT!==============")
         await self.channel_layer.group_discard("message" , self.channel_name)
 
     async def receive(self, text_data=None, bytes_data=None):
-        print(text_data)
 
         await self.channel_layer.group_send(
             'message', {
@@ -32,10 +30,6 @@ class MessageConsumer(AsyncJsonWebsocketConsumer):
     # Method `message_sent` - event handler` message.sent`
     async def message_sent(self, event):
         # Sends a message on the web socket
-        print("=====================================================================")
-        print(event)
-
-        print("=====================================================================")
         await self.send_json({
                 'content': event['content']
             })

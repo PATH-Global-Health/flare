@@ -5,6 +5,6 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('id', 'content', 'languages')
+        fields = ('id', 'content','status', 'celery_id', 'languages')
         extra_kwargs = {'languages': {'required': False}}
         

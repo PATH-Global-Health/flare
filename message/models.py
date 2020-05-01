@@ -4,7 +4,6 @@ from settings.models import CommonModel
 class Message(CommonModel):
     content = models.TextField(null=False)
     status = models.CharField(max_length=255, null=True, blank=True)
-    completed = models.DateTimeField(null=True, blank=True)
     celery_id = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:

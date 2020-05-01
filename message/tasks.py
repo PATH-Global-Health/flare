@@ -16,10 +16,10 @@ def send_message(message_id):
         print(lang.name)
     logger.info("=====================================================================")
     # sleep(10)
-    message.status = "complete"
+    message.status = "sent"
     message.save()
     channel_layer = get_channel_layer()
-    print("Sending message")
+    logger.info("Sending message")
     async_to_sync(channel_layer.group_send)(
         'message' , { 'type' : 'message.sent','content' : {'state':'complete', 'messageId':message.id} }
     )
