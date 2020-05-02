@@ -6,4 +6,4 @@ class Subscriber(CommonModel):
     language  = models.ForeignKey( Language, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.telephone
+        return self.phone_number

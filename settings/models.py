@@ -18,3 +18,21 @@ class Language(CommonModel):
 
     def __str__(self):
         return self.name
+
+class Channel(CommonModel): 
+    name = models.CharField(max_length = 128) 
+    channel_setting = models.ManyToManyField(Language, through = 'Configuration', blank=True)
+    messages = models.ManyToManyField('message.Message', related_name='channels', blank=True)
+  
+    def __str__(self): 
+        return self.name 
+  
+class Configuration(CommonModel):
+    language = models.ForeignKey(Language, on_delete = models.CASCADE, blank=True, null=True)
+    channel = models.ForeignKey(Channel, on_delete = models.CASCADE)
+    name = models.CharField(max_length=100, null=False)
+    user_id = models.CharField(max_length=100, null=False)
+    token = models.CharField(max_length=250, null=False)
+
+    def __str__(self): 
+        return self.name 

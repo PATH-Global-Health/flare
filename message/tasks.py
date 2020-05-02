@@ -39,5 +39,6 @@ def send_message(message_id):
     channel_layer = get_channel_layer()
     logger.info("Sending message")
     async_to_sync(channel_layer.group_send)(
-        'message' , { 'type' : 'message.sent','content' : {'state':'complete', 'messageId':message.id} }
+        'message' , { 'type' : 'message.sent','content' : 
+        {'action':'CHANGE_MESSAGE_STATUS','status':'sent', 'messageId':message.id} }
     )
