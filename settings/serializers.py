@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from .models import Language, Channel
-from message.serializers import MessageSerializer
+# from message.serializers import MessageSerializer
 
 class LanguageSerializer(serializers.ModelSerializer):
 
-    messages = MessageSerializer(many=True, read_only=True)
+    # messages = MessageSerializer(many=True, read_only=True)
+    messages = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     
     class Meta:
         model = Language
@@ -13,7 +14,8 @@ class LanguageSerializer(serializers.ModelSerializer):
 
 class ChannelSerializer(serializers.ModelSerializer):
 
-    messages = MessageSerializer(many=True, read_only=True)
+    # messages = MessageSerializer(many=True, read_only=True)
+    messages = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Channel
