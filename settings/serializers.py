@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Language, Channel
-# from message.serializers import MessageSerializer
+from .models import Language, Channel, Configuration
+from message.serializers import MessageStatusSerializer
 
 class LanguageSerializer(serializers.ModelSerializer):
 
@@ -21,3 +21,13 @@ class ChannelSerializer(serializers.ModelSerializer):
         model = Channel
         fields = ('id', 'name', 'messages')
         extra_kwargs = {'messages': {'required': False}}
+
+class ConfigurationSerializer(serializers.ModelSerializer):
+
+    #message_detail = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    status_detail = MessageStatusSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Configuration
+        fields = ('__all__')
+        extra_kwargs = {'status_detail': {'required': False}}
