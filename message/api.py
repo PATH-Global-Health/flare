@@ -20,6 +20,3 @@ class MessageViewSet(viewsets.ModelViewSet):
     
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
-    
-
-
