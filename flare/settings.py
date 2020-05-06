@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -133,12 +132,13 @@ STATIC_URL = '/static/'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-DEFAULT_USSD_SCREEN_JOURNEY = "j/help.yaml"
+DEFAULT_USSD_SCREEN_JOURNEY = "journeys/help.yaml"
 # JOURNEY_STORE = YamlJourneyStore.YamlJourneyStore
 # JOURNEY_STORE_CONFIG = dict(journey_directory=os.path.join(BASE_DIR, ".journeys"))
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
 ]
 
 REST_FRAMEWORK = {
