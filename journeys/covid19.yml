@@ -1,17 +1,366 @@
-initial_screen: enter_name
+initial_screen: show_welcome
+
+show_welcome:
+  type: input_screen
+  text:
+    en: |
+      Welcome to Ministry of Health:
+      1. Community based registration
+      2. Change language
+    am: |
+      አንኳን ወደ ጤና ሚኒስቴር በደህና መጡ:
+      1. በማህበረሰብ ላይ የተመሠረተ ምዝገባ
+      2. ቋንቋ ለመቀየር
+  input_identifier: menu
+  next_screen: router_screen
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Welcome to Ministry of Health:
+          1. Community based registration
+          2. Change language
+        am: |
+          አንኳን ወደ ጤና ሚኒስቴር በደህና መጡ:
+          1. በማህበረሰብ ላይ የተመሠረተ ምዝገባ
+          2. ቋንቋ ለመቀየር
+
+router_screen:
+  type: router_screen
+  default_next_screen: enter_fever
+  router_options:
+    - expression: "{{ menu|int }} == 1"
+      next_screen: enter_fever
+    - expression: "{{ menu|int }} == 2"
+      next_screen: enter_language
+
+enter_language:
+  type: input_screen
+  text:
+    en: |
+      Language:
+      1. English
+      2. Amharic
+    am: |
+      ቋንቋ:
+      1. እንግሊዝኛ 
+      2. አማርኛ
+  input_identifier: language
+  next_screen: save_language
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Language:
+          1. English
+          2. Amharic
+        am: |
+          ቋንቋ:
+          1. እንግሊዝኛ 
+          2. አማርኛ
+
+save_language:
+  type: function_screen
+  default_next_screen: show_lang_save_failed_quit
+  function: gateway.utils.change_language
+  session_key: change_lang_success
+  next_screen:
+    - condition: change_lang_success == True
+      next_screen: show_lang_save_success_quit
+
+enter_fever:
+  type: input_screen
+  text:
+    en: |
+      Fever:
+      1. Yes
+      2. No
+    am: |
+      ትኩሳት:
+      1. አለ 
+      2. የለም
+  input_identifier: fever
+  next_screen: enter_cough
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Fever: (Enter 1 or 2)
+          1. Yes
+          2. No
+        am: |
+          ትኩሳት: (1 ወይም 2 ያስገቡ)
+          1. አለ 
+          2. የለም
+
+enter_cough:
+  type: input_screen
+  text:
+    en: |
+      Dry Cough:
+      1. Yes
+      2. No
+    am: |
+      ሳል:
+      1. አለ 
+      2. የለም
+  input_identifier: cough
+  next_screen: enter_shortness_of_breath
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Dry Cough: (Enter 1 or 2)
+          1. Yes
+          2. No
+        am: |
+          ሳል: (1 ወይም 2 ያስገቡ)
+          1. አለ 
+          2. የለም
+
+enter_shortness_of_breath:
+  type: input_screen
+  text:
+    en: |
+      Shortness Of Breath:
+      1. Yes
+      2. No
+    am: |
+      የትንፋሽ መቆራረጥ:
+      1. አለ 
+      2. የለም
+  input_identifier: shortness_of_breath
+  default_next_screen: show_quit
+  next_screen:
+    - condition: fever|int == 1 or cough|int == 1 or shortness_of_breath|int == 1
+      next_screen: enter_name
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Shortness Of Breath: (Enter 1 or 2)
+          1. Yes
+          2. No
+        am: |
+          የትንፋሽ መቆራረጥ: (1 ወይም 2 ያስገቡ)
+          1. አለ 
+          2. የለም
 
 enter_name:
   type: input_screen
-  text: Enter your name
+  text:
+    en: |
+      Name:
+    am: |
+      ስም:
   input_identifier: name
   next_screen: enter_age
 
 enter_age:
   type: input_screen
-  text: Enter your age
+  text:
+    en: |
+      Age:
+    am: |
+      እድሜ:
   input_identifier: age
-  next_screen: show_details
+  next_screen: enter_sex
+  validators:
+    - regex: ^[0-9]{1,3}$
+      text:
+        en: |
+          Age: (Only nubers are allowed)
+        am: |
+          እድሜ፡ (ቁጥር ብቻ ያስገቡ)
+    - expression: ussd_request.input|int <= 120
+      text:
+        en: |
+          Age: (0 - 120)
+        am: |
+          እድሜ፡ (0 - 120)
 
-show_details:
+enter_sex:
+  type: input_screen
+  text:
+    en: |
+      Sex:
+      1. Male
+      2. Female
+    am: |
+      ፆታ:
+      1. ወንድ 
+      2. ሴት
+  input_identifier: sex
+  next_screen: enter_region
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Sex: (Enter 1 or 2)
+          1. Male
+          2. Female
+        am: |
+          ፆታ: (1 ወይም 2 ያስገቡ)
+          1. ወንድ 
+          2. ሴት
+
+enter_region:
+  type: input_screen
+  text:
+    en: |
+      Region:
+        1. Afar
+        2. Amhara
+        3. Beneshangul Gumuz 
+        4. Gambella
+        5. Oromiya
+        6. SNNP
+        7. Somali
+        8. Tigray
+        9. Diredawa
+        10. Addis Ababa
+    am: |
+      ክልል:
+        1. አፋር
+        2. አማራ
+        3. ቤኒሻንጉል ጉምዝ 
+        4. ጋምቤላ
+        5. ኦሮሚያ
+        6. ደቡብ ህዝቦች
+        7. ሶማሊ
+        8. ትግራይ
+        9. ድሬዳዋ
+        10. አዲስ አበባ
+  input_identifier: region
+  next_screen: enter_travel_history
+  validators:
+    - regex: ^[0-9]{1,2}$
+      text:
+        en: |
+          Region: (Only nubers are allowed)
+            1. Afar
+            2. Amhara
+            3. Beneshangul Gumuz 
+            4. Gambella
+            5. Oromiya
+            6. SNNP
+            7. Somali
+            8. Tigray
+            9. Diredawa
+            10. Addis Ababa
+        am: |
+          ክልል: (ቁጥር ብቻ ያስገቡ)
+            1. አፋር
+            2. አማራ
+            3. ቤኒሻንጉል ጉምዝ 
+            4. ጋምቤላ
+            5. ኦሮሚያ
+            6. ደቡብ ህዝቦች
+            7. ሶማሊ
+            8. ትግራይ
+            9. ድሬዳዋ
+            10. አዲስ አበባ
+    - expression: ussd_request.input|int >= 1 and ussd_request.input|int <= 10
+      text:
+        en: |
+          Region: (1 - 10)
+            1. Afar
+            2. Amhara
+            3. Beneshangul Gumuz 
+            4. Gambella
+            5. Oromiya
+            6. SNNP
+            7. Somali
+            8. Tigray
+            9. Diredawa
+            10. Addis Ababa
+        am: |
+          ክልል: (1 - 10)
+            1. አፋር
+            2. አማራ
+            3. ቤኒሻንጉል ጉምዝ 
+            4. ጋምቤላ
+            5. ኦሮሚያ
+            6. ደቡብ ህዝቦች
+            7. ሶማሊ
+            8. ትግራይ
+            9. ድሬዳዋ
+            10. አዲስ አበባ
+
+enter_travel_history:
+  type: input_screen
+  text:
+    en: |
+      Travel history:
+      1. Yes
+      2. No
+    am: |
+      የጉዞ ታሪክ:
+      1. አለ 
+      2. የለም
+  input_identifier: travel_history
+  next_screen: enter_has_contact
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Travel history: (Enter 1 or 2)
+          1. Yes
+          2. No
+        am: |
+          የጉዞ ታሪክ: (1 ወይም 2 ያስገቡ)
+          1. አለ 
+          2. የለም
+
+enter_has_contact:
+  type: input_screen
+  text:
+    en: |
+      Has any contact:
+      1. Yes
+      2. No
+    am: |
+      በህመሙ ከተጠረጠረ ሰው ጋር ግንኙነት:
+      1. አለ 
+      2. የለም
+  input_identifier: has_contact
+  next_screen: show_report_submitted
+  validators:
+    - regex: ^[1-2]{1}$
+      text:
+        en: |
+          Has any contact: (Enter 1 or 2)
+          1. Yes
+          2. No
+        am: |
+          በህመሙ ከተጠረጠረ ሰው ጋር ግንኙነት: (1 ወይም 2 ያስገቡ)
+          1. አለ 
+          2. የለም
+
+show_report_submitted:
   type: quit_screen
-  text: You have entered name as {{name}} and age as {{age}}
+  text:
+    en: |
+      Submitted successfully!
+    am: |
+      ሪፖርቱ በተሳካ ሁኔታ ገብቷል!
+
+show_quit:
+  type: quit_screen
+  text:
+    en: |
+      Thank you!
+    am: |
+      እናመሰግናለን!
+
+show_lang_save_success_quit:
+  type: quit_screen
+  text:
+    en: You have successfully changed the language. Please dial again.
+    am: ቋንቋዎን በትክክል ቀይረዋል። እባክዎ በድጋሚ ይደውሉ።
+
+show_lang_save_failed_quit:
+  type: quit_screen
+  text:
+    en: Unable to changed the language. Please dial and try again.
+    am: ቋንቋዎን መቀየር አልተቻለም። እባክዎ በድጋሚ ደውለው ይሞክሩ።
