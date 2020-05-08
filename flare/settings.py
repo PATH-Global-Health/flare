@@ -165,3 +165,7 @@ CHANNEL_LAYERS = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'journeys')
 MEDIA_URL = '/journeys/'
+
+# To cache language of the subscriber on redis
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379

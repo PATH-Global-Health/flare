@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import GatewayView
 
 urlpatterns = [
-    path(r'',views.GatewayView.as_view(), name='gateway')
+    path(r'', GatewayView.as_view(), name='gateway')
 ]

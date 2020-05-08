@@ -23,13 +23,14 @@ class SurveySerializer(serializers.ModelSerializer):
         validators = [ validate_yaml ]
 
 
-    # def validate(self, attrs):
-    #     print(attrs)
-    #     # if self.journeys:
-    #     print(self.fields.journeys)
-    #     raise serializers.ValidationError({"journeys":["The yaml file is invalid."]})
-        
+def validate_result(value):
+    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+    print (value)
+    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+    
+
 class SurveyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResult
-        fields = ('__all__',)
+        fields = ('id','survey','subscriber', 'result')
+        validators = [ validate_result ]
