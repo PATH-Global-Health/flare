@@ -21,16 +21,9 @@ class SurveySerializer(serializers.ModelSerializer):
         model = Survey
         fields = ('id','title', 'journeys')#'__all__' #we need to see all the fields in language model
         validators = [ validate_yaml ]
-
-
-def validate_result(value):
-    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-    print (value)
-    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
     
 
 class SurveyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResult
         fields = ('id','survey','subscriber', 'result')
-        validators = [ validate_result ]
