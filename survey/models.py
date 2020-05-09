@@ -13,6 +13,8 @@ class OverwriteStorage(FileSystemStorage):
    
 class Survey(CommonModel):
     title = models.CharField(max_length=200, null=False)
+    published = models.BooleanField(default=False)
+    gateway = models.CharField(max_length=150, default="")
     journeys = models.FileField(storage=OverwriteStorage())
 
     def __str__(self):
