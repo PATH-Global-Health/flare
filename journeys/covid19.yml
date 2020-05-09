@@ -1,11 +1,18 @@
-initial_screen: show_welcome
+initial_screen: initialize_survey
+
+initialize_survey:
+  type: update_session_screen
+  next_screen: show_welcome
+  values_to_update:
+    - key: endpoint
+      value: "api/gateway/covid19"
 
 show_welcome:
   type: input_screen
   text:
     en: |
-      Welcome to Ministry of Health:
-      1. Community based registration
+      Welcome to the Ministry of Health:
+      1. Community-based registration
       2. Change language
     am: |
       አንኳን ወደ ጤና ሚኒስቴር በደህና መጡ:
@@ -17,8 +24,8 @@ show_welcome:
     - regex: ^[1-2]{1}$
       text:
         en: |
-          Welcome to Ministry of Health:
-          1. Community based registration
+          Welcome to the Ministry of Health:
+          1. Community-based registration
           2. Change language
         am: |
           አንኳን ወደ ጤና ሚኒስቴር በደህና መጡ:
@@ -362,5 +369,5 @@ show_lang_save_success_quit:
 show_lang_save_failed_quit:
   type: quit_screen
   text:
-    en: Unable to changed the language. Please dial and try again.
+    en: Unable to change the language. Please dial and try again.
     am: ቋንቋዎን መቀየር አልተቻለም። እባክዎ በድጋሚ ደውለው ይሞክሩ።
