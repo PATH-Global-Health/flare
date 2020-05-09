@@ -1,4 +1,8 @@
 import yaml
+import logging
+from .models import SurveyResult
+
+logger = logging.getLogger(__name__)
 
 def validate_ussd_journey(journey):
 
@@ -44,6 +48,27 @@ def read_journey(journey):
     journey.seek(0)
     j = journey.read()
     return yaml.full_load(j)
+
+def create_survey_result(survey_pk, session_key, phone_number):
+    try:
+        result = SurveyResult.objects.filter(session_id = session_key).first()
+        if result == None:
+            result = SurveyResult(survey_id=survey_pk, session_id=session_key, phone_number=phone_number)
+            result.save()
+    except Exception as ex:
+        logger.error(ex)
+
+def mark_survey_result_complete(survey_pk, session_key, phone_number):
+    try:
+        result = SurveyResult.objects.filter(session_id = session_key, phone_number = phone_number).first()
+        if result == None:
+            result = SurveyResult(survey_id=survey_pk, session_id=session_key, phone_number=phone_number, completed=True)
+            result.save()
+        else:
+            result.completed = True
+            result.save()
+    except Exception as ex:
+        logger.error(ex)
 
 
 

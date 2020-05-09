@@ -4,6 +4,8 @@ from ussd.core import UssdView, UssdRequest
 from django.conf import settings
 import redis
 from subscriber.helpers import check_subscriber
+from survey.tasks import create_survey_result_task, mark_survey_result_complete_task
+# from survey.helpers import config_survey_result
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                   port=settings.REDIS_PORT, db=0, decode_responses=True)
@@ -11,6 +13,10 @@ redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
 class GatewayCovid19View(UssdView):
     customer_journey_conf = os.path.join(settings.BASE_DIR, 'journeys/covid19.yml')
     customer_journey_namespace = 'demo-customer-journey'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.survey_id = 2
 
     def post(self, req):
         list_of_inputs = req.data['text'].split("*")
@@ -21,6 +27,8 @@ class GatewayCovid19View(UssdView):
    
         if len(req.data['text'])==0:
             lang_code = check_subscriber(req.data['phoneNumber'])
+            # config_survey_result(self.survey_id, req.data['sessionId'], req.data['phoneNumber'])
+            create_survey_result_task.delay(self.survey_id, req.data['sessionId'], req.data['phoneNumber'])
             redis_instance.set(req.data['phoneNumber'], lang_code)
 
         session_id = req.data['sessionId']
@@ -52,6 +60,7 @@ class GatewayCovid19View(UssdView):
         else:
             redis_instance.delete(self.request.data.get('phoneNumber'))
             res = 'END' + ' ' + str(ussd_response)
+            mark_survey_result_complete_task.delay(self.survey_id, self.request.data.get('sessionId'), self.request.data.get('phoneNumber'))
             response = HttpResponse(res)
         return response
 

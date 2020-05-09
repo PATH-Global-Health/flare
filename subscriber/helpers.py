@@ -12,12 +12,8 @@ def check_subscriber(phone):
             sub.language=lang
             sub.save()
         lang_code = sub.language.code
+
     except Exception as ex:
         logging.exception(ex)
 
     return lang_code
-
-
-
-
-    
