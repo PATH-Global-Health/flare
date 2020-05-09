@@ -8,7 +8,7 @@ from subscriber.helpers import check_subscriber
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                   port=settings.REDIS_PORT, db=0, decode_responses=True)
 
-class GatewayView(UssdView):
+class GatewayCovid19View(UssdView):
     customer_journey_conf = os.path.join(settings.BASE_DIR, 'journeys/covid19.yml')
     customer_journey_namespace = 'demo-customer-journey'
 
@@ -44,7 +44,7 @@ class GatewayView(UssdView):
     def ussd_response_handler(self, ussd_response):
 
         if self.request.data.get('serviceCode') == 'test':
-            return super(GatewayView, self).\
+            return super(GatewayCovid19View, self).\
                 ussd_response_handler(ussd_response)
         if ussd_response.status:
             res = 'CON' + ' ' + str(ussd_response)

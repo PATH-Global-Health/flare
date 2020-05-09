@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import GatewayView
+from .views import GatewayCovid19View
 
 urlpatterns = [
-    path(r'', GatewayView.as_view(), name='gateway')
+    path(r'api/gateway/covid19', GatewayCovid19View.as_view(), name='gateway_covid19')
 ]
