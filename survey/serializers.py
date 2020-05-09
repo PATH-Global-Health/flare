@@ -14,8 +14,8 @@ def validate_yaml(value):
         is_valid, errors = UssdView.validate_ussd_journey(journey)
 
         # validate the existance and form of a custom defined initialize_survey screen
-        if is_valid:
-            is_valid, errors = validate_ussd_journey(journey)
+        # if is_valid:
+        #     is_valid, errors = validate_ussd_journey(journey)
     except Exception as ex:
         logger.error(ex)
         raise serializers.ValidationError({"journeys":["The yaml file is invalid."]})
@@ -27,22 +27,22 @@ class SurveySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id','survey_id', 'title', 'published', 'endpoint', 'journeys')
+        fields = ('id', 'title', 'published', 'journeys') #, 'endpoint', 'survey_id')
         validators = [ validate_yaml ]
         
-    def to_internal_value(self, data):
-        # assign endpoint and survey_id by reading from the uploaded file
-        # TODO:
-        # find a better way not to revalidate the yaml file again
-        try:
-            journey = read_journey(data['journeys'])
-            yaml_data = get_survey_endpoint_and_id(journey)
-            data['endpoint'] = yaml_data['endpoint']
-            data['survey_id'] = yaml_data['survey_id']
-        except Exception as ex:
-            logger.error(ex)
+    # def to_internal_value(self, data):
+    #     # assign endpoint and survey_id by reading from the uploaded file
+    #     # TODO:
+    #     # find a better way not to revalidate the yaml file again
+    #     try:
+    #         journey = read_journey(data['journeys'])
+    #         yaml_data = get_survey_endpoint_and_id(journey)
+    #         data['endpoint'] = yaml_data['endpoint']
+    #         data['survey_id'] = yaml_data['survey_id']
+    #     except Exception as ex:
+    #         logger.error(ex)
 
-        return super(SurveySerializer,self).to_internal_value(data)
+    #     return super(SurveySerializer,self).to_internal_value(data)
 
 
 class SurveyResultSerializer(serializers.ModelSerializer):

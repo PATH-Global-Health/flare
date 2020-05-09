@@ -12,10 +12,10 @@ class OverwriteStorage(FileSystemStorage):
         return name
    
 class Survey(CommonModel):
-    survey_id = models.CharField(max_length=150, unique=True)
+    # survey_id = models.CharField(max_length=150, unique=True)
     title = models.CharField(max_length=200, null=False)
     published = models.BooleanField(default=False)
-    endpoint = models.CharField(max_length=150, default="")
+    # endpoint = models.CharField(max_length=150, default="")
     journeys = models.FileField(storage=OverwriteStorage())
 
     def __str__(self):
@@ -23,5 +23,6 @@ class Survey(CommonModel):
 
 class SurveyResult(CommonModel):
     result = models.TextField()
+    session_id = models.CharField(max_length=200, default="")
+    posted = models.BooleanField(default=False)
     survey  = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE)
