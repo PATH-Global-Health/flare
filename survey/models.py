@@ -12,6 +12,7 @@ class OverwriteStorage(FileSystemStorage):
         return name
    
 class Survey(CommonModel):
+    survey_id = models.CharField(max_length=150, unique=True)
     title = models.CharField(max_length=200, null=False)
     published = models.BooleanField(default=False)
     endpoint = models.CharField(max_length=150, default="")

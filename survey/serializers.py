@@ -19,7 +19,8 @@ class SurveySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id','title', 'published', 'endpoint', 'journeys')#'__all__' #we need to see all the fields in language model
+        fields = ('id','survey_id', 'title', 'published', 'endpoint', 'journeys')#'__all__' #we need to see all the fields in language model
+        read_only_fields = ('survey_id', 'endpoint')
         validators = [ validate_yaml ]
     
 

@@ -6,6 +6,8 @@ initialize_survey:
   values_to_update:
     - key: endpoint
       value: "api/gateway/covid19"
+    - key: survey_id
+      value: "covid19_v1"
 
 show_welcome:
   type: input_screen
