@@ -36,14 +36,9 @@ class SurveySerializer(serializers.ModelSerializer):
         # find a better way not to revalidate the yaml file again
         try:
             journey = read_journey(data['journeys'])
-            is_valid, errors = UssdView.validate_ussd_journey(journey)
-
-            if is_valid:
-                is_valid, errors = validate_ussd_journey(journey)
-            if is_valid:
-                d = get_survey_endpoint_and_id(journey)
-                data['endpoint'] = d['endpoint']
-                data['survey_id'] = d['survey_id']
+            yaml_data = get_survey_endpoint_and_id(journey)
+            data['endpoint'] = yaml_data['endpoint']
+            data['survey_id'] = yaml_data['survey_id']
         except Exception as ex:
             logger.error(ex)
 
