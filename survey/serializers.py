@@ -3,7 +3,7 @@ import logging
 from rest_framework import serializers
 from ussd.core import UssdView
 from .models import Survey, SurveyResult
-from .helpers import read_journey, validate_ussd_journey, get_survey_endpoint_and_id
+from .helpers import read_journey #, validate_ussd_journey, get_survey_endpoint_and_id
 
 logger = logging.getLogger(__name__)
 
@@ -48,4 +48,5 @@ class SurveySerializer(serializers.ModelSerializer):
 class SurveyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResult
-        fields = ('id','survey','subscriber', 'result')
+        fields = ('id', 'survey', 'result', 'completed', 'posted')
+        read_only_fields = ('posted', 'completed')

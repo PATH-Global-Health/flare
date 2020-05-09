@@ -24,5 +24,6 @@ class Survey(CommonModel):
 class SurveyResult(CommonModel):
     result = models.TextField()
     session_id = models.CharField(max_length=200, default="")
+    completed = models.BooleanField(default=False)
     posted = models.BooleanField(default=False)
     survey  = models.ForeignKey(Survey, on_delete=models.CASCADE)
