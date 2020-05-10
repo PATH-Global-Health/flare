@@ -1,5 +1,4 @@
 import os
-import json
 import yaml
 import logging
 from django.contrib.sessions.models import Session
