@@ -28,6 +28,7 @@ class SurveyResultViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticated
     ]
     serializer_class = SurveyResultSerializer
+    search_fields = ['phone_number', 'session_id']
 
     # can be accessed using /results/?survey_id=2
     def list(self, request, *args, **kwargs):

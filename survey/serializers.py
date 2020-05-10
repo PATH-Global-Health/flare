@@ -50,7 +50,4 @@ class SurveyResultSerializer(serializers.ModelSerializer):
         model = SurveyResult
         fields = ('id', 'survey','phone_number', 'session_id', 'result', 'completed', 'rejected', 'posted')
         read_only_fields = ('posted', 'completed', 'rejected')
-        lookup_field = 'survey_id'
-        extra_kwargs = {
-            'url': {'lookup_field': 'survey_id'}
-        }
+        

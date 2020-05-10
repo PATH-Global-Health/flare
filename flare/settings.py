@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'knox',
     'channels',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -153,6 +154,14 @@ REST_FRAMEWORK = {
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Addis_Ababa'   
+CELERY_BEAT_SCHEDULE = {
+ 'send-summary-every-hour': {
+       'task': 'survey.tasks.sync_survey_result_2_firebase_task',
+        # Executes every 15 minutes (15 minutes * 60 seconds)
+       'schedule': 60.0, 
+    },        
+}
 
 CHANNEL_LAYERS = {
     "default":{
