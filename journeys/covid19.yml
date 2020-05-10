@@ -66,9 +66,10 @@ enter_language:
       Language:
       1. English
       2. Amharic
-      3. Oromiffa
-      4. Tigrinya
-      5. Somali
+      3. Oromifa
+      4. Tigrigna
+      5. Somalinya
+      6. Afarigna
     am: |
       ቋንቋ:
       1. እንግሊዝኛ 
@@ -76,20 +77,23 @@ enter_language:
       3. ኦሮምኛ
       4. ትግርኛ
       5. ሶማልኛ
+      6. አፋርኛ
     or: |
-      Language:
+      Language
       1. English
       2. Amharic
-      3. Oromiffa
-      4. Tigrinya
-      5. Somali
+      3. Oromifa
+      4. Tigrigna
+      5. Somalinya
+      6. Afarigna
     ti: |
       ቋንቋ
-      1.	እንግሊዝኛ
-      2.	ኣምሓርኛ
-      3.	ኦሮሚኛ
-      4.	ትግርኛ
-      5.	ሶማልኛ
+      1. እንግሊዝኛ
+      2. ኣምሓርኛ
+      3. ኦሮሚኛ
+      4. ትግርኛ
+      5. ሶማልኛ
+      6. አፋርኛ
     so: |
       Xumad
       1. English
@@ -97,19 +101,21 @@ enter_language:
       3. Oromo
       4. Tigree
       5. Somali
+      6. Anfar
 
   input_identifier: language
   next_screen: save_language
   validators:
-    - regex: ^[1-5]{1}$
+    - regex: ^[1-6]{1}$
       text:
         en: |
           Language:
           1. English
           2. Amharic
-          3. Oromiffa
-          4. Tigrinya
-          5. Somali
+          3. Oromifa
+          4. Tigrigna
+          5. Somalinya
+          6. Afarigna
         am: |
           ቋንቋ:
           1. እንግሊዝኛ 
@@ -117,20 +123,23 @@ enter_language:
           3. ኦሮምኛ
           4. ትግርኛ
           5. ሶማልኛ
+          6. አፋርኛ
         or: |
           Language:
           1. English
           2. Amharic
-          3. Oromiffa
-          4. Tigrinya
-          5. Somali
+          3. Oromifa
+          4. Tigrigna
+          5. Somalinya
+          6. Afarigna
         ti: |
           ቋንቋ
-          1.	እንግሊዝኛ
-          2.	ኣምሓርኛ
-          3.	ኦሮሚኛ
-          4.	ትግርኛ
-          5.	ሶማልኛ
+          1. እንግሊዝኛ
+          2. ኣምሓርኛ
+          3. ኦሮሚኛ
+          4. ትግርኛ
+          5. ሶማልኛ
+          6. አፋርኛ
         so: |
           Xumad
           1. English
@@ -138,6 +147,7 @@ enter_language:
           3. Oromo
           4. Tigree
           5. Somali
+          6. Anfar
 
 save_language:
   type: function_screen
@@ -467,7 +477,7 @@ enter_region:
         3. Beninshagul humus
         4. Gambela
         5. Oromiya
-        6.  SNNP
+        6. SNNP
         7. Somali
         8. Tigre
         9. Diredawa

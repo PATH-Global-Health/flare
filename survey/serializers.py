@@ -48,5 +48,5 @@ class SurveySerializer(serializers.ModelSerializer):
 class SurveyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResult
-        fields = ('id', 'survey', 'result', 'completed', 'posted')
-        read_only_fields = ('posted', 'completed')
+        fields = ('id', 'survey', 'result', 'completed', 'rejected', 'posted')
+        read_only_fields = ('posted', 'completed', 'rejected')
