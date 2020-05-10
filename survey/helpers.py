@@ -1,5 +1,6 @@
 import yaml
 import logging
+from django.contrib.sessions.models import Session
 from .models import SurveyResult
 
 logger = logging.getLogger(__name__)
@@ -20,13 +21,16 @@ def create_survey_result(survey_pk, session_key, phone_number):
 
 def mark_survey_result_complete(survey_pk, session_key, phone_number):
     try:
-        result = SurveyResult.objects.filter(session_id = session_key, phone_number = phone_number).first()
-        if result == None:
-            result = SurveyResult(survey_id=survey_pk, session_id=session_key, phone_number=phone_number, completed=True)
-            result.save()
-        else:
-            result.completed = True
-            result.save()
+        survey_result = SurveyResult.objects.filter(session_id = session_key, phone_number = phone_number).first()
+        if survey_result == None:
+            survey_result = SurveyResult(survey_id=survey_pk, session_id=session_key, phone_number=phone_number)
+
+        session = Session.objects.get(session_key=session_key)
+        data = session.get_decoded()
+
+        survey_result.result = data
+        survey_result.completed = True
+        survey_result.save()
     except Exception as ex:
         logger.error(ex)
 
