@@ -22,7 +22,7 @@ class Survey(CommonModel):
         return self.title
 
 class SurveyResult(CommonModel):
-    result = models.TextField()
+    result = models.TextField(null=True)
     session_id = models.CharField(max_length=200, default="")
     phone_number = models.CharField(max_length = 20, default="")
     completed = models.BooleanField(null=True)
