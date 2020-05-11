@@ -51,7 +51,7 @@ def sync_survey_result_2_firebase():
 
     results = SurveyResult.objects.filter(completed = 1, posted=None, rejected=None)
     for res in results:
-        r = yaml.load(res.result)
+        r = yaml.load(res.result, Loader=yaml.FullLoader)
         if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
             result_ref.child("{}".format(res.id)).set({
                 'phone_number': res.phone_number,
