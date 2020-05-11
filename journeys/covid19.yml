@@ -4,7 +4,7 @@ show_welcome:
   type: input_screen
   text:
     en: |
-      Welcome to the Ministry of Health: {{survey_id}}
+      Welcome to the Ministry of Health:
       1. Community-based registration
       2. Change language
     am: |
@@ -12,18 +12,21 @@ show_welcome:
       1. በማህበረሰብ ላይ የተመሠረተ ምዝገባ
       2. ቋንቋ ለመቀየር
     or: |
-      Welcome to the Ministry of Health:
-      1. Community-based registration
-      2. Change language
+      Baga nagaan gara Ministeera egumsa fayyaa duftan:
+      1. Galmee sadarkaa hawaasaa
+      2. Afaan Geeddari
     ti: |
       ናብ ሚኒስትሪ ጥዕና እንኳዕ ብደሓን መፃኹም፡
       1.	ሕብረተሰብ መሰረት ዝገበረ ምዝገባ
       2.	ቋንቋ ይቐይሩ
     so: |
-      kusoo dhawaw wasaarada caafimaadka 
+      kusoo dhawaw wasaarada caafimaadka:
       1. Diwaan galinta bulshada
       2. Bedel luuqada
-
+    aa: |
+      Unkaq Qaafiyat Dacayrih Malaak fan Muquk temeten:
+      1. Ayunttak mazgab
+      2. Afa koris
   input_identifier: menu
   next_screen: router_screen
   validators:
@@ -38,17 +41,21 @@ show_welcome:
           1. በማህበረሰብ ላይ የተመሠረተ ምዝገባ
           2. ቋንቋ ለመቀየር
         or: |
-          Welcome to the Ministry of Health:
-          1. Community-based registration
-          2. Change language
+          Baga nagaan gara Ministeera egumsa fayyaa duftan:
+          1. Galmee sadarkaa hawaasaa
+          2. Afaan Geeddari
         ti: |
           ናብ ሚኒስትሪ ጥዕና እንኳዕ ብደሓን መፃኹም፡
           1.	ሕብረተሰብ መሰረት ዝገበረ ምዝገባ
           2.	ቋንቋ ይቐይሩ
         so: |
-          Kusoo dhawaw wasaarada caafimaadka 
+          Kusoo dhawaw wasaarada caafimaadka:
           1. Diwaan galinta bulshada
           2. Bedel luuqada
+        aa: |
+          Unkaq Qaafiyat Dacayrih Malaak fan Muquk temeten:
+          1. Ayunttak mazgab
+          2. Afa koris
 
 router_screen:
   type: router_screen
@@ -79,15 +86,15 @@ enter_language:
       5. ሶማልኛ
       6. አፋርኛ
     or: |
-      Language
-      1. English
-      2. Amharic
-      3. Oromifa
-      4. Tigrigna
-      5. Somalinya
-      6. Afarigna
+      Afaan:
+      1. Afaan Engilizii
+      2. Afaan Amhaaraa
+      3. Afaan Oromoo
+      4. Afaan Tigiree
+      5. Afaan Somaalee
+      6. Afaan Afaarii
     ti: |
-      ቋንቋ
+      ቋንቋ:
       1. እንግሊዝኛ
       2. ኣምሓርኛ
       3. ኦሮሚኛ
@@ -95,14 +102,21 @@ enter_language:
       5. ሶማልኛ
       6. አፋርኛ
     so: |
-      Xumad
+      Xumad:
       1. English
       2. Amharic
       3. Oromo
       4. Tigree
       5. Somali
       6. Anfar
-
+    aa: |
+      Af:
+      1. English afa
+      2. Amcari afa
+      3. Oromo afa
+      4. Tigre afa
+      5. Somali afa
+      6. Afar afa
   input_identifier: language
   next_screen: save_language
   validators:
@@ -125,15 +139,15 @@ enter_language:
           5. ሶማልኛ
           6. አፋርኛ
         or: |
-          Language:
-          1. English
-          2. Amharic
-          3. Oromifa
-          4. Tigrigna
-          5. Somalinya
-          6. Afarigna
+          Afaan:
+          1. Afaan Engilizii
+          2. Afaan Amhaaraa
+          3. Afaan Oromoo
+          4. Afaan Tigiree
+          5. Afaan Somaalee
+          6. Afaan Afaarii
         ti: |
-          ቋንቋ
+          ቋንቋ:
           1. እንግሊዝኛ
           2. ኣምሓርኛ
           3. ኦሮሚኛ
@@ -141,13 +155,21 @@ enter_language:
           5. ሶማልኛ
           6. አፋርኛ
         so: |
-          Xumad
+          Xumad:
           1. English
           2. Amharic
           3. Oromo
           4. Tigree
           5. Somali
           6. Anfar
+        aa: |
+          Af:
+          1. English afa
+          2. Amcari afa
+          3. Oromo afa
+          4. Tigre afa
+          5. Somali afa
+          6. Afar afa
 
 save_language:
   type: function_screen
@@ -170,18 +192,21 @@ enter_fever:
       1. አለ 
       2. የለም
     or: |
-      Fever:
-      1. Yes
-      2. No
+      Gubaa qaamaa
+      1. Eyee
+      2. Miti
     ti: |
-      ረስኒ
+      ረስኒ:
       1. ኣሎ
       2. የለን
     so: |
-      Xumad
+      Xumad:
       1. Haaa
       2. Maya
-
+    aa: |
+      Liqina:
+      1. Kinih 
+      2. Hina
   input_identifier: fever
   next_screen: enter_cough
   validators:
@@ -196,17 +221,21 @@ enter_fever:
           1. አለ 
           2. የለም
         or: |
-          Fever: (Enter 1 or 2)
-          1. Yes
-          2. No
+          Gubaa qaamaa (1 - 2)
+          1. Eyee
+          2. Miti
         ti: |
-          ረስኒ (ቁፅሪ 1 ወይ 2 የእትዉ)
+          ረስኒ: (ቁፅሪ 1 ወይ 2 የእትዉ)
           1. ኣሎ
           2. የለን
         so: |
-          Xumad ( Dooro Hall AMA labo)
+          Xumad: (Dooro Hall AMA labo)
           1. Haaa
           2. Maya
+        aa: |
+          Liqina: (Culsa/Dorit 1 aw 2)
+          1. Kinih 
+          2. Hina
 
 enter_cough:
   type: input_screen
@@ -220,18 +249,21 @@ enter_cough:
       1. አለ 
       2. የለም
     or: |
-      Dry Cough:
-      1. Yes
-      2. No
+      Qufaa Gogaa
+      1. Eyee
+      2. Miti
     ti: |
-      ደረቕ ሰዓል
+      ደረቕ ሰዓል:
       1. ኣሎ
       2. የለን
     so: |
-      Qufac qalalan (Dooro hall AMA labo)
+      Qufac qalalan:
       1. Haaa
       2. Maya
-
+    aa: |
+      Kafin kacuwu:
+      1. Kinih 
+      2. Hina
   input_identifier: cough
   next_screen: enter_shortness_of_breath
   validators:
@@ -246,17 +278,21 @@ enter_cough:
           1. አለ 
           2. የለም
         or: |
-          Dry Cough: (Enter 1 or 2)
-          1. Yes
-          2. No
+          Qufaa Gogaa (1 - 2)
+          1. Eyee
+          2. Miti
         ti: |
-          ደረቕ ሰዓል (ቁፅሪ 1 ወይ 2 የእትዉ)
+          ደረቕ ሰዓል: (ቁፅሪ 1 ወይ 2 የእትዉ)
           1. ኣሎ
           2. የለን
         so: |
-          Qufac qalalan (Dooro hall AMA labo)
+          Qufac qalalan: (Dooro hall AMA labo)
           1. Haaa
           2. Laya
+        aa: |
+          Kafin kacuwu: (Culsa/Dorit 1 aw 2)
+          1. Kinih 
+          2. Hina
 
 enter_shortness_of_breath:
   type: input_screen
@@ -270,17 +306,21 @@ enter_shortness_of_breath:
       1. አለ 
       2. የለም
     or: |
-      Shortness Of Breath:
-      1. Yes
-      2. No
+      Hanqinna afuura baafanna
+      1. Eyee
+      2. Miti
     ti: |
-      ሕፅረት ስርዓተ ምስትንፋስ
+      ሕፅረት ስርዓተ ምስትንፋስ:
       1. ኣሎ
       2. የለን
     so: |
-      Neefsadhada oo adkaata
+      Neefsadhada oo adkaata:
       1. Haaa
       2. Maya
+    aa: |
+      Ufuy dagna:
+      1. Kinih 
+      2. Hina
   input_identifier: shortness_of_breath
   default_next_screen: show_quit
   next_screen:
@@ -298,17 +338,21 @@ enter_shortness_of_breath:
           1. አለ 
           2. የለም
         or: |
-          Shortness Of Breath: (Enter 1 or 2)
-          1. Yes
-          2. No
+          Hanqinna afuura baafanna (1 - 2)
+          1. Eyee
+          2. Miti
         ti: |
-          ሕፅረት ስርዓተ ምስትንፋስ (ቁፅሪ 1 ወይ 2 የእትዉ)
+          ሕፅረት ስርዓተ ምስትንፋስ: (ቁፅሪ 1 ወይ 2 የእትዉ)
           1. ኣሎ
           2. የለን
         so: |
-          Neefsadhada oo adkaata (Dooro  hall ama labo)
+          Neefsadhada oo adkaata: (Dooro  hall ama labo)
           1. Haaa
           2. Maya
+        aa: |
+          Ufuy dagna: (Culsa/Dorit 1 aw 2)
+          1. Kinih 
+          2. Hina
 
 enter_name:
   type: input_screen
@@ -318,11 +362,13 @@ enter_name:
     am: |
       ስም:
     or: |
-      Name:
+      Maqaa:
     ti: |
       ሽም፡
     so: |
       Magaca:
+    aa: |
+      Migaq:
   input_identifier: name
   next_screen: enter_age
 
@@ -334,11 +380,13 @@ enter_age:
     am: |
       እድሜ:
     or: |
-      Age:
+      Umrii:
     ti: |
       ዕድመ:
     so: |
       Age:
+    aa: |
+      Karma:
   input_identifier: age
   next_screen: enter_sex
   validators:
@@ -349,11 +397,13 @@ enter_age:
         am: |
           እድሜ፡ (ቁጥር ብቻ ያስገቡ)
         or: |
-          Age:
+          Umrii: (Lakk qofatu eyyamama)
         ti: |
           ዕድመ: (ቁፅሪ ጥራይ የእትዉ)
         so: |
           Age: (lambar kaliya aya la ogolyahay)
+        aa: |
+          Karma: (lowo dibuk utkub)
     - expression: ussd_request.input|int <= 120
       text:
         en: |
@@ -361,11 +411,14 @@ enter_age:
         am: |
           እድሜ፡ (0 - 120)
         or: |
-          Age: (0 - 120)
+          Umrii: (0 - 120)
         ti: |
           ዕድመ: (0 - 120)
         so: |
           Age: (0 - 120)
+        aa: |
+          Karma: (0 - 120)
+
 enter_sex:
   type: input_screen
   text:
@@ -378,9 +431,9 @@ enter_sex:
       1. ወንድ 
       2. ሴት
     or: |
-      Sex:
-      1. Male
-      2. Female
+      Saala:
+      1. Dhira
+      2. Dhala
     ti: |
       ፆታ:
       1. ተባዕታይ
@@ -389,6 +442,10 @@ enter_sex:
       Hindi:
       1. Lab
       2. Dhading
+    aa: |
+      Nado:
+      1. Labih
+      2. Sayih
   input_identifier: sex
   next_screen: enter_region
   validators:
@@ -403,9 +460,9 @@ enter_sex:
           1. ወንድ 
           2. ሴት
         or: |
-          Sex: (Enter 1 or 2)
-          1. Male
-          2. Female
+          Saala: (1 - 2)
+          1. Dhira
+          2. Dhala
         ti: |
           ፆታ: (ቁፅሪ 1 ወይ 2 የእትዉ)
           1. ተባዕታይ
@@ -414,6 +471,10 @@ enter_sex:
           Hindi: (Dooro hall AMA labo)
           1. Lab
           2. Dhading
+        aa: |
+          Nado: (Culsa/Dorit 1 aw 2)
+          1. Labih
+          2. Sayih
 
 enter_region:
   type: input_screen
@@ -445,17 +506,17 @@ enter_region:
         10. አዲስ አበባ
         11. ሀረሪ
     or: |
-      Region:
-        1. Afar
-        2. Amhara
-        3. Beneshangul Gumuz 
-        4. Gambella
-        5. Oromiya
-        6. SNNP
-        7. Somali
-        8. Tigray
-        9. Diredawa
-        10. Addis Ababa
+      Naannoo:
+        1. Afaar
+        2. Amhaara
+        3. Beenshaangul Gumiz
+        4. Gambeellaa
+        5. Oromiyaa
+        6. Naannoo Ummata Kibbaa
+        7. Somalee
+        8. Tigiraay
+        9. Dire Dhawa
+        10. Finfinnee
         11. Harari
     ti: |
       ክልል:
@@ -482,6 +543,19 @@ enter_region:
         8. Tigre
         9. Diredawa
         10. Adis ababa
+        11. Harari
+    aa: |
+      Rakaakay:
+        1. Qafar 
+        2. Amhara 
+        3. Benisangul gumz
+        4. Gambela
+        5. Oromiya
+        6. Dabub beher beher 
+        7. Somali 
+        8. Tigray 
+        9. Dirdawa 
+        10. Adisaba 
         11. Harari
   input_identifier: region
   next_screen: enter_travel_history
@@ -515,17 +589,17 @@ enter_region:
             10. አዲስ አበባ
             11. ሀረሪ
         or: |
-          Region: (Only nubers are allowed)
-            1. Afar
-            2. Amhara
-            3. Beneshangul Gumuz 
-            4. Gambella
-            5. Oromiya
-            6. SNNP
-            7. Somali
-            8. Tigray
-            9. Diredawa
-            10. Addis Ababa
+          Naannoo: (Lakk qofatu eyyamama)
+            1. Afaar
+            2. Amhaara
+            3. Beenshaangul Gumiz
+            4. Gambeellaa
+            5. Oromiyaa
+            6. Naannoo Ummata Kibbaa
+            7. Somalee
+            8. Tigiraay
+            9. Dire Dhawa
+            10. Finfinnee
             11. Harari
         ti: |
           ክልል: (ቁፅሪ ጥራይ የእትዉ)
@@ -552,6 +626,19 @@ enter_region:
             8. Tigre
             9. Diredawa
             10. Adis ababa
+            11. Harari
+        aa: |
+          Rakaakay: (lowo dibuk utkub)
+            1. Qafar 
+            2. Amhara 
+            3. Benisangul gumz
+            4. Gambela
+            5. Oromiya
+            6. Dabub beher beher 
+            7. Somali 
+            8. Tigray 
+            9. Dirdawa 
+            10. Adisaba 
             11. Harari
     - expression: ussd_request.input|int >= 1 and ussd_request.input|int <= 11
       text:
@@ -582,17 +669,17 @@ enter_region:
             10. አዲስ አበባ
             11. Harari
         or: |
-          Region: (1 - 11)
-            1. Afar
-            2. Amhara
-            3. Beneshangul Gumuz 
-            4. Gambella
-            5. Oromiya
-            6. SNNP
-            7. Somali
-            8. Tigray
-            9. Diredawa
-            10. Addis Ababa
+          Naannoo: (1 - 11)
+            1. Afaar
+            2. Amhaara
+            3. Beenshaangul Gumiz
+            4. Gambeellaa
+            5. Oromiyaa
+            6. Naannoo Ummata Kibbaa
+            7. Somalee
+            8. Tigiraay
+            9. Dire Dhawa
+            10. Finfinnee
             11. Harari
         ti: |
           ክልል: (1 - 11)
@@ -620,6 +707,20 @@ enter_region:
             9. Diredawa
             10. Adis ababa
             11. Harari
+        aa: |
+          Rakaakay: (1 - 11)
+            1. Qafar 
+            2. Amhara 
+            3. Benisangul gumz
+            4. Gambela
+            5. Oromiya
+            6. Dabub beher beher 
+            7. Somali 
+            8. Tigray 
+            9. Dirdawa 
+            10. Adisaba 
+            11. Harari
+
 enter_travel_history:
   type: input_screen
   text:
@@ -632,9 +733,9 @@ enter_travel_history:
       1. አለ 
       2. የለም
     or: |
-      Travel history:
-      1. Yes
-      2. No
+      Seenaa Imalaa:
+      1. Eyee
+      2. Miti
     ti: |
       ታሪክ ጉዕዞ:
       1. ኣሎ
@@ -643,6 +744,10 @@ enter_travel_history:
       Xaaalada socdaalka:
       1. Haa
       2. Maya
+    aa: |
+      Gersoh aydadu:
+      1. Kinih 
+      2. Hina
   input_identifier: travel_history
   next_screen: enter_has_contact
   validators:
@@ -657,9 +762,9 @@ enter_travel_history:
           1. አለ 
           2. የለም
         or: |
-          Travel history: (Enter 1 or 2)
-          1. Yes
-          2. No
+          Seenaa Imalaa: (1 - 2)
+          1. Eyee
+          2. Miti
         ti: |
           ታሪክ ጉዕዞ: (ቁፅሪ 1 ወይ 2 የእትዉ)
           1. ኣሎ
@@ -668,6 +773,10 @@ enter_travel_history:
           Xaaalada socdaalka: (Doro Hal ama Labo)
           1. Haa
           2. Maya
+        aa: |
+          Gersoh aydadu: (Culsa/Dorit 1 aw 2)
+          1. Kinih 
+          2. Hina
 
 enter_has_contact:
   type: input_screen
@@ -681,9 +790,9 @@ enter_has_contact:
       1. አለ 
       2. የለም
     or: |
-      Has any contact:
-      1. Yes
-      2. No
+      Nama dhukkubichaan qabamuu shakkame wajiin walquunamtii qaba:
+      1. Eyee
+      2. Miti
     ti: |
       ርክብ ምስቲ ሕማም ዝተጠርጠረ ሰብ:
       1. ኣሎ
@@ -692,6 +801,10 @@ enter_has_contact:
       Malakulantay qof qaba caabuqa corona:
       1. Haa
       2. Maya
+    aa: |
+      Beyakah daremen sehadaytu angaraw luk sugek:
+      1. Kinih 
+      2. Hina
   input_identifier: has_contact
   next_screen: show_report_submitted
   validators:
@@ -706,9 +819,9 @@ enter_has_contact:
           1. አለ 
           2. የለም
         or: |
-          Has any contact:
-          1. Yes
-          2. No
+          Nama dhukkubichaan qabamuu shakkame wajiin walquunamtii qaba: (1 - 2)
+          1. Eyee
+          2. Miti
         ti: |
           ርክብ ምስቲ ሕማም ዝተጠርጠረ ሰብ: (ቁፅሪ 1 ወይ 2 የእትዉ)
           1. ኣሎ
@@ -717,6 +830,10 @@ enter_has_contact:
           Malakulantay qof qaba caabuqa corona: (Doro hal AMA labo)
           1. Haa
           2. Maya
+        aa: |
+          Beyakah daremen sehadaytu angaraw luk sugek: (Culsa/Dorit 1 aw 2)
+          1. Kinih 
+          2. Hina
 
 show_report_submitted:
   type: quit_screen
@@ -726,11 +843,13 @@ show_report_submitted:
     am: |
       ሪፖርቱ በተሳካ ሁኔታ ገብቷል!
     or: |
-      Submitted successfully!
+      Sirritti ergamee jira!
     ti: |
       ብትኽክል ኣትዩ/ከይዱ!
     so: |
-      Wad kuguulaysatay diritaankaagii
+      Wad kuguulaysatay diritaankaagii!
+    aa: |
+      Elle faximatanal culeh!
 
 show_quit:
   type: quit_screen
@@ -740,26 +859,30 @@ show_quit:
     am: |
       እናመሰግናለን!
     or: |
-      Thank you!
+      Galatoomi!
     ti: |
       ነመስግን!
     so: |
       Mahadsanid!
+    aa: |
+      Gada geya!
 
 show_lang_save_success_quit:
   type: quit_screen
   text:
     en: You have successfully changed the language. Please dial again.
     am: ቋንቋዎን በትክክል ቀይረዋል። እባክዎ በድጋሚ ይደውሉ።
-    or: You have successfully changed the language. Please dial again.
+    or: Afaan sirriitti geeddartee jirta. Erra deebyii bilbil.
     ti: ቋንቋ ብትኽክል ቀይሮም እዮም፡፡ በይዘኦም ደጊሞም ይጠውቑ፡፡
     so: Waad ku kuguulaysatay bedlida luuqada fafan markale garaac
+    aa: Af elle faximiyanal korseh. Ku maganak qagitay hayis.
 
 show_lang_save_failed_quit:
   type: quit_screen
   text:
     en: Unable to change the language. Please dial and try again.
     am: ቋንቋዎን መቀየር አልተቻለም። እባክዎ በድጋሚ ደውለው ይሞክሩ።
-    or: Unable to change the language. Please dial and try again.
+    or: Afaan geeddaruu hin dandeenne. Bilbilii Erra deebyii yaali.
     ti: ቋንቋ ብትኽክል ክቕይሩ ኣይከኣሉን፡፡ በይዘኦም ደጊሞም ብምጥዋቕ ይፈትኑ፡፡
     so: Waad ku guul daraysatay basalida luuqada  fafan garac oo iskuday markale
+    aa: Af korsam madiqqo. Ku maganak hayisay qagitay gabat.
