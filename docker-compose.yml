@@ -1,0 +1,73 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:9.6.5
+    environment:
+      - POSTGRES_DB=flare
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123882
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  # Redis
+  # /code/wait-for db:5432
+  redis:
+    image: redis:6.0.1-alpine
+    restart: on-failure
+  web:
+    build: .
+    command: >
+      sh -c "wait-for db:5432 && python /code/manage.py makemigrations 
+      && python /code/manage.py migrate  --noinput 
+      && python /code/manage.py initadmin 
+      && python /code/manage.py loaddata /code/initial_survey_data.json 
+      && python /code/manage.py loaddata /code/initial_settings_data.json 
+      && gunicorn flare.wsgi -b 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: on-failure
+
+  # Celery worker
+  celery_worker:
+    build: .
+    command: >
+      sh -c "wait-for db:5432 && wait-for web:8000
+      && celery -A flare  worker -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+      - web
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 50M
+        reservations:
+          cpus: "0.25"
+          memory: 20M
+    restart: on-failure
+  # Celery worker
+  celery_beat:
+    build: .
+    command: >
+      sh -c "wait-for db:5432 && wait-for web:8000
+      && celery -A flare beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+      - web
+    restart: on-failure
+
+volumes:
+  postgres_data:
