@@ -1,0 +1,179 @@
+[
+  {
+    "model": "settings.language",
+    "pk": 1,
+    "fields": {
+      "created_at": "2020-04-27T16:59:46.251Z",
+      "updated_at": "2020-05-05T07:28:01.143Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "English",
+      "code": "en",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.language",
+    "pk": 2,
+    "fields": {
+      "created_at": "2020-04-28T14:33:48.547Z",
+      "updated_at": "2020-04-28T14:33:48.547Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Amharic",
+      "code": "am",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.language",
+    "pk": 3,
+    "fields": {
+      "created_at": "2020-04-29T09:35:04.974Z",
+      "updated_at": "2020-05-10T06:13:39.774Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Oromifa",
+      "code": "or",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.language",
+    "pk": 4,
+    "fields": {
+      "created_at": "2020-04-29T17:10:49.515Z",
+      "updated_at": "2020-05-10T06:13:54.889Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Tigrigna",
+      "code": "ti",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.language",
+    "pk": 5,
+    "fields": {
+      "created_at": "2020-04-29T17:11:23.854Z",
+      "updated_at": "2020-05-02T08:29:43.910Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Somali",
+      "code": "so",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.language",
+    "pk": 6,
+    "fields": {
+      "created_at": "2020-04-29T17:12:09.303Z",
+      "updated_at": "2020-04-29T17:12:09.303Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Afar",
+      "code": "aa",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.channel",
+    "pk": 1,
+    "fields": {
+      "created_at": "2020-05-02T05:11:59.971Z",
+      "updated_at": "2020-05-11T12:25:43.217Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Africa's Talking / SMS",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.channel",
+    "pk": 2,
+    "fields": {
+      "created_at": "2020-05-02T05:18:31.487Z",
+      "updated_at": "2020-05-02T06:55:01.978Z",
+      "created_by": null,
+      "updated_by": null,
+      "name": "Telegram",
+      "messages": []
+    }
+  },
+  {
+    "model": "settings.configuration",
+    "pk": 1,
+    "fields": {
+      "created_at": "2020-05-02T05:11:59.972Z",
+      "updated_at": "2020-05-02T06:17:37.780Z",
+      "created_by": null,
+      "updated_by": null,
+      "language": null,
+      "channel": 1,
+      "name": "Africa's Talking / SMS",
+      "user_id": "sandbox",
+      "token": ""
+    }
+  },
+  {
+    "model": "settings.configuration",
+    "pk": 2,
+    "fields": {
+      "created_at": "2020-05-02T05:18:31.489Z",
+      "updated_at": "2020-05-02T06:17:15.878Z",
+      "created_by": null,
+      "updated_by": null,
+      "language": 1,
+      "channel": 2,
+      "name": "Telegram - MOH Message - English",
+      "user_id": "",
+      "token": ""
+    }
+  },
+  {
+    "model": "settings.configuration",
+    "pk": 3,
+    "fields": {
+      "created_at": "2020-05-02T05:18:31.490Z",
+      "updated_at": "2020-05-02T06:17:15.881Z",
+      "created_by": null,
+      "updated_by": null,
+      "language": 2,
+      "channel": 2,
+      "name": "Telegram - MOH Message - Amharic",
+      "user_id": "",
+      "token": ""
+    }
+  },
+  {
+    "model": "settings.configuration",
+    "pk": 4,
+    "fields": {
+      "created_at": "2020-05-02T05:18:31.490Z",
+      "updated_at": "2020-05-02T06:17:15.881Z",
+      "created_by": null,
+      "updated_by": null,
+      "language": 3,
+      "channel": 2,
+      "name": "Telegram - MOH Message - Oromiffa",
+      "user_id": "",
+      "token": ""
+    }
+  },
+  {
+    "model": "settings.configuration",
+    "pk": 5,
+    "fields": {
+      "created_at": "2020-05-02T05:18:31.491Z",
+      "updated_at": "2020-05-02T06:17:15.882Z",
+      "created_by": null,
+      "updated_by": null,
+      "language": 4,
+      "channel": 2,
+      "name": "Telegram - MOH Message - Tigrinya",
+      "user_id": "",
+      "token": ""
+    }
+  }
+]
