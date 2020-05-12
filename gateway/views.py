@@ -16,7 +16,7 @@ class GatewayCovid19View(UssdView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.survey_id = 2
+        self.survey_id = 1
 
     def post(self, req):
         list_of_inputs = req.data['text'].split("*")
