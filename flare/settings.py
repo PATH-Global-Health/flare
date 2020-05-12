@@ -26,7 +26,7 @@ SECRET_KEY = 'rm7@5^)xz5by8z8zxs$vb2zpq+3g2=+y$z+uqtc(#1co_jz351'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -85,13 +85,23 @@ ASGI_APPLICATION = 'flare.routing.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'flare',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres123882',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -151,7 +161,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Africa/Addis_Ababa'   
@@ -167,7 +177,7 @@ CHANNEL_LAYERS = {
     "default":{
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')]
+            "hosts": [os.environ.get('REDIS_URL', 'redis://redis:6379')]
         },
     }
 }
@@ -176,5 +186,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'journeys')
 MEDIA_URL = '/journeys/'
 
 # To cache language of the subscriber on redis
-REDIS_HOST = 'localhost'
+REDIS_HOST = 'redis'
 REDIS_PORT = 6379
+
+
+ADMINS = (
+    ('admin', 'admin@mysite.com'),
+)
+ADMIN_USERNAME = 'admin'
+ADMIN_EMAIL = 'admin@mysite.com'
+ADMIN_INITIAL_PASSWORD = 'admin'
