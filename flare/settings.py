@@ -140,6 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
@@ -147,10 +148,11 @@ DEFAULT_USSD_SCREEN_JOURNEY = "journeys/help.yaml"
 # JOURNEY_STORE = YamlJourneyStore.YamlJourneyStore
 # JOURNEY_STORE_CONFIG = dict(journey_directory=os.path.join(BASE_DIR, ".journeys"))
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000"
+# ]
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
