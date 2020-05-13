@@ -10,14 +10,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
   # Redis
-  # /code/wait-for db:5432
   redis:
     image: redis:6.0.1-alpine
     restart: on-failure
   web:
     build: .
     command: >
-      sh -c "wait-for db:5432 && python /code/manage.py makemigrations 
+      sh -c "wait-for db:5432 
+      && python /code/manage.py collectstatic --no-input
+      && python /code/manage.py makemigrations 
       && python /code/manage.py migrate  --noinput 
       && python /code/manage.py initadmin 
       && python /code/manage.py loaddata /code/initial_survey_data.json 
@@ -25,6 +26,8 @@ services:
       && gunicorn flare.wsgi -b 0.0.0.0:8000"
     volumes:
       - .:/code
+      - ./staticfiles/admin:/usr/share/nginx/html/static/admin
+      - ./staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
     ports:
       - "8000:8000"
     depends_on:
@@ -43,17 +46,17 @@ services:
       - db
       - redis
       - web
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-      resources:
-        limits:
-          cpus: "0.50"
-          memory: 50M
-        reservations:
-          cpus: "0.25"
-          memory: 20M
+    # deploy:
+    #   replicas: 2
+    #   restart_policy:
+    #     condition: on-failure
+    #   resources:
+    #     limits:
+    #       cpus: "0.50"
+    #       memory: 50M
+    #     reservations:
+    #       cpus: "0.25"
+    #       memory: 20M
     restart: on-failure
   # Celery worker
   celery_beat:
@@ -68,6 +71,21 @@ services:
       - redis
       - web
     restart: on-failure
+
+  # ReactJS Frontend + Reverse Proxy for the web
+
+  flare_nginx:
+    container_name: flare_nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "80:6000"
+    volumes:
+      - ./staticfiles/admin:/usr/share/nginx/html/static/admin
+      - ./staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
+    depends_on:
+      - web
 
 volumes:
   postgres_data:
