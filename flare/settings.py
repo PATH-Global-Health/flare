@@ -172,7 +172,12 @@ CELERY_BEAT_SCHEDULE = {
        'task': 'survey.tasks.sync_survey_result_2_firebase_task',
         # Executes every 15 minutes (15 minutes * 60 seconds)
        'schedule': 60.0, 
-    },        
+    }, 
+'generat-report': {
+       'task': 'survey.tasks.generate_report',
+        # Executes every 15 minutes (15 minutes * 60 seconds)
+       'schedule': 60.0, 
+    },              
 }
 
 CHANNEL_LAYERS = {
