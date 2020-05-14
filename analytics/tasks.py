@@ -1,6 +1,6 @@
 from celery import shared_task
 from .helpers import get_total_messages, get_total_subscribers, get_total_surveys, get_total_survey_result, get_suspects_report
-from .helpers import Report
+from .models import Report
 
 @shared_task
 def generate_report():

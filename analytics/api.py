@@ -1,6 +1,5 @@
 from rest_framework import generics
 from django.db.models import Max
-from rest_framework.response import Response
 from .models import Report
 from .serializers import ReportSerializer
 
