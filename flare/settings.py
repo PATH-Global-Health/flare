@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'knox',
     'channels',
     'django_celery_beat',
+    'analytics',
 ]
 
 MIDDLEWARE = [
@@ -174,7 +175,7 @@ CELERY_BEAT_SCHEDULE = {
        'schedule': 60.0, 
     }, 
 'generat-report': {
-       'task': 'survey.tasks.generate_report',
+       'task': 'analytics.tasks.generate_report',
         # Executes every 15 minutes (15 minutes * 60 seconds)
        'schedule': 60.0, 
     },              
