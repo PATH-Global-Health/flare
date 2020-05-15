@@ -69,7 +69,7 @@ def get_suspects_report():
     data_by_sex = {'1':0, '2':0}
     data_by_age = {"< 5":0, "5 - 14":0, "15 - 24":0, "25 - 34":0, "35 - 44":0, "45 - 59":0, "60 >":0}
 
-    results = SurveyResult.objects.filter(completed = 1)
+    results = SurveyResult.objects.filter()
 
     for res in results:
         r = yaml.load(res.result, Loader=yaml.FullLoader)
