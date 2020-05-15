@@ -51,29 +51,44 @@ def sync_survey_result_2_firebase():
 
     results = SurveyResult.objects.filter(posted=None, rejected=None)
     for res in results:
-        r = yaml.load(res.result, Loader=yaml.FullLoader)
-        if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
-            result_ref.child("{}".format(res.id)).set({
-                'phone_number': res.phone_number,
-                'session_key': res.session_id,
-                'fever': r['fever'],
-                'cough': r['cough'],
-                'shortness_of_breath': r['shortness_of_breath'],
-                'name': r['name'],
-                'age': r['age'],
-                'sex': r['sex'],
-                'region': r['region'],
-                'travel_history': r['travel_history'],
-                'has_contact': r['has_contact'],
-                'last_updated': r['_ussd_airflow_last_updated']
-            })
-            res.posted = True
-            res.save()
-            logger.info('Data with phone number {} and session key {} is written to firebase.'.format(res.phone_number, res.session_id))
-        else:
-            res.rejected = True
-            res.save()
+        if res.result != None:
+            r = yaml.load(res.result, Loader=yaml.FullLoader)
+            if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+                result_ref.child("{}".format(res.id)).set({
+                    'phone_number': res.phone_number,
+                    'session_key': res.session_id,
+                    'fever': r['fever'],
+                    'cough': r['cough'],
+                    'shortness_of_breath': r['shortness_of_breath'],
+                    'name': r['name'],
+                    'age': r['age'],
+                    'sex': r['sex'],
+                    'region': r['region'],
+                    'travel_history': r['travel_history'],
+                    'has_contact': r['has_contact'],
+                    'last_updated': r['_ussd_airflow_last_updated']
+                })
+                res.posted = True
+                res.save()
+                logger.info('Data with phone number {} and session key {} is written to firebase.'.format(res.phone_number, res.session_id))
+            else:
+                res.rejected = True
+                res.save()
 
+def copy_incomplete_data_2_survey_results():
+    results = SurveyResult.objects.filter(result=None)
+    for result in results:
+        try:
+            session = Session.objects.filter(session_key=result.session_id).first()
+            if session != None:
+                data = session.get_decoded()
+
+                result.result = data
+                result.completed = False
+                result.save()
+        except Exception as ex:
+            logger.log(ex)
+    
 # def validate_ussd_journey(journey):
 
 #     if 'initialize_survey' not in journey:
