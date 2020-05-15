@@ -49,7 +49,7 @@ def sync_survey_result_2_firebase():
     ref = db.reference('covid19')
     result_ref = ref.child('survey_result')
 
-    results = SurveyResult.objects.filter(completed = 1, posted=None, rejected=None)
+    results = SurveyResult.objects.filter(posted=None, rejected=None)
     for res in results:
         r = yaml.load(res.result, Loader=yaml.FullLoader)
         if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
