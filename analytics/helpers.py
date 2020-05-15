@@ -60,11 +60,16 @@ def get_suspects_report():
         'datasets': []
     }
 
+    result_by_sex = {
+        'labels': ["Male", "Female"],
+        'datasets': []
+    }
+    
     data_by_region = {'1':0, '2':0, '3':0, '4':0, '5':0, '6':0, '7':0, '8':0, '9':0, '10':0, '11':0}
     data_by_sex = {'1':0, '2':0}
     data_by_age = {"< 5":0, "5 - 14":0, "15 - 24":0, "25 - 34":0, "35 - 44":0, "45 - 59":0, "60 >":0}
 
-    results = SurveyResult.objects.filter(completed = 1, posted=None, rejected=None)
+    results = SurveyResult.objects.filter(completed = 1)
 
     for res in results:
         r = yaml.load(res.result, Loader=yaml.FullLoader)
@@ -75,19 +80,17 @@ def get_suspects_report():
 
     result_by_region['datasets'].append({'data': list(data_by_region.values())})
 
-    result_by_sex = [
-        { 'title':'Male', 'value':str(data_by_sex['1'])},
-        { 'title':'Female', 'value':str(data_by_sex['2'])}
-    ]
-
-    result_by_region['datasets'].append({'data': list(data_by_region.values())})
+    male = int(round((int(data_by_sex['1'])/ (int(data_by_sex['1']) + int(data_by_sex['2'])))*100, 0))
+    female = int(round((int(data_by_sex['2'])/ (int(data_by_sex['1']) + int(data_by_sex['2'])))*100, 0))
+    result_by_sex['datasets'].append({'data': [male, female]})
+    
     result_by_age['datasets'].append({'data': list(data_by_age.values())})
 
     logger.info('Suspects by region {}'.format(json.dumps(result_by_region)))
     logger.info('Suspects by sex {}'.format(json.dumps(result_by_sex)))
     logger.info('Suspects by age {}'.format(json.dumps(result_by_age)))
 
-    return (json.dumps(result_by_region), json.dumps(result_by_sex))
+    return (json.dumps(result_by_region), json.dumps(result_by_sex), json.dumps(result_by_age))
 
 def age_category(age):
     if age < 5:

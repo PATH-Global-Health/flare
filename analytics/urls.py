@@ -1,7 +1,6 @@
-from rest_framework import routers
+from django.conf.urls import url
 from .api import ReportView
 
-router = routers.DefaultRouter()
-router.register('api/report', ReportView, 'report')
-
-urlpatterns = router.urls
+urlpatterns = [
+    url('api/reports/', ReportView.as_view()),
+]
