@@ -72,50 +72,50 @@ enter_language:
     en: |
       Language:
       1. English
-      2. Amharic
-      3. Oromifa
-      4. Tigrigna
-      5. Somalinya
-      6. Afarigna
+      2. አማርኛ
+      3. Afaan Oromoo
+      4. ትግርኛ
+      5. Somali
+      6. Afar afa
     am: |
       ቋንቋ:
-      1. እንግሊዝኛ 
+      1. English
       2. አማርኛ
-      3. ኦሮምኛ
+      3. Afaan Oromoo
       4. ትግርኛ
-      5. ሶማልኛ
-      6. አፋርኛ
+      5. Somali
+      6. Afar afa
     or: |
       Afaan:
-      1. Afaan Engilizii
-      2. Afaan Amhaaraa
+      1. English
+      2. አማርኛ
       3. Afaan Oromoo
-      4. Afaan Tigiree
-      5. Afaan Somaalee
-      6. Afaan Afaarii
+      4. ትግርኛ
+      5. Somali
+      6. Afar afa
     ti: |
       ቋንቋ:
-      1. እንግሊዝኛ
-      2. ኣምሓርኛ
-      3. ኦሮሚኛ
+      1. English
+      2. አማርኛ
+      3. Afaan Oromoo
       4. ትግርኛ
-      5. ሶማልኛ
-      6. አፋርኛ
+      5. Somali
+      6. Afar afa
     so: |
       Xumad:
       1. English
-      2. Amharic
-      3. Oromo
-      4. Tigree
+      2. አማርኛ
+      3. Afaan Oromoo
+      4. ትግርኛ
       5. Somali
-      6. Anfar
+      6. Afar afa
     aa: |
       Af:
-      1. English afa
-      2. Amcari afa
-      3. Oromo afa
-      4. Tigre afa
-      5. Somali afa
+      1. English
+      2. አማርኛ
+      3. Afaan Oromoo
+      4. ትግርኛ
+      5. Somali
       6. Afar afa
   input_identifier: language
   next_screen: save_language
@@ -125,50 +125,50 @@ enter_language:
         en: |
           Language:
           1. English
-          2. Amharic
-          3. Oromifa
-          4. Tigrigna
-          5. Somalinya
-          6. Afarigna
+          2. አማርኛ
+          3. Afaan Oromoo
+          4. ትግርኛ
+          5. Somali
+          6. Afar afa
         am: |
           ቋንቋ:
-          1. እንግሊዝኛ 
+          1. English
           2. አማርኛ
-          3. ኦሮምኛ
+          3. Afaan Oromoo
           4. ትግርኛ
-          5. ሶማልኛ
-          6. አፋርኛ
+          5. Somali
+          6. Afar afa
         or: |
           Afaan:
-          1. Afaan Engilizii
-          2. Afaan Amhaaraa
+          1. English
+          2. አማርኛ
           3. Afaan Oromoo
-          4. Afaan Tigiree
-          5. Afaan Somaalee
-          6. Afaan Afaarii
+          4. ትግርኛ
+          5. Somali
+          6. Afar afa
         ti: |
           ቋንቋ:
-          1. እንግሊዝኛ
-          2. ኣምሓርኛ
-          3. ኦሮሚኛ
+          1. English
+          2. አማርኛ
+          3. Afaan Oromoo
           4. ትግርኛ
-          5. ሶማልኛ
-          6. አፋርኛ
+          5. Somali
+          6. Afar afa
         so: |
           Xumad:
           1. English
-          2. Amharic
-          3. Oromo
-          4. Tigree
+          2. አማርኛ
+          3. Afaan Oromoo
+          4. ትግርኛ
           5. Somali
-          6. Anfar
+          6. Afar afa
         aa: |
           Af:
-          1. English afa
-          2. Amcari afa
-          3. Oromo afa
-          4. Tigre afa
-          5. Somali afa
+          1. English
+          2. አማርኛ
+          3. Afaan Oromoo
+          4. ትግርኛ
+          5. Somali
           6. Afar afa
 
 save_language:
@@ -178,7 +178,7 @@ save_language:
   session_key: change_lang_success
   next_screen:
     - condition: change_lang_success == True
-      next_screen: show_lang_save_success_quit
+      next_screen: show_lang_save_success
 
 enter_fever:
   type: input_screen
@@ -867,15 +867,13 @@ show_quit:
     aa: |
       Gada geya!
 
-show_lang_save_success_quit:
-  type: quit_screen
-  text:
-    en: You have successfully changed the language. Please dial again.
-    am: ቋንቋዎን በትክክል ቀይረዋል። እባክዎ በድጋሚ ይደውሉ።
-    or: Afaan sirriitti geeddartee jirta. Erra deebyii bilbil.
-    ti: ቋንቋ ብትኽክል ቀይሮም እዮም፡፡ በይዘኦም ደጊሞም ይጠውቑ፡፡
-    so: Waad ku kuguulaysatay bedlida luuqada fafan markale garaac
-    aa: Af elle faximiyanal korseh. Ku maganak qagitay hayis.
+show_lang_save_success:
+  type: menu_screen
+  text: Success! Choose 1 to go back.
+  options:
+    - text: Back
+      next_screen: show_welcome
+      input_value: "1"
 
 show_lang_save_failed_quit:
   type: quit_screen

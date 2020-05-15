@@ -33,7 +33,7 @@ class GatewayCovid19View(UssdView):
 
         session_id = req.data['sessionId']
         language = redis_instance.get(req.data['phoneNumber'])
-       
+
         if req.data.get('use_built_in_session_management', False):
             session_id = None
         ussd_request = UssdRequest(
