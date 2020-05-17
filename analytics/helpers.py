@@ -41,7 +41,13 @@ def get_total_surveys():
 def get_total_survey_result():
     survey_result_count = 0
     try:
-        survey_result_count = SurveyResult.objects.filter(posted=True).count()
+        results = SurveyResult.objects.all()
+
+        for res in results:
+            if res.result != None:
+                r = yaml.load(res.result, Loader=yaml.FullLoader)
+                if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+                    survey_result_count += 1
         logger.info("{} total survey result".format(survey_result_count))
     except Exception as ex:
         logger.error(ex)
