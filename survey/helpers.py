@@ -1,5 +1,6 @@
 import os
 import yaml
+import json
 import logging
 from django.contrib.sessions.models import Session
 from .models import SurveyResult
@@ -7,6 +8,9 @@ from django.conf import settings
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+import requests
+from datetime import datetime
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +92,92 @@ def copy_incomplete_data_2_survey_results():
                 result.save()
         except Exception as ex:
             logger.log(ex)
-    
+
+def sync_survey_result_2_central_repo():
+    results = SurveyResult.objects.filter(posted=None, rejected=None)
+    for res in results:
+        if res.result != None:
+            r = yaml.load(res.result, Loader=yaml.FullLoader)
+            if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+                
+                data = {}
+
+                assign_value(r, data, "fever", "fever", {'1':True, '2': False})
+                assign_value(r, data, "cough", "cough", {'1':True, '2': False})
+                assign_value(r, data, "shortness_of_breath", "breathingDifficulty", {'1':True, '2': False})
+                assign_value(r, data, "sex", "sex", {'1':'male', '2': 'female'})
+                
+                if 'name' in r:
+                    name= r["name"].split()
+                    if name.__len__() > 0:
+                        data["firstName"] = name[0]
+                    if name.__len__() > 1:
+                        data["lastName"] = name[1]
+                
+                if 'age' in r:
+                    data["age"]: r['age']
+                
+                if 'phone_number' in r:
+                    data["PhoneNo"] = r['phone_number']
+                
+                assign_value(r, data, "region", "Region", {
+                    "1": "Afar",
+                    "2": "Amhara",
+                    "3": "Beneshangul Gumuz",
+                    "4": "Gambella",
+                    "5": "Oromiya",
+                    "6": "SNNP",
+                    "7": "Somali",
+                    "8": "Tigray",
+                    "9": "Diredawa",
+                    "10": "Addis Ababa",
+                    "11": "Harari"
+                })
+                assign_value(r, data, "travel_history", "TravleHx", {'1':True, '2': False})
+                assign_value(r, data, "has_contact", "HaveSex", {'1':True, '2': False})
+  
+                data["version"]=1
+                data["source"]="USSD"
+                data["formStatus"] = "Complete" if res.completed else "Incomplete"
+                
+                if "_ussd_airflow_last_updated" in r:
+                    data["callDate"] = format_date(r["_ussd_airflow_last_updated"])
+                
+                current_date_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.003Z")
+                data["createdDate"] = current_date_time
+                data["modifiedDate"] = current_date_time
+
+                response = requests.post(settings.CENTRAL_REPO_URL, data=json.dumps(data), auth=(settings.CENTRAL_REPO_USERNAME, settings.CENTRAL_REPO_PASSWORD))
+
+                logger.error(response.status_code)
+                
+                logger.error(json.dumps(data))
+                if response.status_code==200:
+                    res.posted = True
+                    res.save()
+                    logger.info('Data with phone number {} and session key {} is written to central repo.'.format(res.phone_number, res.session_id))
+                else:
+                    logger.error('Unable to send data. phone number {} and session key {}'.format(res.phone_number, res.session_id))
+            else:
+                res.rejected = True
+                res.save()
+
+def assign_value(r, data, ussd_key, repo_key, values):
+    if ussd_key in r:
+        if r[ussd_key] in values.keys():
+            data[repo_key] = values[r[ussd_key]]
+            
+def format_date(d):
+    da = d.split(" ")
+    formatted_date = ""
+    if da.__len__() > 0:
+        formatted_date = da[0]
+    if da.__len__() > 1:
+        da = da[1].split(".")
+        if da.__len__() > 0:
+            formatted_date = "{}T{}.003Z".format(formatted_date, da[0])
+    return formatted_date
+        
 # def validate_ussd_journey(journey):
 
 #     if 'initialize_survey' not in journey:
