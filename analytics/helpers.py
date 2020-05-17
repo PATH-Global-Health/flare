@@ -87,8 +87,10 @@ def get_suspects_report():
 
     result_by_region['datasets'].append({'data': list(data_by_region.values())})
 
-    male = int(round((int(data_by_sex['1'])/ (int(data_by_sex['1']) + int(data_by_sex['2'])))*100, 0))
-    female = int(round((int(data_by_sex['2'])/ (int(data_by_sex['1']) + int(data_by_sex['2'])))*100, 0))
+    denominator = (int(data_by_sex['1']) + int(data_by_sex['2']))
+    if denominator <=0: denominator=1
+    male = int(round((int(data_by_sex['1'])/ denominator)*100, 0))
+    female = int(round((int(data_by_sex['2'])/ denominator)*100, 0))
     result_by_sex['datasets'].append({'data': [male, female]})
     
     result_by_age['datasets'].append({'data': list(data_by_age.values())})
