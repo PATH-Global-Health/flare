@@ -80,7 +80,7 @@ services:
       context: .
       dockerfile: ./nginx/Dockerfile
     ports:
-      - "80:6000"
+      - "80:8999"
     volumes:
       - ./staticfiles/admin:/usr/share/nginx/html/static/admin
       - ./staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
