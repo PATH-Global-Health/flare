@@ -11,6 +11,7 @@ from firebase_admin import db
 import requests
 from datetime import datetime
 from django.conf import settings
+from django.db import connection
 
 logger = logging.getLogger(__name__)
 
@@ -91,8 +92,48 @@ def copy_incomplete_data_2_survey_results():
                 result.completed = False
                 result.save()
         except Exception as ex:
-            logger.log(ex)
+            logger.info(ex)
 
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+                
+def check_missed_sessions_have_survey_data():
+    sql = """
+    SELECT session_key, completed 
+    FROM django_session 
+    LEFT JOIN survey_surveyresult 
+    ON session_key=session_id 
+    WHERE completed IS NULL;
+    """
+    session_keys = []
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        session_keys = dictfetchall(cursor)
+
+    for key in session_keys:
+        try:
+            session = Session.objects.filter(session_key=key['session_key']).first()
+            if session != None:
+                data = session.get_decoded()
+                r = yaml.load(str(data), Loader=yaml.FullLoader)
+                if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+                    if 'phone_number' in r:
+                        # TODO: Identify survey_id from the yaml data
+                        survey_result = SurveyResult(survey_id=1, session_id=key['session_key'], phone_number=r['phone_number'])
+                        survey_result.result = data
+                        survey_result.completed = False
+                        survey_result.save()
+        except Exception as ex:
+            logger.info(ex)
+
+def clear_session_database():
+    Session.objects.all().delete()
+    
 def sync_survey_result_2_central_repo():
     results = SurveyResult.objects.filter(posted=None, rejected=None)
     for res in results:
