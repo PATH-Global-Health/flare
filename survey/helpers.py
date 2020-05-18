@@ -172,7 +172,7 @@ def sync_survey_result_2_central_repo():
 
                     data = prep_data(r)
 
-                    response = requests.post(settings.CENTRAL_REPO_CI_URL, data=json.dumps(data), headers=headers)
+                    response = requests.post(settings.CENTRAL_REPO_CI_URL, json=json.loads(json.dumps(data)), headers=headers)
 
                     logger.error(response.status_code)
                     
@@ -183,6 +183,7 @@ def sync_survey_result_2_central_repo():
                         logger.info('Data with phone number {} and session key {} is written to central repo.'.format(res.phone_number, res.session_id))
                     else:
                         logger.error('Unable to send data. phone number {} and session key {}'.format(res.phone_number, res.session_id))
+                        logger.error(response.json())
                 else:
                     res.rejected = True
                     res.save()
