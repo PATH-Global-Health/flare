@@ -190,7 +190,12 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'survey.tasks.copy_incomplete_data_2_survey_results_task',
         # Execute every 10 munutes (10 minutes * 60 seconds)
         'schedule': 600.0,
-    },         
+    },  
+'clear-expired-session': {
+        'task': 'survey.tasks.clear_expired_session_task',
+        # Execute every 10 munutes (10 minutes * 60 seconds)
+        'schedule': 600.0,
+    },      
 }
 
 CHANNEL_LAYERS = {

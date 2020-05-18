@@ -12,6 +12,7 @@ import requests
 from datetime import datetime
 from django.conf import settings
 from django.db import connection
+from django.core import management
 
 logger = logging.getLogger(__name__)
 
@@ -131,8 +132,10 @@ def check_missed_sessions_have_survey_data():
         except Exception as ex:
             logger.info(ex)
 
-def clear_session_database():
-    Session.objects.all().delete()
+"""Cleanup expired sessions by using Django management command."""
+def clear_expired_session():
+    logger.info('---CLEAR EXPIRED SESSION----------------------------------')
+    management.call_command("clearsessions", verbosity=0)
     
 def sync_survey_result_2_central_repo():
     results = SurveyResult.objects.filter(posted=None, rejected=None)
