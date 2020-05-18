@@ -173,10 +173,7 @@ def sync_survey_result_2_central_repo():
                     data = prep_data(r)
 
                     response = requests.post(settings.CENTRAL_REPO_CI_URL, json=json.loads(json.dumps(data)), headers=headers)
-
-                    logger.error(response.status_code)
                     
-                    logger.error(json.dumps(data))
                     if response.status_code==200:
                         res.posted = True
                         res.save()
