@@ -21,7 +21,6 @@ import { Formik, Field, Form } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSurvey, editSurvey } from "../../store/actions";
-import randomString from "../../helpers/randomString";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,6 +1,9 @@
 {
   "name": "flare-frontend",
   "version": "0.1.0",
+  "description": "Flare frontend package",
+  "license": "MIT",
+  "author": "Belendia Serda <belendia@gmail.com>",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.12",
@@ -50,6 +53,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Belendia/flare-frontend.git"
   },
   "proxy": "http://localhost:5000"
 }

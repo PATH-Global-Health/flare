@@ -57,7 +57,7 @@ const TotalSubscribers = (props) => {
             >
               SUBSCRIBERS
             </Typography>
-            <Typography variant="h3">1,600</Typography>
+            <Typography variant="h3">{props.data}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -72,6 +72,7 @@ const TotalSubscribers = (props) => {
 
 TotalSubscribers.propTypes = {
   className: PropTypes.string,
+  data: PropTypes.string,
 };
 
 export default TotalSubscribers;

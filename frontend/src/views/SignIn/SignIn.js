@@ -96,7 +96,7 @@ const SignIn = (props) => {
           <div className={classes.quote}>
             <div className={classes.quoteInner}>
               <Typography className={classes.quoteText} variant="h1">
-                USSD based messaging system
+                USSD/SMS based surveying and messaging system
               </Typography>
               <div className={classes.person}>
                 <Typography variant="body1">

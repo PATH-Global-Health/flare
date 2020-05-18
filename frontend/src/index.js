@@ -14,6 +14,8 @@ import messageReducer from "./store/reducers/messageReducer";
 import channelReducer from "./store/reducers/channelReducer";
 import surveyReducer from "./store/reducers/surveyReducer";
 import resultReducer from "./store/reducers/resultReducer";
+import dashboardReducer from "./store/reducers/dashboardReducer";
+import userReducer from "./store/reducers/userReducer";
 
 const composeEnhancers =
   (process.env.NODE_ENV === "development"
@@ -28,6 +30,8 @@ const rootReducer = combineReducers({
   channel: channelReducer,
   survey: surveyReducer,
   result: resultReducer,
+  dashboard: dashboardReducer,
+  user: userReducer,
 });
 
 const store = createStore(

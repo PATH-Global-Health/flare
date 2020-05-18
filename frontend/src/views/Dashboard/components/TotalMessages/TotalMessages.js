@@ -57,7 +57,7 @@ const Messages = (props) => {
             >
               MESSAGES
             </Typography>
-            <Typography variant="h3">24,000</Typography>
+            <Typography variant="h3">{props.data}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -72,6 +72,7 @@ const Messages = (props) => {
 
 Messages.propTypes = {
   className: PropTypes.string,
+  data: PropTypes.string,
 };
 
 export default Messages;

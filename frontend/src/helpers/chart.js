@@ -1,20 +1,4 @@
-import palette from "../../../../theme/palette";
-
-export const data = {
-  labels: ["1 Aug", "2 Aug", "3 Aug", "4 Aug", "5 Aug", "6 Aug"],
-  datasets: [
-    {
-      label: "This year",
-      backgroundColor: palette.primary.main,
-      data: [18, 5, 19, 27, 29, 19, 20],
-    },
-    {
-      label: "Last year",
-      backgroundColor: palette.neutral,
-      data: [11, 20, 12, 29, 30, 25, 13],
-    },
-  ],
-};
+import palette from "../theme/palette";
 
 export const options = {
   responsive: true,
@@ -34,13 +18,10 @@ export const options = {
     footerFontColor: palette.text.secondary,
   },
   layout: { padding: 0 },
+
   scales: {
     xAxes: [
       {
-        barThickness: 12,
-        maxBarThickness: 10,
-        barPercentage: 0.5,
-        categoryPercentage: 0.5,
         ticks: {
           fontColor: palette.text.secondary,
         },

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/styles";
-import { Button, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { SearchInput } from "../../../../components";
@@ -65,9 +65,6 @@ const ResultsToolbar = (props) => {
           </IconButton>
         </div>
         <span className={classes.spacer} />
-        <Button color="primary" variant="contained" disabled={disableButtons}>
-          Export
-        </Button>
       </div>
       <div className={classes.row}>
         <SearchInput

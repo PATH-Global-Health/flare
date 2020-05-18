@@ -42,3 +42,7 @@ export {
   resetDeleteResultSuccess,
   deleteResult,
 } from "./resultActions";
+
+export { fetchDashboardData } from "./dashboardActions";
+
+export { fetchUser } from "./userActions";

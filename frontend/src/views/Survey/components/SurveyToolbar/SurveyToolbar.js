@@ -57,9 +57,6 @@ const SurveyToolbar = (props) => {
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button className={classes.exportButton} disabled={disableButtons}>
-          Export
-        </Button>
         <Button
           color="primary"
           variant="contained"

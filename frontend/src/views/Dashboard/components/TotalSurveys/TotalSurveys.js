@@ -49,7 +49,7 @@ const TotalSurveys = (props) => {
             >
               SURVEYS
             </Typography>
-            <Typography variant="h3">5</Typography>
+            <Typography variant="h3">{props.data}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -64,6 +64,7 @@ const TotalSurveys = (props) => {
 
 TotalSurveys.propTypes = {
   className: PropTypes.string,
+  data: PropTypes.string,
 };
 
 export default TotalSurveys;

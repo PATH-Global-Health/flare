@@ -106,7 +106,6 @@ const MessageRow = (props) => {
         {message.status && (
           <Chip
             icon={<InfoIcon className={c} />}
-            label="Primary clickable"
             clickable
             label={message.status}
             variant="outlined"

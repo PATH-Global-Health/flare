@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TotalRespondent = (props) => {
+const TotalSuspects = (props) => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -46,10 +46,10 @@ const TotalRespondent = (props) => {
               gutterBottom
               variant="body2"
             >
-              TOTAL RESPONDENTS
+              TOTAL SUSPECTS
             </Typography>
             <Typography color="inherit" variant="h3">
-              23,200
+              {props.data}
             </Typography>
           </Grid>
           <Grid item>
@@ -63,8 +63,9 @@ const TotalRespondent = (props) => {
   );
 };
 
-TotalRespondent.propTypes = {
+TotalSuspects.propTypes = {
   className: PropTypes.string,
+  data: PropTypes.string,
 };
 
-export default TotalRespondent;
+export default TotalSuspects;
