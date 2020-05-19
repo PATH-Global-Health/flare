@@ -5,9 +5,9 @@ import logging
 from django.contrib.sessions.models import Session
 from .models import SurveyResult
 from django.conf import settings
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
+# import firebase_admin
+# from firebase_admin import credentials
+# from firebase_admin import db
 import requests
 from datetime import datetime
 from django.conf import settings
