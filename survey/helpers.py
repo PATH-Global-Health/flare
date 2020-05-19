@@ -16,11 +16,11 @@ from django.core import management
 
 logger = logging.getLogger(__name__)
 
-service_key = os.path.join(settings.BASE_DIR, 'ServiceAccountKey.json')
-cred = credentials.Certificate(service_key)
-firebase_admin.initialize_app(cred, {
-    'databaseURL': "https://flare-9f285.firebaseio.com"
-})
+# service_key = os.path.join(settings.BASE_DIR, 'ServiceAccountKey.json')
+# cred = credentials.Certificate(service_key)
+# firebase_admin.initialize_app(cred, {
+#     'databaseURL': "https://flare-9f285.firebaseio.com"
+# })
 
 def read_journey(journey):
     journey.seek(0)
@@ -51,35 +51,35 @@ def mark_survey_result_complete(survey_pk, session_key, phone_number):
     except Exception as ex:
         logger.error(ex)
 
-def sync_survey_result_2_firebase():
-    ref = db.reference('covid19')
-    result_ref = ref.child('survey_result')
+# def sync_survey_result_2_firebase():
+#     ref = db.reference('covid19')
+#     result_ref = ref.child('survey_result')
 
-    results = SurveyResult.objects.filter(posted=None, rejected=None)
-    for res in results:
-        if res.result != None:
-            r = yaml.load(res.result, Loader=yaml.FullLoader)
-            if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
-                result_ref.child("{}".format(res.id)).set({
-                    'phone_number': res.phone_number,
-                    'session_key': res.session_id,
-                    'fever': r['fever'],
-                    'cough': r['cough'],
-                    'shortness_of_breath': r['shortness_of_breath'],
-                    'name': r['name'],
-                    'age': r['age'],
-                    'sex': r['sex'],
-                    'region': r['region'],
-                    'travel_history': r['travel_history'],
-                    'has_contact': r['has_contact'],
-                    'last_updated': r['_ussd_airflow_last_updated']
-                })
-                res.posted = True
-                res.save()
-                logger.info('Data with phone number {} and session key {} is written to firebase.'.format(res.phone_number, res.session_id))
-            else:
-                res.rejected = True
-                res.save()
+#     results = SurveyResult.objects.filter(posted=None, rejected=None)
+#     for res in results:
+#         if res.result != None:
+#             r = yaml.load(res.result, Loader=yaml.FullLoader)
+#             if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+#                 result_ref.child("{}".format(res.id)).set({
+#                     'phone_number': res.phone_number,
+#                     'session_key': res.session_id,
+#                     'fever': r['fever'],
+#                     'cough': r['cough'],
+#                     'shortness_of_breath': r['shortness_of_breath'],
+#                     'name': r['name'],
+#                     'age': r['age'],
+#                     'sex': r['sex'],
+#                     'region': r['region'],
+#                     'travel_history': r['travel_history'],
+#                     'has_contact': r['has_contact'],
+#                     'last_updated': r['_ussd_airflow_last_updated']
+#                 })
+#                 res.posted = True
+#                 res.save()
+#                 logger.info('Data with phone number {} and session key {} is written to firebase.'.format(res.phone_number, res.session_id))
+#             else:
+#                 res.rejected = True
+#                 res.save()
 
 def copy_incomplete_data_2_survey_results():
     results = SurveyResult.objects.filter(result=None)
@@ -161,29 +161,31 @@ def get_auth_header():
         return (False, None)
     
 def sync_survey_result_2_central_repo():
-    auth = get_auth_header()
-    if auth[0]:
+    
+    results = SurveyResult.objects.filter(posted=None, rejected=None)
+    if results.count()>0:
+        auth = get_auth_header()
         headers={'Authorization': 'Bearer {}'.format(auth[1])}
-        results = SurveyResult.objects.filter(posted=None, rejected=None)
-        for res in results:
-            if res.result != None:
-                r = yaml.load(res.result, Loader=yaml.FullLoader)
-                if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+        if auth[0]:
+            for res in results:
+                if res.result != None:
+                    r = yaml.load(res.result, Loader=yaml.FullLoader)
+                    if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
 
-                    data = prep_data(r)
+                        data = prep_data(r)
 
-                    response = requests.post(settings.CENTRAL_REPO_CI_URL, json=json.loads(json.dumps(data)), headers=headers)
-                    
-                    if response.status_code==200:
-                        res.posted = True
-                        res.save()
-                        logger.info('Data with phone number {} and session key {} is written to central repo.'.format(res.phone_number, res.session_id))
+                        response = requests.post(settings.CENTRAL_REPO_CI_URL, json=json.loads(json.dumps(data)), headers=headers)
+                        
+                        if response.status_code==200:
+                            res.posted = True
+                            res.save()
+                            logger.info('Data with phone number {} and session key {} is written to central repo.'.format(res.phone_number, res.session_id))
+                        else:
+                            logger.error('Unable to send data. phone number {} and session key {}'.format(res.phone_number, res.session_id))
+                            logger.error(response.json())
                     else:
-                        logger.error('Unable to send data. phone number {} and session key {}'.format(res.phone_number, res.session_id))
-                        logger.error(response.json())
-                else:
-                    res.rejected = True
-                    res.save()
+                        res.rejected = True
+                        res.save()
 
 def prep_data(r):
     data = {}
@@ -196,8 +198,13 @@ def prep_data(r):
         name= r["name"].split()
         if name.__len__() > 0:
             data["firstName"] = name[0]
+        else:
+            data["firstName"] = ""
+            
         if name.__len__() > 1:
             data["lastName"] = name[1]
+        else:
+            data["lastName"] = ""
     
     if 'age' in r:
         data["age"]: r['age']
