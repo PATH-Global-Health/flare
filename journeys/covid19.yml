@@ -71,52 +71,52 @@ enter_language:
   text:
     en: |
       Language:
-      1. English
-      2. አማርኛ
-      3. Afaan Oromoo
-      4. ትግርኛ
-      5. Somali
-      6. Afar afa
+      1. አማርኛ
+      2. Afaan Oromoo
+      3. ትግርኛ
+      4. Somali
+      5. Afar afa
+      6. English
     am: |
       ቋንቋ:
-      1. English
-      2. አማርኛ
-      3. Afaan Oromoo
-      4. ትግርኛ
-      5. Somali
-      6. Afar afa
+      1. አማርኛ
+      2. Afaan Oromoo
+      3. ትግርኛ
+      4. Somali
+      5. Afar afa
+      6. English
     or: |
       Afaan:
-      1. English
-      2. አማርኛ
-      3. Afaan Oromoo
-      4. ትግርኛ
-      5. Somali
-      6. Afar afa
+      1. አማርኛ
+      2. Afaan Oromoo
+      3. ትግርኛ
+      4. Somali
+      5. Afar afa
+      6. English
     ti: |
       ቋንቋ:
-      1. English
-      2. አማርኛ
-      3. Afaan Oromoo
-      4. ትግርኛ
-      5. Somali
-      6. Afar afa
+      1. አማርኛ
+      2. Afaan Oromoo
+      3. ትግርኛ
+      4. Somali
+      5. Afar afa
+      6. English
     so: |
       Xumad:
-      1. English
-      2. አማርኛ
-      3. Afaan Oromoo
-      4. ትግርኛ
-      5. Somali
-      6. Afar afa
+      1. አማርኛ
+      2. Afaan Oromoo
+      3. ትግርኛ
+      4. Somali
+      5. Afar afa
+      6. English
     aa: |
       Af:
-      1. English
-      2. አማርኛ
-      3. Afaan Oromoo
-      4. ትግርኛ
-      5. Somali
-      6. Afar afa
+      1. አማርኛ
+      2. Afaan Oromoo
+      3. ትግርኛ
+      4. Somali
+      5. Afar afa
+      6. English
   input_identifier: language
   next_screen: save_language
   validators:
@@ -124,52 +124,52 @@ enter_language:
       text:
         en: |
           Language:
-          1. English
-          2. አማርኛ
-          3. Afaan Oromoo
-          4. ትግርኛ
-          5. Somali
-          6. Afar afa
+          1. አማርኛ
+          2. Afaan Oromoo
+          3. ትግርኛ
+          4. Somali
+          5. Afar afa
+          6. English
         am: |
           ቋንቋ:
-          1. English
-          2. አማርኛ
-          3. Afaan Oromoo
-          4. ትግርኛ
-          5. Somali
-          6. Afar afa
+          1. አማርኛ
+          2. Afaan Oromoo
+          3. ትግርኛ
+          4. Somali
+          5. Afar afa
+          6. English
         or: |
           Afaan:
-          1. English
-          2. አማርኛ
-          3. Afaan Oromoo
-          4. ትግርኛ
-          5. Somali
-          6. Afar afa
+          1. አማርኛ
+          2. Afaan Oromoo
+          3. ትግርኛ
+          4. Somali
+          5. Afar afa
+          6. English
         ti: |
           ቋንቋ:
-          1. English
-          2. አማርኛ
-          3. Afaan Oromoo
-          4. ትግርኛ
-          5. Somali
-          6. Afar afa
+          1. አማርኛ
+          2. Afaan Oromoo
+          3. ትግርኛ
+          4. Somali
+          5. Afar afa
+          6. English
         so: |
           Xumad:
-          1. English
-          2. አማርኛ
-          3. Afaan Oromoo
-          4. ትግርኛ
-          5. Somali
-          6. Afar afa
+          1. አማርኛ
+          2. Afaan Oromoo
+          3. ትግርኛ
+          4. Somali
+          5. Afar afa
+          6. English
         aa: |
           Af:
-          1. English
-          2. አማርኛ
-          3. Afaan Oromoo
-          4. ትግርኛ
-          5. Somali
-          6. Afar afa
+          1. አማርኛ
+          2. Afaan Oromoo
+          3. ትግርኛ
+          4. Somali
+          5. Afar afa
+          6. English
 
 save_language:
   type: function_screen
@@ -869,7 +869,7 @@ show_quit:
 
 show_lang_save_success:
   type: menu_screen
-  text: Success! Choose 1 to go back.
+  text: ተሳክቷል! ለመመለስ 1 ያስገቡ።
   options:
     - text: Back
       next_screen: show_welcome
