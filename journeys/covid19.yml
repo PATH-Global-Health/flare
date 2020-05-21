@@ -871,7 +871,7 @@ show_lang_save_success:
   type: menu_screen
   text: ተሳክቷል! ለመመለስ 1 ያስገቡ።
   options:
-    - text: Back
+    - text: ተመለስ
       next_screen: show_welcome
       input_value: "1"
 
