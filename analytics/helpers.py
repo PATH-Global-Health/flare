@@ -86,7 +86,12 @@ def get_suspects_report():
                 if 'sex' in r:
                     data_by_sex[r['sex']] += 1
                 if 'age' in r:
-                    data_by_age[age_category(int(r['age']))] += 1
+                    age = r['age']
+                    try:
+                        age = int(age)
+                        data_by_age[age_category(age)] += 1
+                    except:
+                        logger.error("Age {} is not a number")
 
     result_by_region['datasets'].append({'data': list(data_by_region.values())})
 
