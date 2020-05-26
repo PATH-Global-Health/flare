@@ -9,7 +9,7 @@ from django.conf import settings
 # from firebase_admin import credentials
 # from firebase_admin import db
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.db import connection
 from django.core import management
@@ -122,7 +122,9 @@ def check_missed_sessions_have_survey_data():
             if session != None:
                 data = session.get_decoded()
                 r = yaml.load(str(data), Loader=yaml.FullLoader)
-                if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+                if (('fever' in r and r['fever']=='1') or 
+                    ('cough' in r and r['cough']=='1') or 
+                    ('shortness_of_breath' in r and r['shortness_of_breath']=='1')):
                     if 'phone_number' in r:
                         # TODO: Identify survey_id from the yaml data
                         survey_result = SurveyResult(survey_id=1, session_id=key['session_key'], phone_number=r['phone_number'])
@@ -161,8 +163,9 @@ def get_auth_header():
         return (False, None)
     
 def sync_survey_result_2_central_repo():
-    
-    results = SurveyResult.objects.filter(posted=None, rejected=None)
+    # Sync only those rows which are not posted, rejected and older than 10 minutes
+    time_threshold = datetime.now() - timedelta(minutes=10)
+    results = SurveyResult.objects.filter(created_at__lt = time_threshold, posted=None, rejected=None)
     if results.count()>0:
         auth = get_auth_header()
         headers={'Authorization': 'Bearer {}'.format(auth[1])}
@@ -170,7 +173,10 @@ def sync_survey_result_2_central_repo():
             for res in results:
                 if res.result != None:
                     r = yaml.load(res.result, Loader=yaml.FullLoader)
-                    if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1') or ('region' in r):
+                    if ((('fever' in r and r['fever']=='1') or 
+                        ('cough' in r and r['cough']=='1') or 
+                        ('shortness_of_breath' in r and r['shortness_of_breath']=='1')) and 
+                        ('region' in r and is_region_valid(r['region']))):
 
                         data = prep_data(r)
 
@@ -182,17 +188,33 @@ def sync_survey_result_2_central_repo():
                             logger.info('Data with phone number {} and session key {} is written to central repo.'.format(res.phone_number, res.session_id))
                         else:
                             logger.error('Unable to send data. phone number {} and session key {}'.format(res.phone_number, res.session_id))
+                            logger.error(json.loads(json.dumps(data)))
                             logger.error(response.json())
                     else:
                         res.rejected = True
                         res.save()
+
+REGIONS = {
+    "1": "Afar",
+    "2": "Amhara",
+    "3": "Beneshangul Gumuz",
+    "4": "Gambella",
+    "5": "Oromiya",
+    "6": "SNNP",
+    "7": "Somali",
+    "8": "Tigray",
+    "9": "Diredawa",
+    "10": "Addis Ababa",
+    "11": "Harari"
+}
+
 
 def prep_data(r):
     data = {}
     assign_value(r, data, "fever", "fever", {'1':True, '2': False})
     assign_value(r, data, "cough", "cough", {'1':True, '2': False})
     assign_value(r, data, "shortness_of_breath", "breathingDifficulty", {'1':True, '2': False})
-    assign_value(r, data, "sex", "sex", {'1':'male', '2': 'female'})
+    assign_value(r, data, "sex", "sex", {'1':'male', '2': 'female'}, "")
     
     if 'name' in r:
         name = r["name"].split()
@@ -211,25 +233,11 @@ def prep_data(r):
     
     if 'age' in r:
         data["age"] = r['age']
-    else:
-        data["age"] = ""
     
     if 'phone_number' in r:
         data["PhoneNo"] = r['phone_number']
     
-    assign_value(r, data, "region", "Region", {
-        "1": "Afar",
-        "2": "Amhara",
-        "3": "Beneshangul Gumuz",
-        "4": "Gambella",
-        "5": "Oromiya",
-        "6": "SNNP",
-        "7": "Somali",
-        "8": "Tigray",
-        "9": "Diredawa",
-        "10": "Addis Ababa",
-        "11": "Harari"
-    })
+    assign_value(r, data, "region", "Region", REGIONS)
     assign_value(r, data, "travel_history", "TravleHx", {'1':True, '2': False})
     assign_value(r, data, "has_contact", "HaveSex", {'1':True, '2': False})
 
@@ -247,13 +255,21 @@ def prep_data(r):
         data["callDate"] = current_date_time
     
     return data
+
+
+def is_region_valid(region):
+    if region in REGIONS.keys():
+        return True
     
-def assign_value(r, data, ussd_key, repo_key, values):
+    return False
+
+
+def assign_value(r, data, ussd_key, repo_key, values, default = None):
     if ussd_key in r:
         if r[ussd_key] in values.keys():
             data[repo_key] = values[r[ussd_key]]
-        else:
-            data[repo_key] = ""
+        elif default != None:
+            data[repo_key] = default
             
 def format_date(d):
     da = d.split(" ")

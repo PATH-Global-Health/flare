@@ -6,6 +6,8 @@ from subscriber.models import Subscriber
 from survey.models import Survey, SurveyResult
 from collections import OrderedDict
 
+from survey.helpers import is_region_valid
+
 logger = logging.getLogger(__name__)
 
 def get_total_messages():
@@ -46,7 +48,10 @@ def get_total_survey_result():
         for res in results:
             if res.result != None:
                 r = yaml.load(res.result, Loader=yaml.FullLoader)
-                if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
+                if ((('fever' in r and r['fever']=='1') or 
+                    ('cough' in r and r['cough']=='1') or 
+                    ('shortness_of_breath' in r and r['shortness_of_breath']=='1')) and 
+                    ('region' in r and is_region_valid(r['region']))):
                     survey_result_count += 1
         logger.info("{} total survey result".format(survey_result_count))
     except Exception as ex:
