@@ -171,9 +171,9 @@ def sync_survey_result_2_central_repo():
                 if res.result != None:
                     r = yaml.load(res.result, Loader=yaml.FullLoader)
                     if ('fever' in r and r['fever']=='1') or 
-                    ('cough' in r and r['cough']=='1') or 
-                    ('shortness_of_breath' in r and r['shortness_of_breath']=='1') or
-                    ('region' in r):
+                        ('cough' in r and r['cough']=='1') or 
+                        ('shortness_of_breath' in r and r['shortness_of_breath']=='1') or 
+                        ('region' in r):
 
                         data = prep_data(r)
 
