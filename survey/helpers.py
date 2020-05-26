@@ -195,7 +195,7 @@ def prep_data(r):
     assign_value(r, data, "sex", "sex", {'1':'male', '2': 'female'})
     
     if 'name' in r:
-        name= r["name"].split()
+        name = r["name"].split()
         if name.__len__() > 0:
             data["firstName"] = name[0]
         else:
@@ -205,9 +205,14 @@ def prep_data(r):
             data["lastName"] = name[1]
         else:
             data["lastName"] = ""
+    else:
+        data["firstName"] = ""
+        data["lastName"] = ""
     
     if 'age' in r:
-        data["age"]: r['age']
+        data["age"] = r['age']
+    else:
+        data["age"] = ""
     
     if 'phone_number' in r:
         data["PhoneNo"] = r['phone_number']
@@ -232,12 +237,14 @@ def prep_data(r):
     data["source"]="USSD"
     data["formStatus"] = "Incomplete"
     
-    if "_ussd_airflow_last_updated" in r:
-        data["callDate"] = format_date(r["_ussd_airflow_last_updated"])
-    
     current_date_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.003Z")
     data["createdDate"] = current_date_time
     data["modifiedDate"] = current_date_time
+    
+    if "_ussd_airflow_last_updated" in r:
+        data["callDate"] = format_date(r["_ussd_airflow_last_updated"])
+    else:
+        data["callDate"] = current_date_time
     
     return data
     
@@ -245,6 +252,8 @@ def assign_value(r, data, ussd_key, repo_key, values):
     if ussd_key in r:
         if r[ussd_key] in values.keys():
             data[repo_key] = values[r[ussd_key]]
+        else:
+            data[repo_key] = ""
             
 def format_date(d):
     da = d.split(" ")
