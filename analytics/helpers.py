@@ -81,9 +81,12 @@ def get_suspects_report():
         if res.result != None:
             r = yaml.load(res.result, Loader=yaml.FullLoader)
             if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
-                data_by_region[r['region']] += 1
-                data_by_sex[r['sex']] += 1
-                data_by_age[age_category(int(r['age']))] += 1
+                if 'region' in r:
+                    data_by_region[r['region']] += 1
+                if 'sex' in r:
+                    data_by_sex[r['sex']] += 1
+                if 'age' in r:
+                    data_by_age[age_category(int(r['age']))] += 1
 
     result_by_region['datasets'].append({'data': list(data_by_region.values())})
 
