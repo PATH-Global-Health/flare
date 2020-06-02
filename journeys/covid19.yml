@@ -1,4 +1,22 @@
-initial_screen: show_welcome
+initial_screen:
+  type: initial_screen
+  next_screen: show_welcome
+  pagination_config:
+    ussd_text_limit: 90
+    more_option:
+      en: next
+      am: next
+      or: next
+      ti: next
+      so: next
+      aa: next
+    back_option:
+      en: back
+      am: back
+      or: back
+      ti: back
+      so: back
+      aa: back
 
 show_welcome:
   type: input_screen
@@ -8,7 +26,7 @@ show_welcome:
       1. Community-based registration
       2. Change language
     am: |
-      አንኳን ወደ ጤና ሚኒስቴር በደህና መጡ:
+      እንኳን ወደ ጤና ሚኒስቴር በደህና መጡ:
       1. በማህበረሰብ ላይ የተመሠረተ ምዝገባ
       2. ቋንቋ ለመቀየር
     or: |
