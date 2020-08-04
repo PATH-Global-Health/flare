@@ -1,22 +1,4 @@
-initial_screen:
-  type: initial_screen
-  next_screen: show_welcome
-  pagination_config:
-    ussd_text_limit: 90
-    more_option:
-      en: next
-      am: next
-      or: next
-      ti: next
-      so: next
-      aa: next
-    back_option:
-      en: back
-      am: back
-      or: back
-      ti: back
-      so: back
-      aa: back
+initial_screen: show_welcome
 
 show_welcome:
   type: input_screen
