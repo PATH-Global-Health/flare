@@ -1,6 +1,0 @@
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/Belendia/flare-frontend.git
-[submodule "nginx"]
-	path = nginx
-	url = https://github.com/Belendia/nginx.git
