@@ -1,4 +1,22 @@
-initial_screen: show_welcome
+initial_screen:
+  type: initial_screen
+  next_screen: show_welcome
+  pagination_config:
+    ussd_text_limit: 70
+    more_option:
+      en: next
+      am: next
+      or: next
+      ti: next
+      so: next
+      aa: next
+    back_option:
+      en: back
+      am: back
+      or: back
+      ti: back
+      so: back
+      aa: back
 
 show_welcome:
   type: input_screen
@@ -477,249 +495,37 @@ enter_sex:
           2. Sayih
 
 enter_region:
-  type: input_screen
+  type: menu_screen
   text:
     en: |
       Region:
-        1. Afar
-        2. Amhara
-        3. Beneshangul Gumuz 
-        4. Gambella
-        5. Oromiya
-        6. SNNP
-        7. Somali
-        8. Tigray
-        9. Diredawa
-        10. Addis Ababa
-        11. Harari
     am: |
       ክልል:
-        1. አፋር
-        2. አማራ
-        3. ቤኒሻንጉል ጉምዝ 
-        4. ጋምቤላ
-        5. ኦሮሚያ
-        6. ደቡብ ህዝቦች
-        7. ሶማሊ
-        8. ትግራይ
-        9. ድሬዳዋ
-        10. አዲስ አበባ
-        11. ሀረሪ
     or: |
       Naannoo:
-        1. Afaar
-        2. Amhaara
-        3. Beenshaangul Gumiz
-        4. Gambeellaa
-        5. Oromiyaa
-        6. Naannoo Ummata Kibbaa
-        7. Somalee
-        8. Tigiraay
-        9. Dire Dhawa
-        10. Finfinnee
-        11. Harari
     ti: |
       ክልል:
-        1.	ዓፋር
-        2.	ኣምሓራ
-        3.	ቤንሻንጉል ጉሙዝ
-        4.	ጋምቤላ
-        5.	ኦሮሚያ
-        6.	ብሄር ብሄረሰባትን ህዝብታትን ደቡብ
-        7.	ሶማሊ
-        8.	ትግራይ
-        9.	ድሬዳዋ
-        10.	ኣዲስ ኣበባ
-        11.	ሃረሪ
     so: |
       Deegaanka:
-        1. Anfar
-        2. Amhara
-        3. Beninshagul humus
-        4. Gambela
-        5. Oromiya
-        6. SNNP
-        7. Somali
-        8. Tigre
-        9. Diredawa
-        10. Adis ababa
-        11. Harari
     aa: |
       Rakaakay:
-        1. Qafar 
-        2. Amhara 
-        3. Benisangul gumz
-        4. Gambela
-        5. Oromiya
-        6. Dabub beher beher 
-        7. Somali 
-        8. Tigray 
-        9. Dirdawa 
-        10. Adisaba 
-        11. Harari
-  input_identifier: region
-  next_screen: enter_travel_history
-  validators:
-    - regex: ^[0-9]{1,2}$
-      text:
-        en: |
-          Region: (Only nubers are allowed)
-            1. Afar
-            2. Amhara
-            3. Beneshangul Gumuz 
-            4. Gambella
-            5. Oromiya
-            6. SNNP
-            7. Somali
-            8. Tigray
-            9. Diredawa
-            10. Addis Ababa
-            11. Harari
-        am: |
-          ክልል: (ቁጥር ብቻ ያስገቡ)
-            1. አፋር
-            2. አማራ
-            3. ቤኒሻንጉል ጉምዝ 
-            4. ጋምቤላ
-            5. ኦሮሚያ
-            6. ደቡብ ህዝቦች
-            7. ሶማሊ
-            8. ትግራይ
-            9. ድሬዳዋ
-            10. አዲስ አበባ
-            11. ሀረሪ
-        or: |
-          Naannoo: (Lakk qofatu eyyamama)
-            1. Afaar
-            2. Amhaara
-            3. Beenshaangul Gumiz
-            4. Gambeellaa
-            5. Oromiyaa
-            6. Naannoo Ummata Kibbaa
-            7. Somalee
-            8. Tigiraay
-            9. Dire Dhawa
-            10. Finfinnee
-            11. Harari
-        ti: |
-          ክልል: (ቁፅሪ ጥራይ የእትዉ)
-            1.	ዓፋር
-            2.	ኣምሓራ
-            3.	ቤንሻንጉል ጉሙዝ
-            4.	ጋምቤላ
-            5.	ኦሮሚያ
-            6.	ብሄር ብሄረሰባትን ህዝብታትን ደቡብ
-            7.	ሶማሊ
-            8.	ትግራይ
-            9.	ድሬዳዋ
-            10.	ኣዲስ ኣበባ
-            11.	ሃረሪ
-        so: |
-          Deegaanka: (lanbar kalita ayaa laogolyahay)
-            1. Anfar
-            2. Amhara
-            3. Beninshagul humus
-            4. Gambela
-            5. Oromiya
-            6.  SNNP
-            7. Somali
-            8. Tigre
-            9. Diredawa
-            10. Adis ababa
-            11. Harari
-        aa: |
-          Rakaakay: (lowo dibuk utkub)
-            1. Qafar 
-            2. Amhara 
-            3. Benisangul gumz
-            4. Gambela
-            5. Oromiya
-            6. Dabub beher beher 
-            7. Somali 
-            8. Tigray 
-            9. Dirdawa 
-            10. Adisaba 
-            11. Harari
-    - expression: ussd_request.input|int >= 1 and ussd_request.input|int <= 11
-      text:
-        en: |
-          Region: (1 - 11)
-            1. Afar
-            2. Amhara
-            3. Beneshangul Gumuz 
-            4. Gambella
-            5. Oromiya
-            6. SNNP
-            7. Somali
-            8. Tigray
-            9. Diredawa
-            10. Addis Ababa
-            11. ሀረሪ
-        am: |
-          ክልል: (1 - 11)
-            1. አፋር
-            2. አማራ
-            3. ቤኒሻንጉል ጉምዝ 
-            4. ጋምቤላ
-            5. ኦሮሚያ
-            6. ደቡብ ህዝቦች
-            7. ሶማሊ
-            8. ትግራይ
-            9. ድሬዳዋ
-            10. አዲስ አበባ
-            11. Harari
-        or: |
-          Naannoo: (1 - 11)
-            1. Afaar
-            2. Amhaara
-            3. Beenshaangul Gumiz
-            4. Gambeellaa
-            5. Oromiyaa
-            6. Naannoo Ummata Kibbaa
-            7. Somalee
-            8. Tigiraay
-            9. Dire Dhawa
-            10. Finfinnee
-            11. Harari
-        ti: |
-          ክልል: (1 - 11)
-            1.	ዓፋር
-            2.	ኣምሓራ
-            3.	ቤንሻንጉል ጉሙዝ
-            4.	ጋምቤላ
-            5.	ኦሮሚያ
-            6.	ብሄር ብሄረሰባትን ህዝብታትን ደቡብ
-            7.	ሶማሊ
-            8.	ትግራይ
-            9.	ድሬዳዋ
-            10.	ኣዲስ ኣበባ
-            11.	ሃረሪ
-        so: |
-          Deegaanka: (1 - 11)
-            1. Anfar
-            2. Amhara
-            3. Beninshagul humus
-            4. Gambela
-            5. Oromiya
-            6.  SNNP
-            7. Somali
-            8. Tigre
-            9. Diredawa
-            10. Adis ababa
-            11. Harari
-        aa: |
-          Rakaakay: (1 - 11)
-            1. Qafar 
-            2. Amhara 
-            3. Benisangul gumz
-            4. Gambela
-            5. Oromiya
-            6. Dabub beher beher 
-            7. Somali 
-            8. Tigray 
-            9. Dirdawa 
-            10. Adisaba 
-            11. Harari
+  items:
+    text: "{{item}}"
+    value: "{{item}}"
+    next_screen: enter_travel_history
+    session_key: region
+    with_items:
+      - አፋር
+      - አማራ
+      - ቤኒሻንጉል ጉምዝ
+      - ጋምቤላ
+      - ኦሮሚያ
+      - ደቡብ ህዝቦች
+      - ሶማሊ
+      - ትግራይ
+      - ድሬዳዋ
+      - አዲስ አበባ
+      - ሀረሪ
 
 enter_travel_history:
   type: input_screen
