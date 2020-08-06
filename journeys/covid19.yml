@@ -510,22 +510,22 @@ enter_region:
     aa: |
       Rakaakay:
   items:
-    text: "{{item}}"
-    value: "{{item}}"
+    text: "{{value}}"
+    value: "{{key}}"
     next_screen: enter_travel_history
     session_key: region
-    with_items:
-      - አፋር
-      - አማራ
-      - ቤኒሻንጉል ጉምዝ
-      - ጋምቤላ
-      - ኦሮሚያ
-      - ደቡብ ህዝቦች
-      - ሶማሊ
-      - ትግራይ
-      - ድሬዳዋ
-      - አዲስ አበባ
-      - ሀረሪ
+    with_dict:
+      "1": አፋር
+      "2": አማራ
+      "3": ቤኒሻንጉል ጉምዝ
+      "4": ጋምቤላ
+      "5": ኦሮሚያ
+      "6": ደቡብ ህዝቦች
+      "7": ሶማሊ
+      "8": ትግራይ
+      "9": ድሬዳዋ
+      "10": አዲስ አበባ
+      "11": ሀረሪ
 
 enter_travel_history:
   type: input_screen
