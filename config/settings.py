@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'knox',
-    'channels',
     'django_celery_beat',
 ]
 
