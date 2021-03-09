@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'subscriber',
     'accounts',
     'analytics',
-    'ussd.apps.UssdConfig',
+    'ussd',
     'rest_framework',
     'corsheaders',
     'knox',
