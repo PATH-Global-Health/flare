@@ -8,8 +8,8 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_ENV dev
 ENV DOCKER_CONTAINER 1
 
-COPY ./ussd_be /code
-#ADD ./ussd_be/requirements.txt /code/requirements.txt
+COPY ./flare_backend /code
+#ADD ./flare_backend/requirements.txt /code/requirements.txt
 RUN pip install -r /code/requirements.txt
 
 WORKDIR /code/
