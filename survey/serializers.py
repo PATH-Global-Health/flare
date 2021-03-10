@@ -1,35 +1,35 @@
 import json
 import logging
 from rest_framework import serializers
-from ussd.core import UssdView
+from ussd.core import UssdEngine
 from .models import Survey, SurveyResult
-from .helpers import read_journey #, validate_ussd_journey, get_survey_endpoint_and_id
+from .helpers import read_journey  # , validate_ussd_journey, get_survey_endpoint_and_id
 
 logger = logging.getLogger(__name__)
 
-def validate_yaml(value):
 
+def validate_yaml(value):
     try:
         journey = read_journey(value['journeys'])
-        is_valid, errors = UssdView.validate_ussd_journey(journey)
+        is_valid, errors = UssdEngine.validate_ussd_journey(journey)
 
         # validate the existance and form of a custom defined initialize_survey screen
         # if is_valid:
         #     is_valid, errors = validate_ussd_journey(journey)
     except Exception as ex:
         logger.error(ex)
-        raise serializers.ValidationError({"journeys":["The yaml file is invalid."]})
+        raise serializers.ValidationError({"journeys": ["The yaml file is invalid."]})
 
-    if(not(is_valid)):
-        raise serializers.ValidationError({"journeys":[json.dumps(errors)]})
+    if not is_valid:
+        raise serializers.ValidationError({"journeys": [json.dumps(errors)]})
+
 
 class SurveySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'published', 'journeys') #, 'endpoint', 'survey_id')
-        validators = [ validate_yaml ]
-        
+        fields = ('id', 'title', 'published', 'journeys')  # , 'endpoint', 'survey_id')
+        validators = [validate_yaml]
+
     # def to_internal_value(self, data):
     #     # assign endpoint and survey_id by reading from the uploaded file
     #     # TODO:
@@ -48,6 +48,5 @@ class SurveySerializer(serializers.ModelSerializer):
 class SurveyResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResult
-        fields = ('id', 'survey','phone_number', 'session_id', 'result', 'completed', 'rejected', 'posted')
+        fields = ('id', 'survey', 'phone_number', 'session_id', 'result', 'completed', 'rejected', 'posted')
         read_only_fields = ('posted', 'completed', 'rejected')
-        
