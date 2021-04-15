@@ -212,9 +212,6 @@ REDIS_PORT = env.int('REDIS_PORT', 6379)
 ADMINS = (
     ('admin', 'admin@example.com'),
 )
-ADMIN_USERNAME = 'admin'
-ADMIN_EMAIL = 'admin@example.com'
-ADMIN_INITIAL_PASSWORD = 'admin'
 
 CENTRAL_REPO_AUTH_URL = env.str('CENTRAL_REPO_AUTH_URL', None)
 CENTRAL_REPO_CI_URL = env.str('CENTRAL_REPO_CI_URL', None)
