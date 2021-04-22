@@ -176,19 +176,19 @@ CELERY_BEAT_SCHEDULE = {
         # Executes every 30 minutes (30 minutes * 60 seconds)
         'schedule': 1800.0,
     },
-    'generat-report': {
+    'generate-report': {
         'task': 'analytics.tasks.generate_report',
         # Executes every 1 day (24 hrs * 60 minutes * 60 seconds)
         'schedule': 86400.0,
     },
     'copy-incomplete-data-2-survey-results': {
         'task': 'survey.tasks.copy_incomplete_data_2_survey_results_task',
-        # Execute every 30 munutes (30 minutes * 60 seconds)
+        # Execute every 30 minutes (30 minutes * 60 seconds)
         'schedule': 1800.0,
     },
     'clear-expired-session': {
         'task': 'survey.tasks.clear_expired_session_task',
-        # Execute every 10 munutes (10 minutes * 60 seconds)
+        # Execute every 10 minutes (10 minutes * 60 seconds)
         'schedule': 600.0,
     },
 }
