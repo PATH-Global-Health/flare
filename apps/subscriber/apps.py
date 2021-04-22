@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class SubscriberConfig(AppConfig):
-    name = 'subscriber'
+    name = 'apps.subscriber'
