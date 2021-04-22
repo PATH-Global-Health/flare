@@ -2,7 +2,7 @@ import os
 from django.db import models
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from apps.settings import CommonModel
+from apps.settings.models import CommonModel
 from apps.subscriber.models import Subscriber
 
 
