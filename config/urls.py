@@ -20,12 +20,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', include('message.urls')),
-    path('', include('survey.urls')),
-    path('', include('subscriber.urls')),
-    path('', include('settings.urls')),
-    path('', include('accounts.urls')),
-    path('', include('gateway.urls')),
-    path('', include('analytics.urls')),
+    path('', include('apps.message.urls')),
+    path('', include('apps.survey.urls')),
+    path('', include('apps.subscriber.urls')),
+    path('', include('apps.settings.urls')),
+    path('', include('apps.accounts.urls')),
+    path('', include('apps.gateway.urls')),
+    path('', include('apps.analytics.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
