@@ -5,9 +5,7 @@ import logging
 from django.contrib.sessions.models import Session
 from .models import SurveyResult
 from django.conf import settings
-# import firebase_admin
-# from firebase_admin import credentials
-# from firebase_admin import db
+
 import requests
 from datetime import datetime, timedelta
 from django.conf import settings
@@ -54,36 +52,6 @@ def mark_survey_result_complete(survey_pk, session_key, phone_number):
     except Exception as ex:
         logger.error(ex)
 
-
-# def sync_survey_result_2_firebase():
-#     ref = db.reference('covid19')
-#     result_ref = ref.child('survey_result')
-
-#     results = SurveyResult.objects.filter(posted=None, rejected=None)
-#     for res in results:
-#         if res.result != None:
-#             r = yaml.load(res.result, Loader=yaml.FullLoader)
-#             if ('fever' in r and r['fever']=='1') or ('cough' in r and r['cough']=='1') or ('shortness_of_breath' in r and r['shortness_of_breath']=='1'):
-#                 result_ref.child("{}".format(res.id)).set({
-#                     'phone_number': res.phone_number,
-#                     'session_key': res.session_id,
-#                     'fever': r['fever'],
-#                     'cough': r['cough'],
-#                     'shortness_of_breath': r['shortness_of_breath'],
-#                     'name': r['name'],
-#                     'age': r['age'],
-#                     'sex': r['sex'],
-#                     'region': r['region'],
-#                     'travel_history': r['travel_history'],
-#                     'has_contact': r['has_contact'],
-#                     'last_updated': r['_ussd_airflow_last_updated']
-#                 })
-#                 res.posted = True
-#                 res.save()
-#                 logger.info('Data with phone number {} and session key {} is written to firebase.'.format(res.phone_number, res.session_id))
-#             else:
-#                 res.rejected = True
-#                 res.save()
 
 def copy_incomplete_data_2_survey_results():
     results = SurveyResult.objects.filter(result=None)
