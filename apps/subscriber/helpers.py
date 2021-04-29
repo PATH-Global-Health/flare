@@ -1,5 +1,5 @@
 from apps.subscriber.models import Subscriber
-from apps.settings import Language
+from apps.settings.models import Language
 import logging
 
 
