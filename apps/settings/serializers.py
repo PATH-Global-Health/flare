@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Language, Channel, Configuration
-from apps.message import MessageStatusSerializer
+from apps.message.serializers import MessageStatusSerializer
 
 
 class LanguageSerializer(serializers.ModelSerializer):
