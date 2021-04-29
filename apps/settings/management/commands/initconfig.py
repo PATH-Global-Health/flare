@@ -1,7 +1,7 @@
 __author__ = 'belendia@gmail.com'
 
 from django.core.management.base import BaseCommand
-from apps.settings import Language, Channel, Configuration
+from apps.settings.models import Language, Channel, Configuration
 
 CONFIGURATION = [
     {
@@ -27,6 +27,7 @@ CONFIGURATION = [
     }
 ]
 
+
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
@@ -34,10 +35,11 @@ class Command(BaseCommand):
             for c in CONFIGURATION:
                 lang = Language.objects.get(id=c['language'])
                 chnl = Channel.objects.get(id=c['channel'])
-                conf = Configuration(name=c['name'], user_id=c['user_id'], token=c['token'], language=lang, channel=chnl)
+                conf = Configuration(name=c['name'], user_id=c['user_id'], token=c['token'], language=lang,
+                                     channel=chnl)
                 conf.save()
-                
+
                 print('%s saved.' % (c['name']))
-               
+
         else:
             print('Configuration table already initialized')

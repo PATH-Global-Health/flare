@@ -1,7 +1,7 @@
 __author__ = 'belendia@gmail.com'
 
 from django.core.management.base import BaseCommand
-from apps.settings import Language
+from apps.settings.models import Language
 
 LANGUAGES = [
     {
@@ -36,6 +36,7 @@ LANGUAGES = [
     }
 ]
 
+
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
@@ -43,8 +44,8 @@ class Command(BaseCommand):
             for lang in LANGUAGES:
                 language = Language(name=lang['name'], code=lang['code'])
                 language.save()
-                
+
                 print('Language name %s saved.' % (lang['name']))
-               
+
         else:
             print('Language table already initialized')
