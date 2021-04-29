@@ -2,10 +2,11 @@ import africastalking
 import logging
 import telegram
 from apps.subscriber.models import Subscriber
-from apps.settings import Configuration
+from apps.settings.models import Configuration
 from .models import MessageStatus
 
 logger = logging.getLogger(__name__)
+
 
 # Africas talking
 
@@ -16,7 +17,7 @@ def send_sms_using_africas_talking(message):
     try:
         config = Configuration.objects.get(pk=1)
         africastalking.initialize(config.user_id, config.token)
-        
+
         # Initialize the SMS service
         sms = africastalking.SMS
     except Configuration.DoesNotExist:
@@ -27,6 +28,7 @@ def send_sms_using_africas_talking(message):
     status = send_sms_2_african_talking_endpoint(config, message, sms)
 
     return status == 'sent'
+
 
 def send_sms_2_african_talking_endpoint(config, message, sms):
     success_count = 0
@@ -47,12 +49,13 @@ def send_sms_2_african_talking_endpoint(config, message, sms):
     update_message_status(config.id, message.id, success_count, error_count)
 
     status = 'error'
-    if(success_count >= error_count):
+    if (success_count >= error_count):
         status = 'sent'
 
     return status
 
-# telegram 
+
+# telegram
 
 def send_message_to_telegram(message):
     status = False
@@ -67,6 +70,7 @@ def send_message_to_telegram(message):
             return False
     return status
 
+
 def send_message_to_bot(config, message):
     try:
         bot = telegram.Bot(token=config.token)
@@ -79,7 +83,8 @@ def send_message_to_bot(config, message):
         logger.error("Sending message with message_id {} and channel_id {} failed.".format(message.id, config.id))
         return False
 
-# Common 
+
+# Common
 
 def update_message_status(config_id, message_id, success_count, error_count, config_error=False):
     msg_status = MessageStatus()
@@ -89,4 +94,3 @@ def update_message_status(config_id, message_id, success_count, error_count, con
     msg_status.error_count = error_count
     msg_status.config_error = config_error
     msg_status.save()
-
