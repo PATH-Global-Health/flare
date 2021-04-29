@@ -1,5 +1,6 @@
 from django.db import models
-from apps.settings import CommonModel
+from apps.settings.models import CommonModel
+
 
 class Report(CommonModel):
     total_messages = models.IntegerField()
