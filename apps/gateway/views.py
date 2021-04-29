@@ -4,7 +4,7 @@ from ussd.core import UssdRequest
 from rest_framework.views import APIView
 from django.conf import settings
 import redis
-from apps.subscriber import check_subscriber
+from apps.subscriber.helpers import check_subscriber
 from apps.survey.tasks import create_survey_result_task, mark_survey_result_complete_task
 
 # from survey.helpers import config_survey_result
