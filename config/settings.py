@@ -11,11 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import environ
-
-base = environ.Path(__file__) - 2  # two folders back (/a/b/ - 2 = /)
-environ.Env.read_env(env_file=base('.env'))  # reading .env file
-env = environ.Env()
+from decouple import config
 
 # from ussd.store.journey_store import YamlJourneyStore
 
@@ -29,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'rm7@5^)xz5by8z8zxs$vb2zpq+3g2=+y$z+uqtc(#1co_jz351'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = config('DEBUG', default=False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -101,11 +97,11 @@ ASGI_APPLICATION = 'config.routing.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('DB_NAME', None),
-        'USER': env.str('DB_USER', None),
-        'PASSWORD': env.str('DB_PASSWORD', None),
-        'HOST': env.str('DB_HOST', None),
-        'PORT': env.str('DB_PORT', None),
+        'NAME': config('DB_NAME', None),
+        'USER': config('DB_USER', None),
+        'PASSWORD': config('DB_PASSWORD', None),
+        'HOST': config('DB_HOST', None),
+        'PORT': config('DB_PORT', None),
     }
 }
 
@@ -198,7 +194,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [env.str('REDIS_URL', 'redis://redis:6379')]
+            "hosts": [config('REDIS_URL', 'redis://redis:6379')]
         },
     }
 }
@@ -207,14 +203,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'journeys')
 MEDIA_URL = '/journeys/'
 
 # To cache language of the subscriber on redis
-REDIS_HOST = env.str('REDIS_HOST', 'redis')
-REDIS_PORT = env.int('REDIS_PORT', 6379)
+REDIS_HOST = config('REDIS_HOST', 'redis')
+REDIS_PORT = config('REDIS_PORT', 6379)
 
 ADMINS = (
     ('admin', 'admin@example.com'),
 )
 
-CENTRAL_REPO_AUTH_URL = env.str('CENTRAL_REPO_AUTH_URL', None)
-CENTRAL_REPO_CI_URL = env.str('CENTRAL_REPO_CI_URL', None)
-CENTRAL_REPO_USERNAME = env.str('CENTRAL_REPO_USERNAME', None)
-CENTRAL_REPO_PASSWORD = env.str('CENTRAL_REPO_PASSWORD', None)
+CENTRAL_REPO_AUTH_URL = config('CENTRAL_REPO_AUTH_URL', None)
+CENTRAL_REPO_CI_URL = config('CENTRAL_REPO_CI_URL', None)
+CENTRAL_REPO_USERNAME = config('CENTRAL_REPO_USERNAME', None)
+CENTRAL_REPO_PASSWORD = config('CENTRAL_REPO_PASSWORD', None)

@@ -1,14 +1,13 @@
 africastalking @ git+https://github.com/AfricasTalkingLtd/africastalking-python.git@f8e54a950777899b4332fc6b99ce4b7a281978aa
 celery==4.4.7
 Django==2.2.17
-django-annoying==0.10.3
-django-celery-beat==2.2.0
-django-cors-headers==3.2.1
-django-environ==0.4.5
+django-celery-beat==2.2.1
+django-cors-headers==3.7.0
 django-filter==2.2.0
 django-rest-knox==4.1.0
 djangorestframework==3.12.2
 gunicorn==20.1.0
+python-decouple==3.4
 psycopg2-binary==2.8.5
 python-telegram-bot==13.3
 redis==3.5.0
