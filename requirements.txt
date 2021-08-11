@@ -1,6 +1,6 @@
 africastalking @ git+https://github.com/AfricasTalkingLtd/africastalking-python.git@f8e54a950777899b4332fc6b99ce4b7a281978aa
 celery==4.4.7
-Django==2.2.17
+Django==2.2.24
 django-celery-beat==2.2.1
 django-cors-headers==3.7.0
 django-filter==2.2.0
