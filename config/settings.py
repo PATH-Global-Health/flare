@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'knox',
     'django_celery_beat',
-    'ussd.apps.UssdConfig',
+    'ussd',
 ]
 
 MIDDLEWARE = [
