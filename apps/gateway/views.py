@@ -21,7 +21,7 @@ class GatewayCovid19View(APIView):
         super().__init__(*args, **kwargs)
         self.survey_id = 1
 
-    def post(self, req):
+    def post(self, request):
         list_of_inputs = req.data['text'].split("*")
         text = "*" if len(list_of_inputs) >= 2 and \
                       list_of_inputs[-1] == "" and \
@@ -53,10 +53,27 @@ class GatewayCovid19View(APIView):
             language=language,
             use_built_in_session_management=req.data.get(
                 'use_built_in_session_management', False),
-            journey_name=journey_conf,
+            journey_name=self.journey_conf,
         )
 
         return ussd_request
+
+        # session_id = request.get('sessionId')
+        # service_code = request.get('serviceCode')
+        # phone_number = request.get('phoneNumber')
+        # text = request.get('text')
+        #
+        # response = ""
+        #
+        # if text == "":
+        #     response = "CON What would you want to check \n"
+        #     # response .= "1. My Account \n"
+        #     response += "1. My Phone Number"
+        #
+        # elif text == "1":
+        #     response = "END My Phone number is {0}".format(phone_number)
+        #
+        # return HttpResponse(response)
 
     def ussd_response_handler(self, ussd_response):
 
