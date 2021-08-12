@@ -14,8 +14,8 @@ redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
 
 
 class GatewayCovid19View(APIView):
-    customer_journey_conf = os.path.join(settings.BASE_DIR, 'journeys/covid19.yml')
-    customer_journey_namespace = 'demo-customer-journey'
+    journey_conf = os.path.join(settings.BASE_DIR, 'journeys/covid19.yml')
+    #customer_journey_namespace = 'demo-customer-journey'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,6 +39,11 @@ class GatewayCovid19View(APIView):
 
         if req.data.get('use_built_in_session_management', False):
             session_id = None
+
+        print('====================================================')
+        print(req.data.get('use_built_in_session_management', False))
+        print('====================================================')
+
         ussd_request = UssdRequest(
             phone_number=req.data['phoneNumber'].strip('+'),
             session_id=session_id,
@@ -48,6 +53,7 @@ class GatewayCovid19View(APIView):
             language=language,
             use_built_in_session_management=req.data.get(
                 'use_built_in_session_management', False),
+            journey_name=journey_conf,
         )
 
         return ussd_request
