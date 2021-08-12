@@ -1,7 +1,7 @@
 __author__ = 'belendia@gmail.com'
 
 from django.core.management.base import BaseCommand
-from apps.settings.models import Language
+from apps.common.models import Language
 
 LANGUAGES = [
     {

@@ -1,5 +1,5 @@
 from django.db import models
-from apps.settings.models import CommonModel, Configuration
+from apps.common.models import CommonModel, Configuration
 
 
 class Message(CommonModel):

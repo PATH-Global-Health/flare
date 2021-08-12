@@ -23,7 +23,7 @@ urlpatterns = [
     path('', include('apps.message.urls')),
     path('', include('apps.survey.urls')),
     path('', include('apps.subscriber.urls')),
-    path('', include('apps.settings.urls')),
+    path('', include('apps.common.urls')),
     path('', include('apps.accounts.urls')),
     path('', include('apps.gateway.urls')),
     path('', include('apps.analytics.urls')),

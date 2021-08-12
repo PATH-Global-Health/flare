@@ -1,5 +1,5 @@
 from django.db import models
-from apps.settings.models import CommonModel
+from apps.common.models import CommonModel
 
 
 class Report(CommonModel):

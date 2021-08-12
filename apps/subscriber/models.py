@@ -1,5 +1,5 @@
 from django.db import models
-from apps.settings.models import CommonModel, Language
+from apps.common.models import CommonModel, Language
 
 
 class Subscriber(CommonModel):

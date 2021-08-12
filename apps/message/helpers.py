@@ -2,7 +2,7 @@ import africastalking
 import logging
 import telegram
 from apps.subscriber.models import Subscriber
-from apps.settings.models import Configuration
+from apps.common.models import Configuration
 from .models import MessageStatus
 
 logger = logging.getLogger(__name__)
