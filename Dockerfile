@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.9
 
 LABEL maintainer="Belendia Serda belendia@gmail.com"
 
@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_ENV dev
 ENV DOCKER_CONTAINER 1
 
-COPY ./flare_backend /code
+COPY . /code
 #ADD ./flare_backend/requirements.txt /code/requirements.txt
 RUN pip install -r /code/requirements.txt
 
