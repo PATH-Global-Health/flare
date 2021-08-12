@@ -21,7 +21,7 @@ class GatewayCovid19View(APIView):
         super().__init__(*args, **kwargs)
         self.survey_id = 1
 
-    def post(self, request):
+    def post(self, req):
         list_of_inputs = req.data['text'].split("*")
         text = "*" if len(list_of_inputs) >= 2 and \
                       list_of_inputs[-1] == "" and \
