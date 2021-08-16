@@ -1,7 +1,7 @@
 import json
 import logging
 from rest_framework import serializers
-from ussd.core import UssdEngine
+from ussd.core import UssdView
 from .models import Survey, SurveyResult
 from .helpers import read_journey  # , validate_ussd_journey, get_survey_endpoint_and_id
 
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def validate_yaml(value):
     try:
         journey = read_journey(value['journeys'])
-        is_valid, errors = UssdEngine.validate_ussd_journey(journey)
+        is_valid, errors = UssdView.validate_ussd_journey(journey)
 
         # validate the existance and form of a custom defined initialize_survey screen
         # if is_valid:
