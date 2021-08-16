@@ -25,7 +25,6 @@ urlpatterns = [
     path('', include('apps.subscriber.urls')),
     path('', include('apps.common.urls')),
     path('', include('apps.accounts.urls')),
-    path('', include('apps.gateway.urls')),
     path('', include('apps.analytics.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
