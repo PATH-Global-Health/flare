@@ -1,8 +1,12 @@
 from rest_framework import routers
-from .api import SurveyViewSet, SurveyResultViewSet
+from .views import SurveyViewSet, SurveyResultViewSet, GatewayView
 
 router = routers.DefaultRouter()
 router.register('api/surveys', SurveyViewSet, 'surveys')
 router.register('api/results', SurveyResultViewSet, 'results')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path(r'api/gateway/', GatewayView.as_view(), name='gateway')
+]
+
+urlpatterns += router.urls
