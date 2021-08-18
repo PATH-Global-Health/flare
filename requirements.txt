@@ -1,6 +1,7 @@
 africastalking @ git+https://github.com/AfricasTalkingLtd/africastalking-python.git@f8e54a950777899b4332fc6b99ce4b7a281978aa
 attrs==18.2.0
 celery==5.1.2
+dhis2.py==2.2.0
 Django==3.2.6
 django-annoying==0.10.6
 django-celery-beat==2.2.1
