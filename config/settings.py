@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.subscriber',
     'apps.accounts',
     'apps.analytics',
+    'apps.dhis',
     'rest_framework',
     'corsheaders',
     'knox',
