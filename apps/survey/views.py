@@ -69,7 +69,7 @@ class SurveyResultViewSet(viewsets.ModelViewSet):
         serializer.save(updated_by=self.request.user)
 
 
-class GatewayView(UssdView):
+class SurveyGatewayView(UssdView):
     customer_journey_conf = os.path.join(settings.BASE_DIR, 'journeys/covid19.yml')
     customer_journey_namespace = 'demo-customer-journey'
 
@@ -78,11 +78,11 @@ class GatewayView(UssdView):
         self.survey_id = 1
 
     def post(self, req):
+        print(req)
         list_of_inputs = req.data['text'].split("*")
         text = "*" if len(list_of_inputs) >= 2 and \
                       list_of_inputs[-1] == "" and \
-                      list_of_inputs[-2] == "" else list_of_inputs[
-            -1]
+                      list_of_inputs[-2] == "" else list_of_inputs[-1]
 
         if len(req.data['text']) == 0:
             lang_code = check_subscriber(req.data['phoneNumber'])

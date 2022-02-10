@@ -1,7 +1,12 @@
 import os
+from secrets import token_urlsafe
+
 from django.db import models
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.utils.text import slugify
+from django.db.models.signals import pre_save
+
 from apps.common.models import CommonModel
 from apps.subscriber.models import Subscriber
 
@@ -16,6 +21,7 @@ class OverwriteStorage(FileSystemStorage):
 class Survey(CommonModel):
     # survey_id = models.CharField(max_length=150, unique=True)
     title = models.CharField(max_length=200, null=False)
+    slug = models.SlugField(blank=True, unique=True)
     published = models.BooleanField(default=False)
     # endpoint = models.CharField(max_length=150, default="")
     journeys = models.FileField(storage=OverwriteStorage())
@@ -32,3 +38,11 @@ class SurveyResult(CommonModel):
     rejected = models.BooleanField(null=True)
     posted = models.BooleanField(null=True)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+
+
+def pre_save_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(token_urlsafe(16))
+
+
+pre_save.connect(pre_save_receiver, sender=Survey)
