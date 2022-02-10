@@ -14,7 +14,6 @@ from urllib.parse import unquote
 
 import requests
 import staticconf
-from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.contrib.sessions.backends import signed_cookies
 from django.contrib.sessions.backends.base import CreateError
@@ -226,7 +225,12 @@ class UssdRequest(object):
         return all_variables
 
     def get_or_create_session_id(self, user_id):
-        session_mapping = get_object_or_None(SessionLookup, user_id=user_id)
+        session_mapping = None
+
+        try:
+            session_mapping = SessionLookup.objects.get(user_id=user_id)
+        except model.DoesNotExist:
+            pass
 
         # if its missing create a new one.
         if session_mapping is None:
