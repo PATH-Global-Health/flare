@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from decouple import config
+from datetime import timedelta
 
 # from ussd.store.journey_store import YamlJourneyStore
 
@@ -171,22 +172,22 @@ CELERY_BEAT_SCHEDULE = {
     'send-summary-every-hour': {
         'task': 'survey.tasks.sync_survey_result_2_central_repo_task',
         # Executes every 30 minutes (30 minutes * 60 seconds)
-        'schedule': 1800.0,
+        'schedule': timedelta(seconds=1800),
     },
     'generate-report': {
         'task': 'analytics.tasks.generate_report',
         # Executes every 1 day (24 hrs * 60 minutes * 60 seconds)
-        'schedule': 86400.0,
+        'schedule': timedelta(seconds=86400),
     },
     'copy-incomplete-data-2-survey-results': {
         'task': 'survey.tasks.copy_incomplete_data_2_survey_results_task',
         # Execute every 30 minutes (30 minutes * 60 seconds)
-        'schedule': 1800.0,
+        'schedule': timedelta(seconds=1800),
     },
     'clear-expired-session': {
         'task': 'survey.tasks.clear_expired_session_task',
         # Execute every 10 minutes (10 minutes * 60 seconds)
-        'schedule': 600.0,
+        'schedule': timedelta(seconds=600),
     },
 }
 
