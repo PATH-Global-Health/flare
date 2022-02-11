@@ -6,7 +6,7 @@ from .models import OrgUnit, DHIS2User
 logger = logging.getLogger(__name__)
 
 
-def sync_org_units(api, dhis2_instance):
+def sync_org_units(api, dhis2_instance, version):
     logger.info("Starting to sync org units")
 
     for pages in api.get_paged('organisationUnits', page_size=100, params={'fields': 'id,displayName,parent'}):
@@ -19,14 +19,17 @@ def sync_org_units(api, dhis2_instance):
             ou.ou_id = org_unit['id']
             ou.name = org_unit['displayName'] if 'displayName' in org_unit else "No Name"
             ou.parent = org_unit['parent']['id'] if 'parent' in org_unit else ''
+            ou.version = version
             ou.instance = dhis2_instance
 
             ou.save()
 
-    logger.info("Syncing org units  ............ Done")
+    OrgUnit.objects.exclude(version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing org units ............ Done")
 
 
-def sync_users(api, dhis2_instance):
+def sync_users(api, dhis2_instance, version):
     logger.info("Starting to sync users")
 
     for pages in api.get_paged('users', page_size=100, params={'fields': 'id,displayName,userCredentials,organisationUnits'}):
@@ -38,6 +41,7 @@ def sync_users(api, dhis2_instance):
             usr.user_id = user['id']
             usr.name = user['displayName'] if 'displayName' in user else "No Name"
             usr.username = user['userCredentials']['username'] if 'userCredentials' in user else ""
+            usr.version = version
             usr.instance = dhis2_instance
 
             usr.save()
@@ -49,4 +53,6 @@ def sync_users(api, dhis2_instance):
                         usr.orgUnits.add(ou)
                     usr.save()
 
-    logger.info("Syncing users  ............ Done")
+    DHIS2User.objects.exclude(version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing users ............ Done")

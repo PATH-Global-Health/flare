@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -31,6 +33,7 @@ class OrgUnit(CommonModel):
     name = models.CharField(max_length=200, null=False)
     ou_id = models.CharField(max_length=40, null=False, unique=True)
     parent = models.CharField(max_length=40, null=False)
+    version = models.UUIDField(default=uuid.uuid4)
     instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
 
     class Meta:
@@ -47,6 +50,7 @@ class DHIS2User(CommonModel):
     user_id = models.CharField(max_length=40, null=False, unique=True)
     username = models.CharField(max_length=100, null=False)
     passcode = models.CharField(max_length=30, null=False)
+    version = models.UUIDField(default=uuid.uuid4)
     instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
     orgUnits = models.ManyToManyField(OrgUnit)
 
