@@ -1,5 +1,15 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
+
 from apps.common.models import CommonModel
+
+
+class DHIS2Manager(models.Manager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None
 
 
 class DHIS2Instance(CommonModel):
@@ -13,7 +23,8 @@ class DHIS2Instance(CommonModel):
 
 
 class OrgUnit(CommonModel):
-    # survey_id = models.CharField(max_length=150, unique=True)
+    objects = DHIS2Manager()
+
     name = models.CharField(max_length=200, null=False)
     ou_id = models.CharField(max_length=40, null=False, unique=True)
     parent = models.CharField(max_length=40, null=False)
