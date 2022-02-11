@@ -59,3 +59,18 @@ class DHIS2User(CommonModel):
 
     def __str__(self):
         return self.name
+
+
+class Dataset(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    dataset_id = models.CharField(max_length=40, null=False, unique=True)
+    version = models.UUIDField()
+    instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
+    org_units = models.ManyToManyField(OrgUnit)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DHIS2Instance, OrgUnit, DHIS2User
+from .models import DHIS2Instance, OrgUnit, DHIS2User, Dataset
 
 
 class DHIS2InstanceAdmin(admin.ModelAdmin):
@@ -29,3 +29,12 @@ class DHIS2UsersAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DHIS2User, DHIS2UsersAdmin)
+
+
+class DatasetsAdmin(admin.ModelAdmin):
+    list_display = ("name", "dataset_id",)
+    search_fields = ("name", "dataset_id")
+    list_filter = ("instance",)
+
+
+admin.site.register(Dataset, DatasetsAdmin)

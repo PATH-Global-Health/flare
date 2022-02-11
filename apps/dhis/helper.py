@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit, DHIS2User
+from .models import OrgUnit, DHIS2User, Dataset
 
 logger = logging.getLogger(__name__)
 
@@ -45,14 +45,44 @@ def sync_users(api, dhis2_instance, version):
             usr.instance = dhis2_instance
 
             usr.save()
+            usr.org_units.clear()
 
             if 'organisationUnits' in user:
                 for org_unit in user['organisationUnits']:
                     ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
                     if ou is not None:
                         usr.org_units.add(ou)
-                    usr.save()
+                usr.save()
 
     DHIS2User.objects.exclude(version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing users ............ Done")
+
+
+def sync_data_sets(api, dhis2_instance, version):
+    logger.info("Starting to sync data sets")
+
+    for pages in api.get_paged('dataSets', page_size=100, params={'fields': 'id,displayName,dataSetElements,organisationUnits'}):
+        for dataset in pages['dataSets']:
+            ds = Dataset.objects.get_or_none(dataset_id=dataset['id'])
+
+            if ds is None:
+                ds = Dataset()
+            ds.dataset_id = dataset['id']
+            ds.name = dataset['displayName'] if 'displayName' in dataset else "No Name"
+            ds.version = version
+            ds.instance = dhis2_instance
+
+            ds.save()
+            ds.org_units.clear()
+
+            if 'organisationUnits' in dataset:
+                for org_unit in dataset['organisationUnits']:
+                    ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
+                    if ou is not None:
+                        ds.org_units.add(ou)
+                ds.save()
+
+    Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing data sets ............ Done")
