@@ -52,7 +52,7 @@ class DHIS2User(CommonModel):
     passcode = models.CharField(max_length=30, null=False)
     version = models.UUIDField(default=uuid.uuid4)
     instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
-    orgUnits = models.ManyToManyField(OrgUnit)
+    org_units = models.ManyToManyField(OrgUnit)
 
     class Meta:
         ordering = ['name']

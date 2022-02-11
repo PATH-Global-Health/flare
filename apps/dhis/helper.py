@@ -50,7 +50,7 @@ def sync_users(api, dhis2_instance, version):
                 for org_unit in user['organisationUnits']:
                     ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
                     if ou is not None:
-                        usr.orgUnits.add(ou)
+                        usr.org_units.add(ou)
                     usr.save()
 
     DHIS2User.objects.exclude(version=version, instance=dhis2_instance).delete()
