@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit
+from .models import OrgUnit, DHIS2User
 
 logger = logging.getLogger(__name__)
 
@@ -24,3 +24,29 @@ def sync_org_units(api, dhis2_instance):
             ou.save()
 
     logger.info("Syncing org units  ............ Done")
+
+
+def sync_users(api, dhis2_instance):
+    logger.info("Starting to sync users")
+
+    for pages in api.get_paged('users', page_size=100, params={'fields': 'id,displayName,userCredentials,organisationUnits'}):
+        for user in pages['users']:
+            usr = DHIS2User.objects.get_or_none(user_id=user['id'])
+
+            if usr is None:
+                usr = DHIS2User()
+            usr.user_id = user['id']
+            usr.name = user['displayName'] if 'displayName' in user else "No Name"
+            usr.username = user['userCredentials']['username'] if 'userCredentials' in user else ""
+            usr.instance = dhis2_instance
+
+            usr.save()
+
+            if 'organisationUnits' in user:
+                for org_unit in user['organisationUnits']:
+                    ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
+                    if ou is not None:
+                        usr.orgUnits.add(ou)
+                    usr.save()
+
+    logger.info("Syncing users  ............ Done")

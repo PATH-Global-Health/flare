@@ -18,6 +18,9 @@ class DHIS2Instance(CommonModel):
     username = models.CharField(max_length=100, null=False)
     password = models.CharField(max_length=100, null=False)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
@@ -29,6 +32,26 @@ class OrgUnit(CommonModel):
     ou_id = models.CharField(max_length=40, null=False, unique=True)
     parent = models.CharField(max_length=40, null=False)
     instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class DHIS2User(CommonModel):
+    objects = DHIS2Manager()
+
+    name = models.CharField(max_length=200, null=True, blank=True)
+    user_id = models.CharField(max_length=40, null=False, unique=True)
+    username = models.CharField(max_length=100, null=False)
+    passcode = models.CharField(max_length=30, null=False)
+    instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
+    orgUnits = models.ManyToManyField(OrgUnit)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
