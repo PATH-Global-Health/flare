@@ -11,12 +11,12 @@ def sync_org_units(api, dhis2_instance, version):
 
     for pages in api.get_paged('organisationUnits', page_size=100, params={'fields': 'id,displayName,parent'}):
         for org_unit in pages['organisationUnits']:
-            ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
+            ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
 
             if ou is None:
                 ou = OrgUnit()
 
-            ou.ou_id = org_unit['id']
+            ou.org_unit_id = org_unit['id']
             ou.name = org_unit['displayName'] if 'displayName' in org_unit else "No Name"
             ou.parent = org_unit['parent']['id'] if 'parent' in org_unit else ''
             ou.version = version
@@ -49,7 +49,7 @@ def sync_users(api, dhis2_instance, version):
 
             if 'organisationUnits' in user:
                 for org_unit in user['organisationUnits']:
-                    ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
+                    ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
                     if ou is not None:
                         usr.org_units.add(ou)
                 usr.save()
@@ -78,7 +78,7 @@ def sync_data_sets(api, dhis2_instance, version):
 
             if 'organisationUnits' in dataset:
                 for org_unit in dataset['organisationUnits']:
-                    ou = OrgUnit.objects.get_or_none(ou_id=org_unit['id'])
+                    ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
                     if ou is not None:
                         ds.org_units.add(ou)
                 ds.save()

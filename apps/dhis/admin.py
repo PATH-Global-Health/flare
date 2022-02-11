@@ -11,8 +11,8 @@ admin.site.register(DHIS2Instance, DHIS2InstanceAdmin)
 
 
 class OrgUnitAdmin(admin.ModelAdmin):
-    list_display = ("name", "ou_id", "parent")
-    search_fields = ("name", "ou_id", "parent")
+    list_display = ("name", "org_unit_id", "parent")
+    search_fields = ("name", "org_unit_id", "parent")
     list_filter = ("instance",)
 
 

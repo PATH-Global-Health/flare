@@ -31,7 +31,7 @@ class OrgUnit(CommonModel):
     objects = DHIS2Manager()
 
     name = models.CharField(max_length=200, null=False)
-    ou_id = models.CharField(max_length=40, null=False, unique=True)
+    org_unit_id = models.CharField(max_length=40, null=False, unique=True)
     parent = models.CharField(max_length=40, null=False)
     version = models.UUIDField(default=uuid.uuid4)
     instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
