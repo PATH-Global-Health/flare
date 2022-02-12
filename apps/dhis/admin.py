@@ -1,13 +1,13 @@
 from django.contrib import admin
-from .models import DHIS2Instance, OrgUnit, DHIS2User, Dataset
+from .models import Instance, OrgUnit, DHIS2User, Dataset
 
 
-class DHIS2InstanceAdmin(admin.ModelAdmin):
+class InstanceAdmin(admin.ModelAdmin):
     list_display = ("name", "url",)
     search_fields = ("name", "url", "username")
 
 
-admin.site.register(DHIS2Instance, DHIS2InstanceAdmin)
+admin.site.register(Instance, InstanceAdmin)
 
 
 class OrgUnitAdmin(admin.ModelAdmin):

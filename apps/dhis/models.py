@@ -14,7 +14,7 @@ class DHIS2Manager(models.Manager):
             return None
 
 
-class DHIS2Instance(CommonModel):
+class Instance(CommonModel):
     name = models.CharField(max_length=200, null=False)
     url = models.URLField(max_length=400)
     username = models.CharField(max_length=100, null=False)
@@ -33,8 +33,8 @@ class OrgUnit(CommonModel):
     name = models.CharField(max_length=200, null=False)
     org_unit_id = models.CharField(max_length=40, null=False, unique=True)
     parent = models.CharField(max_length=40, null=False)
-    version = models.UUIDField(default=uuid.uuid4)
-    instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['name']
@@ -50,8 +50,8 @@ class DHIS2User(CommonModel):
     user_id = models.CharField(max_length=40, null=False, unique=True)
     username = models.CharField(max_length=100, null=False)
     passcode = models.CharField(max_length=30, null=False)
-    version = models.UUIDField(default=uuid.uuid4)
-    instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     org_units = models.ManyToManyField(OrgUnit)
 
     class Meta:
@@ -66,7 +66,7 @@ class Dataset(CommonModel):
     name = models.CharField(max_length=200, null=True, blank=True)
     dataset_id = models.CharField(max_length=40, null=False, unique=True)
     version = models.UUIDField()
-    instance = models.ForeignKey(DHIS2Instance, on_delete=models.CASCADE)
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     org_units = models.ManyToManyField(OrgUnit)
 
     class Meta:

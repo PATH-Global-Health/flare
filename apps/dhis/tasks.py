@@ -3,7 +3,7 @@ import logging
 from celery import shared_task
 from dhis2 import Api
 
-from .models import DHIS2Instance, OrgUnit
+from .models import Instance, OrgUnit
 from .helper import sync_org_units, sync_users, sync_data_sets
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def sync_dhis2_metadata():
     logger.info("Starting to sync metadata")
 
-    dhis2_instances = DHIS2Instance.objects.all()
+    dhis2_instances = Instance.objects.all()
     for dhis2 in dhis2_instances:
         api = Api(dhis2.url, dhis2.username, dhis2.password)
         version = uuid.uuid4()
