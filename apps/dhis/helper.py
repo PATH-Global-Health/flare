@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit, DHIS2User, Dataset
+from .models import OrgUnit, DHIS2User, Dataset, CategoryOption
 
 logger = logging.getLogger(__name__)
 
@@ -86,3 +86,25 @@ def sync_data_sets(api, dhis2_instance, version):
     Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing data sets ............ Done")
+
+
+def sync_category_options(api, dhis2_instance, version):
+    logger.info("Starting to sync category option")
+
+    for pages in api.get_paged('categoryOptions', page_size=100):
+        for cat_opt in pages['categoryOptions']:
+            co = CategoryOption.objects.get_or_none(category_option_id=cat_opt['id'])
+
+            if co is None:
+                co = CategoryOption()
+
+            co.category_option_id = cat_opt['id']
+            co.name = cat_opt['displayName'] if 'displayName' in cat_opt else "No Name"
+            co.version = version
+            co.instance = dhis2_instance
+
+            co.save()
+
+    CategoryOption.objects.exclude(version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing category option ............ Done")

@@ -74,3 +74,27 @@ class Dataset(CommonModel):
 
     def __str__(self):
         return self.name
+
+
+class CategoryOption(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    category_option_id = models.CharField(max_length=40, null=False, unique=True)
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+
+
+class DataElement(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    data_element_id = models.CharField(max_length=40, null=False, unique=True)
+    value_type = models.CharField(max_length=50, null=True, blank=True)
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+    dataset = models.ManyToManyField(Dataset)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
