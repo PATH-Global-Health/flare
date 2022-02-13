@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo
+from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo
 
 logger = logging.getLogger(__name__)
 
@@ -102,9 +102,22 @@ def sync_category_combos(api, dhis2_instance, version):
             cc.name = cat_combo['name'] if 'name' in cat_combo else "No Name"
             cc.version = version
             cc.instance = dhis2_instance
-
             cc.save()
 
+            if 'categoryOptionCombos' in cat_combo:
+                for coc in cat_combo['categoryOptionCombos']:
+                    coc_obj = CategoryOptionCombo.objects.get_or_none(category_option_combo_id=coc['id'])
+                    if coc_obj is None:
+                        coc_obj = CategoryOptionCombo()
+
+                    coc_obj.category_option_combo_id = coc['id']
+                    coc_obj.name = coc['name']
+                    coc_obj.category_combo = cc
+                    coc_obj.version = version
+                    coc_obj.instance = dhis2_instance
+                    coc_obj.save()
+
     CategoryCombo.objects.exclude(version=version, instance=dhis2_instance).delete()
+    CategoryOptionCombo.objects.exclude(version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing category combos ............ Done")
