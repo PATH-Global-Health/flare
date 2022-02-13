@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit, DHIS2User, Dataset, CategoryOption
+from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo
 
 logger = logging.getLogger(__name__)
 
@@ -88,23 +88,23 @@ def sync_data_sets(api, dhis2_instance, version):
     logger.info("Syncing data sets ............ Done")
 
 
-def sync_category_options(api, dhis2_instance, version):
-    logger.info("Starting to sync category option")
+def sync_category_combos(api, dhis2_instance, version):
+    logger.info("Starting to sync category combos")
 
-    for pages in api.get_paged('categoryOptions', page_size=100):
-        for cat_opt in pages['categoryOptions']:
-            co = CategoryOption.objects.get_or_none(category_option_id=cat_opt['id'])
+    for pages in api.get_paged('categoryCombos', page_size=100, params={'fields': 'id,name,categoryOptionCombos[id,name]'}):
+        for cat_combo in pages['categoryCombos']:
+            cc = CategoryCombo.objects.get_or_none(category_combo_id=cat_combo['id'])
 
-            if co is None:
-                co = CategoryOption()
+            if cc is None:
+                cc = CategoryCombo()
 
-            co.category_option_id = cat_opt['id']
-            co.name = cat_opt['displayName'] if 'displayName' in cat_opt else "No Name"
-            co.version = version
-            co.instance = dhis2_instance
+            cc.category_combo_id = cat_combo['id']
+            cc.name = cat_combo['name'] if 'name' in cat_combo else "No Name"
+            cc.version = version
+            cc.instance = dhis2_instance
 
-            co.save()
+            cc.save()
 
-    CategoryOption.objects.exclude(version=version, instance=dhis2_instance).delete()
+    CategoryCombo.objects.exclude(version=version, instance=dhis2_instance).delete()
 
-    logger.info("Syncing category option ............ Done")
+    logger.info("Syncing category combos ............ Done")

@@ -76,10 +76,10 @@ class Dataset(CommonModel):
         return self.name
 
 
-class CategoryOption(CommonModel):
+class CategoryCombo(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)
-    category_option_id = models.CharField(max_length=40, null=False, unique=True)
+    category_combo_id = models.CharField(max_length=40, null=False, unique=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
 

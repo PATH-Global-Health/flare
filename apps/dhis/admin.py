@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryOption
+from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryCombo
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -49,10 +49,10 @@ class DataElementsAdmin(admin.ModelAdmin):
 admin.site.register(DataElement, DataElementsAdmin)
 
 
-class CategoryOptionAdmin(admin.ModelAdmin):
-    list_display = ("name", "category_option_id",)
-    search_fields = ("name", "category_option_id")
+class CategoryCombosAdmin(admin.ModelAdmin):
+    list_display = ("name", "category_combo_id",)
+    search_fields = ("name", "category_combo_id")
     list_filter = ("instance__url",)
 
 
-admin.site.register(CategoryOption, CategoryOptionAdmin)
+admin.site.register(CategoryCombo, CategoryCombosAdmin)
