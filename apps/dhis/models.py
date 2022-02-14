@@ -149,4 +149,4 @@ class SectionDataElement(CommonModel):
         ordering = ['sort_order']
 
     def __str__(self):
-        return "{} - {}".format(self.section.name, self.data_element.name)
+        return "{} - {}".format(self.data_element.name, self.section.name)
