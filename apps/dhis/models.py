@@ -61,21 +61,6 @@ class DHIS2User(CommonModel):
         return self.name
 
 
-class Dataset(CommonModel):
-    objects = DHIS2Manager()
-    name = models.CharField(max_length=200, null=True, blank=True)
-    dataset_id = models.CharField(max_length=40, null=False, unique=True)
-    version = models.UUIDField()
-    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
-    org_units = models.ManyToManyField(OrgUnit)
-
-    class Meta:
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
-
-
 class CategoryCombo(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -112,7 +97,23 @@ class DataElement(CommonModel):
     value_type = models.CharField(max_length=50, null=True, blank=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
-    dataset = models.ManyToManyField(Dataset)
+    category_combo = models.ForeignKey(CategoryCombo, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class Dataset(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    dataset_id = models.CharField(max_length=40, null=False, unique=True)
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+    org_units = models.ManyToManyField(OrgUnit)
+    data_element = models.ManyToManyField(DataElement)
 
     class Meta:
         ordering = ['name']

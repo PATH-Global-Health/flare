@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo
+from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, DataElement
 
 logger = logging.getLogger(__name__)
 
@@ -59,35 +59,6 @@ def sync_users(api, dhis2_instance, version):
     logger.info("Syncing users ............ Done")
 
 
-def sync_data_sets(api, dhis2_instance, version):
-    logger.info("Starting to sync data sets")
-
-    for pages in api.get_paged('dataSets', page_size=100, params={'fields': 'id,displayName,dataSetElements,organisationUnits'}):
-        for dataset in pages['dataSets']:
-            ds = Dataset.objects.get_or_none(dataset_id=dataset['id'])
-
-            if ds is None:
-                ds = Dataset()
-            ds.dataset_id = dataset['id']
-            ds.name = dataset['displayName'] if 'displayName' in dataset else "No Name"
-            ds.version = version
-            ds.instance = dhis2_instance
-
-            ds.save()
-            ds.org_units.clear()
-
-            if 'organisationUnits' in dataset:
-                for org_unit in dataset['organisationUnits']:
-                    ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
-                    if ou is not None:
-                        ds.org_units.add(ou)
-                ds.save()
-
-    Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
-
-    logger.info("Syncing data sets ............ Done")
-
-
 def sync_category_combos(api, dhis2_instance, version):
     logger.info("Starting to sync category combos")
 
@@ -121,3 +92,63 @@ def sync_category_combos(api, dhis2_instance, version):
     CategoryOptionCombo.objects.exclude(version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing category combos ............ Done")
+
+
+def sync_data_elements(api, dhis2_instance, version):
+    logger.info("Starting to sync data elements")
+
+    for pages in api.get_paged('dataElements', page_size=100, params={'fields': 'id,formName,categoryCombo,valueType'}):
+        for data_element in pages['dataElements']:
+            de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
+
+            if de is None:
+                de = DataElement()
+            de.data_element_id = data_element['id']
+            de.name = data_element['formName'] if 'formName' in data_element else "No Name"
+            de.value_type = data_element['valueType'] if 'valueType' in data_element else "No Name"
+            de.category_combo = CategoryCombo.objects.get_or_none(category_combo_id=data_element['categoryCombo']['id'])
+            de.version = version
+            de.instance = dhis2_instance
+
+            de.save()
+
+    logger.info("Syncing data elements ............ Done")
+
+
+def sync_data_sets(api, dhis2_instance, version):
+    logger.info("Starting to sync data sets")
+
+    for pages in api.get_paged('dataSets', page_size=100, params={'fields': 'id,displayName,dataSetElements,organisationUnits'}):
+        for dataset in pages['dataSets']:
+            ds = Dataset.objects.get_or_none(dataset_id=dataset['id'])
+
+            if ds is None:
+                ds = Dataset()
+            ds.dataset_id = dataset['id']
+            ds.name = dataset['displayName'] if 'displayName' in dataset else "No Name"
+            ds.version = version
+            ds.instance = dhis2_instance
+
+            ds.save()
+            ds.org_units.clear()
+
+            # save the org units assigned to the dataset
+            if 'organisationUnits' in dataset:
+                for org_unit in dataset['organisationUnits']:
+                    ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
+                    if ou is not None:
+                        ds.org_units.add(ou)
+                ds.save()
+
+            ds.data_element.clear()
+            # save the data elements that the dataset contains
+            if 'dataSetElements' in dataset:
+                for data_element in dataset['dataSetElements']:
+                    de = DataElement.objects.get_or_none(data_element_id=data_element['dataElement']['id'])
+                    if de is not None:
+                        ds.data_element.add(de)
+                ds.save()
+
+    Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing data sets ............ Done")
