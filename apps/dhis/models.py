@@ -120,3 +120,33 @@ class Dataset(CommonModel):
 
     def __str__(self):
         return self.name
+
+
+class Section(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    section_id = models.CharField(max_length=40, null=False, unique=True)
+    sort_order = models.IntegerField()
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    data_element = models.ManyToManyField(DataElement, through='SectionDataElement')
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class SectionDataElement(CommonModel):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE)
+    sort_order = models.IntegerField()
+    version = models.UUIDField(default=uuid.uuid4)
+
+    class Meta:
+        ordering = ['sort_order']
+
+    def __str__(self):
+        return "{} - {}".format(self.section.name, self.data_element.name)

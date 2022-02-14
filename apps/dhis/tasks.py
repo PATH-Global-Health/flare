@@ -4,7 +4,7 @@ from celery import shared_task
 from dhis2 import Api
 
 from .models import Instance, OrgUnit
-from .helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, sync_data_elements
+from .helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, sync_data_elements, sync_sections
 
 logger = logging.getLogger(__name__)
 
@@ -25,5 +25,6 @@ def sync_dhis2_metadata():
         sync_category_combos(api, dhis2, version)
         sync_data_elements(api, dhis2, version)
         sync_data_sets(api, dhis2, version)
+        sync_sections(api, dhis2, version)
 
     logger.info("Syncing metadata ............ Done")

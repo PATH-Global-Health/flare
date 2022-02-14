@@ -1,7 +1,8 @@
 import logging
 from datetime import datetime
 
-from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, DataElement
+from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
+    DataElement, Section, SectionDataElement
 
 logger = logging.getLogger(__name__)
 
@@ -112,6 +113,8 @@ def sync_data_elements(api, dhis2_instance, version):
 
             de.save()
 
+    DataElement.objects.exclude(version=version, instance=dhis2_instance).delete()
+
     logger.info("Syncing data elements ............ Done")
 
 
@@ -152,3 +155,42 @@ def sync_data_sets(api, dhis2_instance, version):
     Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing data sets ............ Done")
+
+
+def sync_sections(api, dhis2_instance, version):
+    logger.info("Starting to sync sections")
+
+    for pages in api.get_paged('sections', page_size=100, params={'fields': 'id,displayName,dataSet,sortOrder,dataElements'}):
+        for section in pages['sections']:
+            sec = Section.objects.get_or_none(section_id=section['id'])
+
+            if sec is None:
+                sec = Section()
+            sec.section_id = section['id']
+            sec.name = section['displayName'] if 'displayName' in section else "No Name"
+            sec.version = version
+            sec.instance = dhis2_instance
+            sec.sort_order = section['sortOrder']
+            sec.dataset = Dataset.objects.get_or_none(dataset_id=section['dataSet']['id'])
+
+            sec.save()
+
+            # save the data elements that the section contains
+            if 'dataElements' in section:
+                sort_order = 0
+                for data_element in section['dataElements']:
+                    de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
+                    if de is not None:
+                        sec_de = SectionDataElement()
+                        sec_de.data_element = de
+                        sec_de.section = sec
+                        sort_order += 1
+                        sec_de.sort_order = sort_order
+                        sec_de.version = version
+                        sec_de.save()
+
+                SectionDataElement.objects.exclude(version=version).delete()
+
+    Section.objects.exclude(version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing sections ............ Done")
