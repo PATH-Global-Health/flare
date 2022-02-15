@@ -49,7 +49,7 @@ class DHIS2User(CommonModel):
     name = models.CharField(max_length=200, null=True, blank=True)
     user_id = models.CharField(max_length=40, null=False, unique=True)
     username = models.CharField(max_length=100, null=False)
-    passcode = models.CharField(max_length=30, null=False)
+    passcode = models.CharField(max_length=30, null=True, unique=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     org_units = models.ManyToManyField(OrgUnit)

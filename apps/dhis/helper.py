@@ -3,6 +3,7 @@ from datetime import datetime
 
 from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
     DataElement, Section, SectionDataElement
+from .utils import unique_passcode
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,8 @@ def sync_org_units(api, dhis2_instance, version):
 def sync_users(api, dhis2_instance, version):
     logger.info("Starting to sync users")
 
-    for pages in api.get_paged('users', page_size=100, params={'fields': 'id,displayName,userCredentials,organisationUnits'}):
+    for pages in api.get_paged('users', page_size=100,
+                               params={'fields': 'id,displayName,userCredentials,organisationUnits'}):
         for user in pages['users']:
             usr = DHIS2User.objects.get_or_none(user_id=user['id'])
 
@@ -42,6 +44,8 @@ def sync_users(api, dhis2_instance, version):
             usr.user_id = user['id']
             usr.name = user['displayName'] if 'displayName' in user else "No Name"
             usr.username = user['userCredentials']['username'] if 'userCredentials' in user else ""
+            if usr.passcode is None:
+                usr.passcode = unique_passcode()
             usr.version = version
             usr.instance = dhis2_instance
 
@@ -63,7 +67,8 @@ def sync_users(api, dhis2_instance, version):
 def sync_category_combos(api, dhis2_instance, version):
     logger.info("Starting to sync category combos")
 
-    for pages in api.get_paged('categoryCombos', page_size=100, params={'fields': 'id,name,categoryOptionCombos[id,name]'}):
+    for pages in api.get_paged('categoryCombos', page_size=100,
+                               params={'fields': 'id,name,categoryOptionCombos[id,name]'}):
         for cat_combo in pages['categoryCombos']:
             cc = CategoryCombo.objects.get_or_none(category_combo_id=cat_combo['id'])
 
@@ -121,7 +126,8 @@ def sync_data_elements(api, dhis2_instance, version):
 def sync_data_sets(api, dhis2_instance, version):
     logger.info("Starting to sync data sets")
 
-    for pages in api.get_paged('dataSets', page_size=100, params={'fields': 'id,displayName,dataSetElements,organisationUnits'}):
+    for pages in api.get_paged('dataSets', page_size=100,
+                               params={'fields': 'id,displayName,dataSetElements,organisationUnits'}):
         for dataset in pages['dataSets']:
             ds = Dataset.objects.get_or_none(dataset_id=dataset['id'])
 
@@ -160,7 +166,8 @@ def sync_data_sets(api, dhis2_instance, version):
 def sync_sections(api, dhis2_instance, version):
     logger.info("Starting to sync sections")
 
-    for pages in api.get_paged('sections', page_size=100, params={'fields': 'id,displayName,dataSet,sortOrder,dataElements'}):
+    for pages in api.get_paged('sections', page_size=100,
+                               params={'fields': 'id,displayName,dataSet,sortOrder,dataElements'}):
         for section in pages['sections']:
             sec = Section.objects.get_or_none(section_id=section['id'])
 

@@ -20,6 +20,7 @@ class AfricasTalkingUssdGateway(UssdView):
         session_id = req.data['sessionId']
         if req.data.get('use_built_in_session_management', False):
             session_id = None
+
         ussd_request = UssdRequest(
             phone_number=req.data['phoneNumber'].strip('+'),
             session_id=session_id,

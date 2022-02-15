@@ -21,8 +21,8 @@ admin.site.register(OrgUnit, OrgUnitAdmin)
 
 
 class DHIS2UsersAdmin(admin.ModelAdmin):
-    list_display = ("name", "username", "user_id",)  # "org_units")
-    search_fields = ("name", "username", "user_id")
+    list_display = ("name", "username", "user_id", "passcode")  # "org_units")
+    search_fields = ("name", "username", "user_id", "passcode")
     list_filter = ("instance__url",)
 
     # def org_units(self, instance):
