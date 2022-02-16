@@ -218,7 +218,7 @@ def sync_sections(api, dhis2_instance, version):
 
 def invalidate_users_cache():
     for user in DHIS2User.objects.all():
-        redis_instance.unlink(user.passcode)
+        redis_instance.unlink("usr_{}".format(user.passcode))
     logger.info("Invalidating users from cache ............ Done")
 
 
@@ -235,11 +235,11 @@ def invalidate_dataset_cache():
     logger.info("Invalidating datasets from cache ............ Done")
 
 
-# passcode1: {
+# usr_passcode1: {
 #               1: {name: org_unit_name1, id: org_unit_id1},
 #               2: {name: org_unit_name2, id: org_unit_id2}
 #            }
-# passcode2: {
+# usr_passcode2: {
 #               1: {name: org_unit_name1, id: org_unit_id1},
 #               2: {name: org_unit_name2, id: org_unit_id2}
 #               3: {name: org_unit_name3, id: org_unit_id3}
@@ -256,18 +256,18 @@ def cache_users_with_their_assigned_org_units() -> List[dict]:
             if ou.org_unit_id not in org_units_to_cache:
                 org_units_to_cache.append(ou.org_unit_id)
 
-        redis_instance.set(user.passcode, json.dumps(user_ou))
+        redis_instance.set("usr_{}".format(user.passcode), json.dumps(user_ou))
 
     logger.info('Caching user with their assigned org units ............ Done')
 
     return org_units_to_cache
 
 
-# orgunit_id_1: {
+# ou_orgunit_id_1: {
 #               1: {name: dataset_name1, id: dataset_id1, period_type: period_type1},
 #               2: {name: dataset_name2, id: dataset_id2, period_type: period_type2}
 #            }
-# orgunit_id_2: {
+# ou_orgunit_id_2: {
 #               1: {name: dataset_name1, id: dataset_id1, period_type: period_type1},
 #               2: {name: dataset_name2, id: dataset_id2, period_type: period_type2}
 #               3: {name: dataset_name3, id: dataset_id3, period_type: period_type3}
@@ -288,7 +288,7 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
     logger.info('Caching org units with their datasets ............ Done')
 
 
-# dataset_id_1: {
+# ds_dataset_id_1: {
 #               1: {
 #                       name: section_name1,
 #                       id: section_id1
@@ -316,7 +316,7 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
 #                        ]
 #               }
 #            }
-# dataset_id_2: {...}
+# ds_dataset_id_2: {...}
 
 def cache_datasets_with_their_data_elements():
     for dataset in Dataset.objects.all():
