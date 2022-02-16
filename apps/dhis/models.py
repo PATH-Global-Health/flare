@@ -124,6 +124,7 @@ class Dataset(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)
     dataset_id = models.CharField(max_length=40, null=False, unique=True)
+    period_type = models.CharField(max_length=50, null=True, blank=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     org_units = models.ManyToManyField(OrgUnit)

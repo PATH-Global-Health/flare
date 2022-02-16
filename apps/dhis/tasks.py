@@ -29,12 +29,12 @@ def sync_dhis2_metadata():
 
         logger.info("Downloading metadata from {} with version {}.".format(dhis2.url, version))
 
-        # sync_org_units(api, dhis2, version)
-        # sync_users(api, dhis2, version)
-        # sync_category_combos(api, dhis2, version)
-        # sync_data_elements(api, dhis2, version)
-        # sync_data_sets(api, dhis2, version)
-        # sync_sections(api, dhis2, version)
+        sync_org_units(api, dhis2, version)
+        sync_users(api, dhis2, version)
+        sync_category_combos(api, dhis2, version)
+        sync_data_elements(api, dhis2, version)
+        sync_data_sets(api, dhis2, version)
+        sync_sections(api, dhis2, version)
 
     logger.info("Syncing metadata ............ Done")
 

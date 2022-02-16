@@ -139,7 +139,7 @@ def sync_data_sets(api, dhis2_instance, version):
     logger.info("Starting to sync data sets")
 
     for pages in api.get_paged('dataSets', page_size=100,
-                               params={'fields': 'id,displayName,dataSetElements,organisationUnits'}):
+                               params={'fields': 'id,displayName,periodType,dataSetElements,organisationUnits'}):
         for dataset in pages['dataSets']:
             ds = Dataset.objects.get_or_none(dataset_id=dataset['id'])
 
@@ -147,6 +147,7 @@ def sync_data_sets(api, dhis2_instance, version):
                 ds = Dataset()
             ds.dataset_id = dataset['id']
             ds.name = dataset['displayName'] if 'displayName' in dataset else "No Name"
+            ds.period_type = dataset['periodType'] if 'periodType' in dataset else ""
             ds.version = version
             ds.instance = dhis2_instance
 
@@ -246,8 +247,8 @@ def invalidate_dataset_cache():
 
 def cache_users_with_their_assigned_org_units() -> List[dict]:
     org_units_to_cache = []
-    users = DHIS2User.objects.all()
-    for user in users:
+
+    for user in DHIS2User.objects.all():
         user_ou = {}
         for i, ou in enumerate(user.org_units.all()):
             user_ou[i + 1] = {'name': ou.name, 'id': ou.org_unit_id}
@@ -263,13 +264,13 @@ def cache_users_with_their_assigned_org_units() -> List[dict]:
 
 
 # orgunit_id_1: {
-#               1: {name: dataset_name1, id: dataset_id1},
-#               2: {name: dataset_name2, id: dataset_id2}
+#               1: {name: dataset_name1, id: dataset_id1, period_type: period_type1},
+#               2: {name: dataset_name2, id: dataset_id2, period_type: period_type2}
 #            }
 # orgunit_id_2: {
-#               1: {name: dataset_name1, id: dataset_id1},
-#               2: {name: dataset_name2, id: dataset_id2}
-#               3: {name: dataset_name3, id: dataset_id3}
+#               1: {name: dataset_name1, id: dataset_id1, period_type: period_type1},
+#               2: {name: dataset_name2, id: dataset_id2, period_type: period_type2}
+#               3: {name: dataset_name3, id: dataset_id3, period_type: period_type3}
 #            }
 def cache_org_units_with_their_datasets(org_units_to_cache):
     for ou in org_units_to_cache:
@@ -278,7 +279,9 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
             datasets = org_unit.dataset_set.all()
             org_unit_datasets = {}
             for i, dataset in enumerate(datasets):
-                org_unit_datasets[i + 1] = {'name': dataset.name, 'id': dataset.dataset_id}
+                org_unit_datasets[i + 1] = {
+                    'name': dataset.name, 'id': dataset.dataset_id, 'period_type': dataset.period_type
+                }
 
             redis_instance.set("ou_{}".format(org_unit.org_unit_id), json.dumps(org_unit_datasets))
 
@@ -313,6 +316,7 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
 #                        ]
 #               }
 #            }
+# dataset_id_2: {...}
 
 def cache_datasets_with_their_data_elements():
     for dataset in Dataset.objects.all():
