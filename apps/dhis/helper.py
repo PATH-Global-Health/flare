@@ -1,11 +1,18 @@
+import json
 import logging
+import redis
 from datetime import datetime
+from typing import List
+
+from django.conf import settings
 
 from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
-    DataElement, Section, SectionDataElement
+    DataElement, Section, SectionDataElement, UserGroup
 from .utils import unique_passcode
 
 logger = logging.getLogger(__name__)
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
+                                   port=settings.REDIS_PORT, db=0, decode_responses=True)
 
 
 def sync_org_units(api, dhis2_instance, version):
@@ -34,30 +41,35 @@ def sync_org_units(api, dhis2_instance, version):
 def sync_users(api, dhis2_instance, version):
     logger.info("Starting to sync users")
 
-    for pages in api.get_paged('users', page_size=100,
-                               params={'fields': 'id,displayName,userCredentials,organisationUnits'}):
-        for user in pages['users']:
-            usr = DHIS2User.objects.get_or_none(user_id=user['id'])
+    user_groups = UserGroup.objects.filter(instance=dhis2_instance)
 
-            if usr is None:
-                usr = DHIS2User()
-            usr.user_id = user['id']
-            usr.name = user['displayName'] if 'displayName' in user else "No Name"
-            usr.username = user['userCredentials']['username'] if 'userCredentials' in user else ""
-            if usr.passcode is None:
-                usr.passcode = unique_passcode()
-            usr.version = version
-            usr.instance = dhis2_instance
+    for user_group in user_groups:
+        for pages in api.get_paged('users', page_size=100,
+                                   params={'fields': 'id,displayName,userCredentials,organisationUnits',
+                                           'filter': 'userGroups.id:eq:{}'.format(user_group.group_id)}):
+            for user in pages['users']:
+                usr = DHIS2User.objects.get_or_none(user_id=user['id'])
 
-            usr.save()
-            usr.org_units.clear()
+                if usr is None:
+                    usr = DHIS2User()
+                usr.user_id = user['id']
+                usr.name = user['displayName'] if 'displayName' in user else "No Name"
+                usr.username = user['userCredentials']['username'] if 'userCredentials' in user else ""
+                if usr.passcode is None:
+                    usr.passcode = unique_passcode()
+                usr.group = user_group
+                usr.version = version
+                usr.instance = dhis2_instance
 
-            if 'organisationUnits' in user:
-                for org_unit in user['organisationUnits']:
-                    ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
-                    if ou is not None:
-                        usr.org_units.add(ou)
                 usr.save()
+                usr.org_units.clear()
+
+                if 'organisationUnits' in user:
+                    for org_unit in user['organisationUnits']:
+                        ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
+                        if ou is not None:
+                            usr.org_units.add(ou)
+                    usr.save()
 
     DHIS2User.objects.exclude(version=version, instance=dhis2_instance).delete()
 
@@ -201,3 +213,125 @@ def sync_sections(api, dhis2_instance, version):
     Section.objects.exclude(version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing sections ............ Done")
+
+
+def invalidate_users_cache():
+    for user in DHIS2User.objects.all():
+        redis_instance.unlink(user.passcode)
+    logger.info("Invalidating users from cache ............ Done")
+
+
+def invalidate_org_units_cache():
+    for user in DHIS2User.objects.all():
+        for ou in user.org_units.all():
+            redis_instance.unlink("ou_{}".format(ou.org_unit_id))
+    logger.info("Invalidating org units from cache ............ Done")
+
+
+def invalidate_dataset_cache():
+    for dataset in Dataset.objects.all():
+        redis_instance.unlink("ds_{}".format(dataset.dataset_id))
+    logger.info("Invalidating datasets from cache ............ Done")
+
+
+# passcode1: {
+#               1: {name: org_unit_name1, id: org_unit_id1},
+#               2: {name: org_unit_name2, id: org_unit_id2}
+#            }
+# passcode2: {
+#               1: {name: org_unit_name1, id: org_unit_id1},
+#               2: {name: org_unit_name2, id: org_unit_id2}
+#               3: {name: org_unit_name3, id: org_unit_id3}
+#            }
+
+def cache_users_with_their_assigned_org_units() -> List[dict]:
+    org_units_to_cache = []
+    users = DHIS2User.objects.all()
+    for user in users:
+        user_ou = {}
+        for i, ou in enumerate(user.org_units.all()):
+            user_ou[i + 1] = {'name': ou.name, 'id': ou.org_unit_id}
+
+            if ou.org_unit_id not in org_units_to_cache:
+                org_units_to_cache.append(ou.org_unit_id)
+
+        redis_instance.set(user.passcode, json.dumps(user_ou))
+
+    logger.info('Caching user with their assigned org units ............ Done')
+
+    return org_units_to_cache
+
+
+# orgunit_id_1: {
+#               1: {name: dataset_name1, id: dataset_id1},
+#               2: {name: dataset_name2, id: dataset_id2}
+#            }
+# orgunit_id_2: {
+#               1: {name: dataset_name1, id: dataset_id1},
+#               2: {name: dataset_name2, id: dataset_id2}
+#               3: {name: dataset_name3, id: dataset_id3}
+#            }
+def cache_org_units_with_their_datasets(org_units_to_cache):
+    for ou in org_units_to_cache:
+        org_unit = OrgUnit.objects.get_or_none(org_unit_id=ou)
+        if org_unit is not None:
+            datasets = org_unit.dataset_set.all()
+            org_unit_datasets = {}
+            for i, dataset in enumerate(datasets):
+                org_unit_datasets[i + 1] = {'name': dataset.name, 'id': dataset.dataset_id}
+
+            redis_instance.set("ou_{}".format(org_unit.org_unit_id), json.dumps(org_unit_datasets))
+
+    logger.info('Caching org units with their datasets ............ Done')
+
+
+# dataset_id_1: {
+#               1: {
+#                       name: section_name1,
+#                       id: section_id1
+#                       dataelements: [
+#                           {
+#                               dataelement_name: dataelement_name1,
+#                               dataelement_id: dataelement_id1,
+#                               catoptioncombo_name: catoptioncombo_name1,
+#                               categoryoptioncombo_id: categoryoptioncombo_id,
+#                               dataelement_value_type: dataelement_value_type
+#                           }
+#                       ]
+#                  },
+#               2: {
+#                       name: section_name2,
+#                       id: section_id2
+#                       dataelements: [
+#                           {
+#                                dataelement_name: dataelement_name2,
+#                                dataelement_id: dataelement_id2,
+#                                catoptioncombo_name: catoptioncombo_name2,
+#                                categoryoptioncombo_id: categoryoptioncombo_id2,
+#                                dataelement_value_type: dataelement_value_type
+#                            }
+#                        ]
+#               }
+#            }
+
+def cache_datasets_with_their_data_elements():
+    for dataset in Dataset.objects.all():
+        dataset_sections = {}
+        for i, section in enumerate(dataset.section_set.all()):
+            dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'dataelements': []}
+            for sec_de in section.sectiondataelement_set.all():
+                de = sec_de.data_element
+                for coc in de.category_combo.categoryoptioncombo_set.all():
+                    dataset_sections[i + 1]['dataelements'].append(
+                        {
+                            'dataelement_name': de.name,
+                            'dataelement_id': de.data_element_id,
+                            'catoptioncombo_name': coc.name,
+                            'categoryoptioncombo_id': coc.category_option_combo_id,
+                            'dataelement_value_type': de.value_type
+                        }
+                    )
+
+        redis_instance.set("ds_{}".format(dataset.dataset_id), json.dumps(dataset_sections))
+
+    logger.info('Caching datasets with sections, dataelements and category combos  ............ Done')

@@ -43,6 +43,19 @@ class OrgUnit(CommonModel):
         return self.name
 
 
+class UserGroup(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    group_id = models.CharField(max_length=40, null=False, unique=True)
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class DHIS2User(CommonModel):
     objects = DHIS2Manager()
 
@@ -52,6 +65,7 @@ class DHIS2User(CommonModel):
     passcode = models.CharField(max_length=30, null=True, unique=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+    group = models.ForeignKey(UserGroup, on_delete=models.CASCADE, null=True)
     org_units = models.ManyToManyField(OrgUnit)
 
     class Meta:
@@ -133,13 +147,14 @@ class Section(CommonModel):
     data_element = models.ManyToManyField(DataElement, through='SectionDataElement')
 
     class Meta:
-        ordering = ['name']
+        ordering = ['sort_order']
 
     def __str__(self):
         return self.name
 
 
 class SectionDataElement(CommonModel):
+    objects = DHIS2Manager()
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE)
     sort_order = models.IntegerField()

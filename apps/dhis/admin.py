@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryCombo, CategoryOptionCombo, \
-    Section, SectionDataElement
+    Section, SectionDataElement, UserGroup
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -20,10 +20,19 @@ class OrgUnitAdmin(admin.ModelAdmin):
 admin.site.register(OrgUnit, OrgUnitAdmin)
 
 
+class UserGroupsAdmin(admin.ModelAdmin):
+    list_display = ("name", "group_id")
+    search_fields = ("name", "group_id")
+    list_filter = ("instance__url",)
+
+
+admin.site.register(UserGroup, UserGroupsAdmin)
+
+
 class DHIS2UsersAdmin(admin.ModelAdmin):
     list_display = ("name", "username", "user_id", "passcode")  # "org_units")
     search_fields = ("name", "username", "user_id", "passcode")
-    list_filter = ("instance__url",)
+    list_filter = ("instance__url", "group__name")
 
     # def org_units(self, instance):
     #     return [ou.name for ou in instance.orgUnits.all()]
