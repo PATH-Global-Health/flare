@@ -3,9 +3,9 @@ import redis
 from enum import IntEnum
 from decouple import config
 
+from django.http import HttpResponse
 from django.conf import settings
 from rest_framework.views import APIView
-from rest_framework.response import Response
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                    port=settings.REDIS_PORT, db=0, decode_responses=True)
@@ -53,16 +53,15 @@ class Screen(object):
     def ussd_proceed(self, display_text):
         self.save()
         display_text = "CON {}".format(display_text)
-        response = Response(display_text, 200)
-        response.headers['Content-Type'] = "text/plain"
-        return response
+
+        return HttpResponse(display_text)
 
     def ussd_end(self, display_text):
         redis_instance.delete(self.session_id)
         display_text = "END {}".format(display_text)
-        response = Response(display_text, 200)
-        response.headers['Content-Type'] = "text/plain"
-        return response
+
+        return HttpResponse(display_text)
+
 
     def save(self):
         if self.level == Level.LOGIN:
