@@ -194,6 +194,10 @@ CELERY_BEAT_SCHEDULE = {
         # Executes every 7 day (7 days * 24 hrs * 60 minutes * 60 seconds)
         'schedule': timedelta(seconds=604800),
     },
+    'cache-dhis2-metadata': {
+        'task': 'apps.dhis.tasks.cache_dhis2_metadata',
+        'schedule': timedelta(seconds=604800),
+    }
 }
 
 CHANNEL_LAYERS = {

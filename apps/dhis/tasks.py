@@ -43,3 +43,12 @@ def sync_dhis2_metadata():
     cache_datasets_with_their_data_elements()
 
 
+@shared_task
+def cache_dhis2_metadata():
+    invalidate_users_cache()
+    invalidate_org_units_cache()
+    invalidate_dataset_cache()
+
+    org_units_to_cache = cache_users_with_their_assigned_org_units()
+    cache_org_units_with_their_datasets(org_units_to_cache)
+    cache_datasets_with_their_data_elements()

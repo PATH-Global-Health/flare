@@ -252,7 +252,6 @@ def cache_users_with_their_assigned_org_units() -> List[dict]:
         user_ou = {}
         for i, ou in enumerate(user.org_units.all()):
             user_ou[i + 1] = {'name': ou.name, 'id': ou.org_unit_id}
-
             if ou.org_unit_id not in org_units_to_cache:
                 org_units_to_cache.append(ou.org_unit_id)
 
