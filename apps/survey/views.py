@@ -17,8 +17,7 @@ from apps.survey.tasks import create_survey_result_task, mark_survey_result_comp
 
 # from survey.helpers import config_survey_result
 
-redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
-                                   port=settings.REDIS_PORT, db=0, decode_responses=True)
+redis_instance = redis
 
 
 class SurveyViewSet(viewsets.ModelViewSet):

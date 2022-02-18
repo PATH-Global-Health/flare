@@ -1,18 +1,14 @@
-import json
 import logging
-import redis
 from datetime import datetime
 from typing import List
 
 from django.conf import settings
 
-from .models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
+from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
     DataElement, Section, SectionDataElement, UserGroup
-from .utils import unique_passcode
+from apps.dhis.utils import unique_passcode
 
 logger = logging.getLogger(__name__)
-redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
-                                   port=settings.REDIS_PORT, db=0, decode_responses=True)
 
 
 def sync_org_units(api, dhis2_instance, version):
@@ -218,20 +214,20 @@ def sync_sections(api, dhis2_instance, version):
 
 def invalidate_users_cache():
     for user in DHIS2User.objects.all():
-        redis_instance.unlink("usr_{}".format(user.passcode))
+        Store.unlink("usr_{}".format(user.passcode))
     logger.info("Invalidating users from cache ............ Done")
 
 
 def invalidate_org_units_cache():
     for user in DHIS2User.objects.all():
         for ou in user.org_units.all():
-            redis_instance.unlink("ou_{}".format(ou.org_unit_id))
+            Store.unlink("ou_{}".format(ou.org_unit_id))
     logger.info("Invalidating org units from cache ............ Done")
 
 
 def invalidate_dataset_cache():
     for dataset in Dataset.objects.all():
-        redis_instance.unlink("ds_{}".format(dataset.dataset_id))
+        Store.unlink("ds_{}".format(dataset.dataset_id))
     logger.info("Invalidating datasets from cache ............ Done")
 
 
@@ -255,7 +251,7 @@ def cache_users_with_their_assigned_org_units() -> List[dict]:
             if ou.org_unit_id not in org_units_to_cache:
                 org_units_to_cache.append(ou.org_unit_id)
 
-        redis_instance.set("usr_{}".format(user.passcode), json.dumps(user_ou))
+        Store.set("usr_{}".format(user.passcode), user_ou)
 
     logger.info('Caching user with their assigned org units ............ Done')
 
@@ -282,7 +278,7 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
                     'name': dataset.name, 'id': dataset.dataset_id, 'period_type': dataset.period_type
                 }
 
-            redis_instance.set("ou_{}".format(org_unit.org_unit_id), json.dumps(org_unit_datasets))
+            Store.set("ou_{}".format(org_unit.org_unit_id), org_unit_datasets)
 
     logger.info('Caching org units with their datasets ............ Done')
 
@@ -335,6 +331,6 @@ def cache_datasets_with_their_data_elements():
                         }
                     )
 
-        redis_instance.set("ds_{}".format(dataset.dataset_id), json.dumps(dataset_sections))
+        Store.set("ds_{}".format(dataset.dataset_id), dataset_sections)
 
     logger.info('Caching datasets with sections, dataelements and category combos  ............ Done')

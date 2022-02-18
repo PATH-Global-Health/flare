@@ -5,8 +5,7 @@ import redis
 from django.conf import settings
 import time
 
-redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
-                                   port=settings.REDIS_PORT, db=0, decode_responses=True)
+redis_instance = redis
 
 
 def change_language(ussd_request):

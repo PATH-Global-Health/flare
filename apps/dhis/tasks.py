@@ -4,7 +4,7 @@ from celery import shared_task
 from dhis2 import Api
 
 from .models import Instance, OrgUnit
-from .helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, sync_data_elements,\
+from apps.dhis.ussd.helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, sync_data_elements,\
     sync_sections, invalidate_users_cache, invalidate_org_units_cache, invalidate_dataset_cache,\
     cache_users_with_their_assigned_org_units,cache_org_units_with_their_datasets,\
     cache_datasets_with_their_data_elements
