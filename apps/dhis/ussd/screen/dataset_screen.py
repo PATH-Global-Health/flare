@@ -1,4 +1,5 @@
 from .screen import Screen, Level
+from .section_screen import SectionScreen
 from ..store.store import Store
 
 
@@ -32,7 +33,7 @@ class DatasetScreen(Screen):
         return False
 
     def next(self):
-        return self.ussd_end("Go to section")
+        return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass
