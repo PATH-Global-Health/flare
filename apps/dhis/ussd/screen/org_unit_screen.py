@@ -1,4 +1,5 @@
 from .screen import Screen, Level
+from .dataset_screen import DatasetScreen
 from ..store.store import Store
 
 
@@ -32,7 +33,7 @@ class OrgUnitScreen(Screen):
         return False
 
     def next(self):
-        pass
+        return DatasetScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass

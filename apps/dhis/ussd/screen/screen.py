@@ -9,7 +9,7 @@ from ..store.store import Store
 class Level(IntEnum):
     LOGIN = 1
     ORG_UNITS = 2
-    DATA_SETS = 3
+    DATASETS = 3
     PERIODS = 4
     SECTIONS = 5
     DATA_ELEMENTS = 6

@@ -7,6 +7,7 @@ from django.conf import settings
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
     DataElement, Section, SectionDataElement, UserGroup
 from apps.dhis.utils import unique_passcode
+from apps.dhis.ussd.store.store import Store
 
 logger = logging.getLogger(__name__)
 
