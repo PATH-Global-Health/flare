@@ -47,7 +47,7 @@ class Screen(object):
     def validate(self):
         raise NotImplementedError
 
-    def proceed(self):
+    def next(self):
         raise NotImplementedError
 
     def ussd_proceed(self, display_text):
@@ -61,7 +61,6 @@ class Screen(object):
         display_text = "END {}".format(display_text)
 
         return HttpResponse(display_text)
-
 
     def save(self):
         if self.level == Level.LOGIN:
@@ -94,7 +93,7 @@ class LoginScreen(Screen):
             return True
         return False
 
-    def proceed(self):
+    def next(self):
         return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
 
@@ -124,7 +123,7 @@ class OrgUnitScreen(Screen):
 
         return False
 
-    def proceed(self):
+    def next(self):
         pass
 
 
@@ -150,14 +149,14 @@ class Gateway(APIView):
             if not screen.validate():
                 return screen.show()
             else:
-                return screen.proceed()
+                return screen.next()
 
         if screen.state['level'] == Level.ORG_UNITS:
             screen = OrgUnitScreen(session_id=session_id, phone_number=phone_number, user_response=text)
             if not screen.validate():
                 return screen.show()
             else:
-                # return screen.proceed()
+                # return screen.next()
                 return screen.ussd_end("Good bye 2")
 
         return screen.ussd_end("Good bye 1")
