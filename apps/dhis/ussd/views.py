@@ -2,6 +2,7 @@ from .screen.screen import Screen, Level
 from .screen.login_screen import LoginScreen
 from .screen.org_unit_screen import OrgUnitScreen
 from .screen.dataset_screen import DatasetScreen
+from .screen.section_screen import SectionScreen
 
 
 class USSDView:
@@ -28,6 +29,9 @@ class USSDView:
                                         user_response=self.user_response)
         elif self.screen.state['level'] == Level.DATASETS:
             self.screen = DatasetScreen(session_id=self.session_id, phone_number=self.phone_number,
+                                        user_response=self.user_response)
+        elif self.screen.state['level'] == Level.SECTIONS:
+            self.screen = SectionScreen(session_id=self.session_id, phone_number=self.phone_number,
                                         user_response=self.user_response)
 
         if not self.screen.validate():
