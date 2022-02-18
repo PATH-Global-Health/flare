@@ -50,6 +50,9 @@ class Screen(object):
     def next(self):
         raise NotImplementedError
 
+    def prev(self):
+        raise NotImplementedError
+
     def ussd_proceed(self, display_text):
         self.save()
         display_text = "CON {}".format(display_text)
@@ -63,13 +66,8 @@ class Screen(object):
         return HttpResponse(display_text)
 
     def save(self):
-        if self.level == Level.LOGIN:
-            self.state['level'] = self.level
-            redis_instance.set(self.session_id, json.dumps(self.state))
-        elif self.level == Level.ORG_UNITS:
-            self.state['org_unit'] = self.user_response
-            self.state['level'] = self.level
-            redis_instance.set(self.session_id, json.dumps(self.state))
+        self.state['level'] = self.level
+        redis_instance.set(self.session_id, json.dumps(self.state))
 
 
 class LoginScreen(Screen):
@@ -96,6 +94,9 @@ class LoginScreen(Screen):
     def next(self):
         return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
+    def prev(self):
+        pass
+
 
 class OrgUnitScreen(Screen):
     """displays the org units that the user is assigned"""
@@ -119,11 +120,17 @@ class OrgUnitScreen(Screen):
         key = "usr_{}".format(self.state['passcode'])
         if redis_instance.exists(key):
             org_units = json.loads(redis_instance.get(key))
-            return self.user_response in org_units.keys()
+            if self.user_response in org_units.keys():
+                self.state['org_unit'] = org_units[self.user_response]['id']
+                self.save()
+                return True
 
         return False
 
     def next(self):
+        pass
+
+    def prev(self):
         pass
 
 
