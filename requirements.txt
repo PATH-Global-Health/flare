@@ -8,6 +8,7 @@ django-cors-headers==3.11.0
 django-filter==21.1
 django-rest-knox==4.1.0
 djangorestframework==3.13.1
+epiweeks==2.1.4
 gunicorn==20.1.0
 jinja2==3.0.3
 psycopg2-binary==2.8.5

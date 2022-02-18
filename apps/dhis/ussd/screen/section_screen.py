@@ -12,7 +12,7 @@ class SectionScreen(Screen):
         key = "ds_{}".format(self.state['dataset'])
         if Store.exists(key):
             sections = Store.get(key)
-            menu_text = "Select section:\n"
+            menu_text = "Section:\n"
             for key, value in sections.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
 

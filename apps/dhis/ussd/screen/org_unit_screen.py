@@ -13,7 +13,7 @@ class OrgUnitScreen(Screen):
         key = "usr_{}".format(self.state['passcode'])
         if Store.exists(key):
             org_units = Store.get(key)
-            menu_text = "Select org unit:\n"
+            menu_text = "Org unit:\n"
             for key, value in org_units.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
 
