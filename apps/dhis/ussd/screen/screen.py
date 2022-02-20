@@ -1,9 +1,8 @@
 from enum import IntEnum
 
 from django.http import HttpResponse
-from django.conf import settings
 
-from ..store.store import Store
+from apps.dhis.ussd.store.store import Store
 
 
 class Level(IntEnum):
@@ -30,7 +29,12 @@ class Screen(object):
             'category_option_combo': '',
             'period': '',
             'dataset': '',
+            'period_type': '',
+            'open_future_periods': '',
             'section': '',
+            'begin_period': '',
+            'direction': '-',
+            'direction_change': False
         }
 
         if Store.exists(self.session_id):

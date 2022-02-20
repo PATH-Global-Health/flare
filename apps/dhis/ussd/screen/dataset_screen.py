@@ -1,5 +1,5 @@
 from .screen import Screen, Level
-from .section_screen import SectionScreen
+from .period_screen import PeriodScreen
 from ..store.store import Store
 
 
@@ -27,13 +27,15 @@ class DatasetScreen(Screen):
             datasets = Store.get(key)
             if self.user_response in datasets.keys():
                 self.state['dataset'] = datasets[self.user_response]['id']
+                self.state['period_type'] = datasets[self.user_response]['period_type']
+                self.state['open_future_periods'] = datasets[self.user_response]['open_future_periods']
                 self.save()
                 return True
 
         return False
 
     def next(self):
-        return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        return PeriodScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass

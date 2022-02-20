@@ -1,5 +1,5 @@
-from .screen import Screen, Level
-from ..store.store import Store
+from apps.dhis.ussd.screen.screen import Screen, Level
+from apps.dhis.ussd.store.store import Store
 
 
 class SectionScreen(Screen):
