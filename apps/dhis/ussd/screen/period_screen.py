@@ -14,7 +14,7 @@ class PeriodScreen(Screen):
 
     def show(self):
         periods = generate_period(self.state['period_type'], self.state['open_future_periods'],
-                                  config('PAGINATION_LIMIT', 3), self.state['begin_period'], self.state['direction'],
+                                  int(config('PAGE_LIMIT', 3)), self.state['begin_period'], self.state['direction'],
                                   self.state['direction_change'])
         menu_text = "Period:\n"
         menu_text += "+. Next\n"
@@ -28,7 +28,7 @@ class PeriodScreen(Screen):
 
     def validate(self):
         periods = generate_period(self.state['period_type'], self.state['open_future_periods'],
-                                  config('PAGINATION_LIMIT', 3), self.state['begin_period'], self.state['direction'],
+                                  int(config('PAGE_LIMIT', 3)), self.state['begin_period'], self.state['direction'],
                                   self.state['direction_change'])
 
         if self.user_response == '+' or self.user_response == '-':
