@@ -30,10 +30,6 @@ def unique_passcode():
     return passcode
 
 
-def get_period(selected_period):
-    return Week.fromstring(selected_period).cdcformat()
-
-
 # This function generates week period for dhis2
 # The data return data is structured in such as way
 #          ("2020-12-07", {

@@ -3,7 +3,7 @@ from decouple import config
 from apps.dhis.ussd.screen.screen import Screen, Level
 from apps.dhis.ussd.screen.section_screen import SectionScreen
 from apps.dhis.ussd.store.store import Store
-from apps.dhis.utils import generate_period, get_period
+from apps.dhis.utils import generate_period
 
 
 class PeriodScreen(Screen):
@@ -46,7 +46,7 @@ class PeriodScreen(Screen):
             #     1: {'period': '202050', display:"W50 - 2020-12-07 - 2020-12-13"},
             #     2: {...}
             # }
-            self.state['period'] = get_period(periods[1][self.user_response]['period'])
+            self.state['period'] = periods[1][self.user_response]['period']
             self.save()
             return True
 
