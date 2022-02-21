@@ -1,5 +1,6 @@
 from apps.dhis.ussd.screen.screen import Screen, Level
 from apps.dhis.ussd.store.store import Store
+from apps.dhis.ussd.screen.data_element_screen import DataElementScreen
 
 
 class SectionScreen(Screen):
@@ -25,14 +26,17 @@ class SectionScreen(Screen):
         if Store.exists(key):
             sections = Store.get(key)
             if self.user_response in sections.keys():
-                self.state['section'] = sections[self.user_response]['id']
+                # self.state['section'] = sections[self.user_response]['id']
+                self.state['section'] = self.user_response
+                # Always reset the data element index in the selected section to 0 to show the first data element.
+                self.state['data_element_index'] = -1
                 self.save()
                 return True
 
         return False
 
     def next(self):
-        return self.ussd_end("Go to the first data element")
+        return DataElementScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass

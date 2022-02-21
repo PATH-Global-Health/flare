@@ -25,8 +25,6 @@ class Screen(object):
             'passcode': '',
             'level': '',
             'org_unit': '',
-            'data_element': '',
-            'category_option_combo': '',
             'period': '',
             'dataset': '',
             'period_type': '',
@@ -34,7 +32,10 @@ class Screen(object):
             'section': '',
             'begin_period': '',
             'direction': '-',
-            'direction_change': False
+            'direction_change': False,
+            'data_element_index': -1,
+            'previous_data_element_value_error': False,
+            'data_element_values': {}
         }
 
         if Store.exists(self.session_id):

@@ -84,3 +84,66 @@ def generate_period(period_type, open_future_periods, page_limit, begin_period='
         return generate_week_periods(open_future_periods, page_limit, begin_period, direction, direction_change)
 
     return {}
+
+
+def validate_number(value):
+    if value is not None and value.isnumberic():
+        return True, value
+    return False, value
+
+
+def validate_integer(value):
+    if value is not None and value.isdigit():
+        return True, int(value)
+    return False, value
+
+
+def validate_int_positive(value):
+    val = validate_integer(value)
+    if val[0] and val[1] > 0:
+        return True, val[1]
+
+    return False, value
+
+
+def validate_int_zero_or_positive(value):
+    val = validate_integer(value)
+    if val[0] and val[1] >= 0:
+        return True, val[1]
+
+    return False, value
+
+
+def validate_int_negative(value):
+    val = validate_integer(value)
+    if val[0] and val[1] < 0:
+        return True, val[1]
+
+    return False, value
+
+
+def validate_text(value):
+    if value is not None:
+        return True, value
+    return False, value
+
+
+def validate_data_element_by_value_type(value_type, value):
+    if value_type == "NUMBER":
+        return validate_number(value)
+
+    if value_type == "INTEGER":
+        return validate_integer(value)
+
+    if value_type == "INTEGER_POSITIVE":
+        return validate_positive_integer(value)
+
+    if value_type == "INTEGER_ZERO_OR_POSITIVE":
+        return validate_int_zero_or_positive(value)
+
+    if value_type == "INTEGER_NEGATIVE":
+        return validate_int_negative(value)
+
+    if value_type == "TEXT" or value_type == "LONG_TEXT":
+        return validate_text(value)
+

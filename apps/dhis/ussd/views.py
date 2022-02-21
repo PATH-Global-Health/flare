@@ -4,6 +4,7 @@ from apps.dhis.ussd.screen.org_unit_screen import OrgUnitScreen
 from apps.dhis.ussd.screen.dataset_screen import DatasetScreen
 from apps.dhis.ussd.screen.section_screen import SectionScreen
 from apps.dhis.ussd.screen.period_screen import PeriodScreen
+from apps.dhis.ussd.screen.data_element_screen import DataElementScreen
 
 
 class USSDView:
@@ -37,6 +38,9 @@ class USSDView:
         elif self.screen.state['level'] == Level.PERIODS:
             self.screen = PeriodScreen(session_id=self.session_id, phone_number=self.phone_number,
                                        user_response=self.user_response)
+        elif self.screen.state['level'] == Level.DATA_ELEMENTS:
+            self.screen = DataElementScreen(session_id=self.session_id, phone_number=self.phone_number,
+                                            user_response=self.user_response)
 
         if not self.screen.validate():
             return self.screen.show()

@@ -305,26 +305,26 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
 #               1: {
 #                       name: section_name1,
 #                       id: section_id1
-#                       dataelements: [
+#                       data_elements: [
 #                           {
-#                               dataelement_name: dataelement_name1,
-#                               dataelement_id: dataelement_id1,
-#                               catoptioncombo_name: catoptioncombo_name1,
-#                               categoryoptioncombo_id: categoryoptioncombo_id,
-#                               dataelement_value_type: dataelement_value_type
+#                               data_element_name: data_element_name1,
+#                               data_element_id: data_element_id1,
+#                               category_option_combo_name: category_option_combo_name1,
+#                               category_option_combo_id: category_option_combo_id,
+#                               data_element_value_type: data_element_value_type
 #                           }
 #                       ]
 #                  },
 #               2: {
 #                       name: section_name2,
 #                       id: section_id2
-#                       dataelements: [
+#                       data_elements: [
 #                           {
-#                                dataelement_name: dataelement_name2,
-#                                dataelement_id: dataelement_id2,
-#                                catoptioncombo_name: catoptioncombo_name2,
-#                                categoryoptioncombo_id: categoryoptioncombo_id2,
-#                                dataelement_value_type: dataelement_value_type
+#                                data_element_name: data_element_name2,
+#                                data_element_id: data_element_id2,
+#                                category_option_combo_name: category_option_combo_name2,
+#                                category_option_combo_id: category_option_combo_id2,
+#                                data_element_value_type: data_element_value_type
 #                            }
 #                        ]
 #               }
@@ -335,20 +335,20 @@ def cache_datasets_with_their_data_elements():
     for dataset in Dataset.objects.all():
         dataset_sections = {}
         for i, section in enumerate(dataset.section_set.all()):
-            dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'dataelements': []}
+            dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'data_elements': []}
             for sec_de in section.sectiondataelement_set.all():
                 de = sec_de.data_element
                 for coc in de.category_combo.categoryoptioncombo_set.all():
-                    dataset_sections[i + 1]['dataelements'].append(
+                    dataset_sections[i + 1]['data_elements'].append(
                         {
-                            'dataelement_name': de.name,
-                            'dataelement_id': de.data_element_id,
-                            'catoptioncombo_name': coc.name,
-                            'categoryoptioncombo_id': coc.category_option_combo_id,
-                            'dataelement_value_type': de.value_type
+                            'data_element_name': de.name,
+                            'data_element_id': de.data_element_id,
+                            'category_option_combo_name': coc.name,
+                            'category_option_combo_id': coc.category_option_combo_id,
+                            'data_element_value_type': de.value_type
                         }
                     )
 
         Store.set("ds_{}".format(dataset.dataset_id), dataset_sections)
 
-    logger.info('Caching datasets with sections, dataelements and category combos  ............ Done')
+    logger.info('Caching datasets with sections, data elements and category combos  ............ Done')
