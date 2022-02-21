@@ -44,6 +44,7 @@ def get_period(selected_period):
 # to display. The amount of periods generated depends on the value set for PAGINATION_LIMIT in .env file.
 def generate_week_periods(open_future_periods, pagination_limit, begin_period, direction, direction_change):
     weeks_to_display = {}
+    page_limit = int(pagination_limit)
 
     # When the user first visits the period screen the begin_period variable is empty.
     # Therefore, use the current week as default.
@@ -51,8 +52,7 @@ def generate_week_periods(open_future_periods, pagination_limit, begin_period, d
 
     # If begin_period variable has a date, use it to calculate the weeks to display.
     if begin_period != '':
-        d = datetime.datetime.strptime(begin_period, '%Y-%m-%d')
-        week = Week.fromdate(d, 'iso')
+        week = Week.fromdate(datetime.datetime.strptime(begin_period, '%Y-%m-%d'), 'iso')
         # This logic to fix the one week discrepancy when a user clicks + and changes the direction and press -
         if direction_change:
             if direction == '+':
@@ -61,10 +61,10 @@ def generate_week_periods(open_future_periods, pagination_limit, begin_period, d
                 week -= 1
 
     # We should not open future dates for data entry. The -1 is to prevent from opening this week.
-    if direction == '+' and week + int(pagination_limit) > Week.thisweek("iso") + open_future_periods:
-        week = Week.thisweek("iso") + open_future_periods - int(pagination_limit) - 1
+    if direction == '+' and week + page_limit > Week.thisweek("iso") + open_future_periods:
+        week = Week.thisweek("iso") + open_future_periods - page_limit - 1
 
-    rng = range(int(pagination_limit), 0, -1) if direction == '+' else range(int(pagination_limit))
+    rng = range(page_limit, 0, -1) if direction == '+' else range(page_limit)
 
     for key, i in enumerate(rng):
         w = week + i if direction == '+' else week - (i + 1)
@@ -74,10 +74,10 @@ def generate_week_periods(open_future_periods, pagination_limit, begin_period, d
         }
 
         # Take the first week to calculate the beginning period in the next screen.
-        if direction == '+' and i == int(pagination_limit):
+        if direction == '+' and i == page_limit:
             begin_period = str(w.enddate())
         # Take the final week to calculate the beginning week in the next screen.
-        if direction == '-' and i == int(pagination_limit) - 1:
+        if direction == '-' and i == page_limit - 1:
             begin_period = str(w.startdate())
 
     return begin_period, weeks_to_display
