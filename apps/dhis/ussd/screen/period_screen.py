@@ -17,11 +17,12 @@ class PeriodScreen(Screen):
                                   config('PAGINATION_LIMIT', 3), self.state['begin_period'], self.state['direction'],
                                   self.state['direction_change'])
         menu_text = "Period:\n"
-        for key, value in periods[1].items():
-            menu_text += "{}. {}\n".format(key, value)
+        menu_text += "+. Next\n"
 
-        menu_text += "-. Prev\n"
-        menu_text += "+. Next"
+        for key, value in periods[1].items():
+            menu_text += "{}. {}\n".format(key, value["display"])
+
+        menu_text += "-. Prev"
 
         return self.ussd_proceed(menu_text)
 
@@ -40,7 +41,12 @@ class PeriodScreen(Screen):
 
         if self.user_response in periods[1].keys():
             self.state['begin_period'] = periods[0]
-            self.state['period'] = get_period(periods[0])
+            # this is the period. The data is structured in such as way
+            # {
+            #     1: {'period': '202050', display:"W50 - 2020-12-07 - 2020-12-13"},
+            #     2: {...}
+            # }
+            self.state['period'] = get_period(periods[1][self.user_response]['period'])
             self.save()
             return True
 

@@ -34,6 +34,14 @@ def get_period(selected_period):
     return Week.fromstring(selected_period).cdcformat()
 
 
+# This function generates week period for dhis2
+# The data return data is structured in such as way
+#          ("2020-12-07", {
+#             1: {'period': '202050', 'display':"W50 - 2020-12-07 - 2020-12-13"},
+#             2: {...}
+#         })
+# The first value in the tuple is used as begin period and the second value is list of periods
+# to display. The amount of periods generated depends on the value set for PAGINATION_LIMIT in .env file.
 def generate_week_periods(open_future_periods, pagination_limit, begin_period, direction, direction_change):
     weeks_to_display = {}
 
@@ -52,12 +60,18 @@ def generate_week_periods(open_future_periods, pagination_limit, begin_period, d
             if direction == '-':
                 week -= 1
 
+    # We should not open future dates for data entry. The -1 is to prevent from opening this week.
+    if direction == '+' and week + int(pagination_limit) > Week.thisweek("iso") + open_future_periods:
+        week = Week.thisweek("iso") + open_future_periods - int(pagination_limit) - 1
+
     rng = range(int(pagination_limit), 0, -1) if direction == '+' else range(int(pagination_limit))
-    index = 0
-    for i in rng:
+
+    for key, i in enumerate(rng):
         w = week + i if direction == '+' else week - (i + 1)
-        index += 1
-        weeks_to_display[str(index)] = "W{} - {} - {}".format(w.weektuple()[1], w.startdate(), w.enddate())
+        weeks_to_display[str(key + 1)] = {
+            "period": w.cdcformat(),
+            "display": "W{} - {} - {}".format(w.weektuple()[1], w.startdate(), w.enddate())
+        }
 
         # Take the first week to calculate the beginning period in the next screen.
         if direction == '+' and i == int(pagination_limit):
