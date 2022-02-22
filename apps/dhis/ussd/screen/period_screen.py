@@ -53,6 +53,8 @@ class PeriodScreen(Screen):
         return False
 
     def next(self):
+        # clear sections visited list
+        self.state['sections_visited'].clear()
         return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):

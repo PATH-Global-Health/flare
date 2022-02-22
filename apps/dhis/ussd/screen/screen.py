@@ -33,9 +33,9 @@ class Screen(object):
             'begin_period': '',
             'direction': '-',
             'direction_change': False,
-            'data_element_index': -1,
-            'previous_data_element_value_error': False,
-            'data_element_values': {}
+            'data_element_index': 0,
+            'data_element_values': {},
+            'sections_visited': []
         }
 
         if Store.exists(self.session_id):

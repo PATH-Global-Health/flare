@@ -1,6 +1,5 @@
-from apps.dhis.ussd.screen.screen import Screen, Level
-from apps.dhis.ussd.store.store import Store
-from apps.dhis.ussd.screen.data_element_screen import DataElementScreen
+from apps.dhis.ussd.screen import Screen, Level
+from apps.dhis.ussd.store import Store
 
 
 class SectionScreen(Screen):
@@ -29,13 +28,15 @@ class SectionScreen(Screen):
                 # self.state['section'] = sections[self.user_response]['id']
                 self.state['section'] = self.user_response
                 # Always reset the data element index in the selected section to 0 to show the first data element.
-                self.state['data_element_index'] = -1
+                self.state['data_element_index'] = 0
                 self.save()
                 return True
 
         return False
 
     def next(self):
+        # to fix circular import
+        from apps.dhis.ussd.screen import DataElementScreen
         return DataElementScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
