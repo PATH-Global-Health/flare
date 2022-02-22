@@ -2,7 +2,7 @@ from enum import IntEnum
 
 from django.http import HttpResponse
 
-from apps.dhis.ussd.store.store import Store
+from apps.dhis.ussd.store import Store
 
 
 class Level(IntEnum):

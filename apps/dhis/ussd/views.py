@@ -1,10 +1,4 @@
-from apps.dhis.ussd.screen.screen import Screen, Level
-from apps.dhis.ussd.screen.login_screen import LoginScreen
-from apps.dhis.ussd.screen.org_unit_screen import OrgUnitScreen
-from apps.dhis.ussd.screen.dataset_screen import DatasetScreen
-from apps.dhis.ussd.screen.section_screen import SectionScreen
-from apps.dhis.ussd.screen.period_screen import PeriodScreen
-from apps.dhis.ussd.screen.data_element_screen import DataElementScreen
+from apps.dhis.ussd.screen import Screen, Level
 
 
 class USSDView:
@@ -16,6 +10,7 @@ class USSDView:
         self.screen = Screen(session_id=self.session_id, phone_number=self.phone_number)
 
     def __show_initial(self):
+        from apps.dhis.ussd.screen import LoginScreen
         screen = LoginScreen(session_id=self.session_id, phone_number=self.phone_number)
         return screen.show()
 
@@ -24,21 +19,27 @@ class USSDView:
             return self.__show_initial()
 
         if self.screen.state['level'] == Level.LOGIN:
+            from apps.dhis.ussd.screen import LoginScreen
             self.screen = LoginScreen(session_id=self.session_id, phone_number=self.phone_number,
                                       user_response=self.user_response)
         elif self.screen.state['level'] == Level.ORG_UNITS:
+            from apps.dhis.ussd.screen import OrgUnitScreen
             self.screen = OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number,
                                         user_response=self.user_response)
         elif self.screen.state['level'] == Level.DATASETS:
+            from apps.dhis.ussd.screen import DatasetScreen
             self.screen = DatasetScreen(session_id=self.session_id, phone_number=self.phone_number,
                                         user_response=self.user_response)
         elif self.screen.state['level'] == Level.SECTIONS:
+            from apps.dhis.ussd.screen import SectionScreen
             self.screen = SectionScreen(session_id=self.session_id, phone_number=self.phone_number,
                                         user_response=self.user_response)
         elif self.screen.state['level'] == Level.PERIODS:
+            from apps.dhis.ussd.screen import PeriodScreen
             self.screen = PeriodScreen(session_id=self.session_id, phone_number=self.phone_number,
                                        user_response=self.user_response)
         elif self.screen.state['level'] == Level.DATA_ELEMENTS:
+            from apps.dhis.ussd.screen import DataElementScreen
             self.screen = DataElementScreen(session_id=self.session_id, phone_number=self.phone_number,
                                             user_response=self.user_response)
 

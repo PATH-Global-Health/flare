@@ -1,6 +1,5 @@
-from .screen import Screen, Level
-from .period_screen import PeriodScreen
-from ..store.store import Store
+from apps.dhis.ussd.screen import Screen, Level, PeriodScreen
+from apps.dhis.ussd.store import Store
 
 
 class DatasetScreen(Screen):

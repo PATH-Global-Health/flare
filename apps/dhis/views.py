@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 
-from .ussd.views import USSDView
+from apps.dhis.ussd import USSDView
 
 
 class Gateway(APIView):

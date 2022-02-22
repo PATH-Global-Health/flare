@@ -1,8 +1,7 @@
 from decouple import config
 
-from apps.dhis.ussd.screen.screen import Screen, Level
-from apps.dhis.ussd.screen.section_screen import SectionScreen
-from apps.dhis.ussd.store.store import Store
+from apps.dhis.ussd.screen import Screen, Level
+from apps.dhis.ussd.store import Store
 from apps.dhis.utils import generate_period
 
 
@@ -53,6 +52,7 @@ class PeriodScreen(Screen):
         return False
 
     def next(self):
+        from apps.dhis.ussd.screen import SectionScreen
         # clear sections visited list
         self.state['sections_visited'].clear()
         return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()

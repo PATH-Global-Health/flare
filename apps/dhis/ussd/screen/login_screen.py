@@ -1,8 +1,7 @@
 from decouple import config
 
-from .screen import Screen, Level
-from .org_unit_screen import OrgUnitScreen
-from ..store.store import Store
+from apps.dhis.ussd.screen import Screen, Level
+from apps.dhis.ussd.store import Store
 
 
 class LoginScreen(Screen):
@@ -27,6 +26,7 @@ class LoginScreen(Screen):
         return False
 
     def next(self):
+        from apps.dhis.ussd.screen import OrgUnitScreen
         return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
