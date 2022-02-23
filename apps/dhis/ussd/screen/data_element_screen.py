@@ -55,10 +55,9 @@ class DataElementScreen(Screen):
                     org_unit = self.state['org_unit']
                     period = self.state['period']
 
+                    # save the value that is received from the user in the state. The key is a concatenation of
+                    # data element and category option combo ids.
                     key = "{}-{}".format(data_element, category_option_combo)
-                    # If true the show method will display the data element that it showed previously. It doesn't
-                    # progress forward and show the next data element.
-                    # self.state['previous_data_element_value_error'] = False
                     self.state['data_element_values'][key] = result[1]
                     self.save()
 
