@@ -16,14 +16,14 @@ class Level(IntEnum):
 
 
 class Screen(object):
-    def __init__(self, session_id, phone_number=None, user_response=None, level=None):
+    def __init__(self, session_id, phone_number=None, user_response=None, level=Level.LOGIN):
         self.session_id = session_id
         self.phone_number = phone_number
         self.user_response = user_response
         self.level = level
         self.state = {
             'passcode': '',
-            'level': '',
+            'level': Level.LOGIN,
             'org_unit': '',
             'period': '',
             'dataset': '',

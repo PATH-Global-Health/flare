@@ -9,14 +9,7 @@ class USSDView:
         self.user_response = user_response
         self.screen = Screen(session_id=self.session_id, phone_number=self.phone_number)
 
-    def __show_initial(self):
-        from apps.dhis.ussd.screen import LoginScreen
-        screen = LoginScreen(session_id=self.session_id, phone_number=self.phone_number)
-        return screen.show()
-
     def show(self):
-        if self.user_response == "":
-            return self.__show_initial()
 
         if self.screen.state['level'] == Level.LOGIN:
             from apps.dhis.ussd.screen import LoginScreen
