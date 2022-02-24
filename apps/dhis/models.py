@@ -167,3 +167,38 @@ class SectionDataElement(CommonModel):
 
     def __str__(self):
         return "{} - {}".format(self.data_element.name, self.section.name)
+
+
+class DataValueSet(CommonModel):
+    objects = DHIS2Manager()
+    data_set = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
+    org_unit = models.ForeignKey(OrgUnit, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(DHIS2User, on_delete=models.CASCADE, null=True)
+    period = models.CharField(max_length=50, null=True)
+    phone_number = models.CharField(max_length=20, null=True)
+    status = models.CharField(
+        max_length=8,
+        choices=[("Pending", "Pending"), ("Synced", "Synced")],
+        default="Pending",
+    )
+
+    class Meta:
+        ordering = ['-pk']
+
+    def __str__(self):
+        return "{} - {} - {} - {}".format(self.data_set.name, self.org_unit.name, self.user.name, self.period)
+
+
+class DataValue(CommonModel):
+    objects = DHIS2Manager()
+    data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE, null=True)
+    category_option_combo = models.ForeignKey(CategoryOptionCombo, on_delete=models.CASCADE, null=True)
+    data_value_set = models.ForeignKey(DataValueSet, on_delete=models.CASCADE, null=True)
+    value = models.CharField(max_length=100, null=True, blank=True)
+    comment = models.CharField(max_length=200, null=True, blank=True)
+
+    class Meta:
+        ordering = ['-pk']
+
+    def __str__(self):
+        return "{} - {} - {}".format(self.data_element.name, self.category_option_combo.name, self.value)

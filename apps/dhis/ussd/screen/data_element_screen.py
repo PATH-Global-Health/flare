@@ -1,6 +1,7 @@
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
 from apps.dhis.utils import validate_data_element_by_value_type
+from apps.dhis.tasks import save_to_database
 
 
 class DataElementScreen(Screen):
@@ -52,8 +53,6 @@ class DataElementScreen(Screen):
                 if result[0]:
                     data_element = data_elements[data_element_index]['data_element_id']
                     category_option_combo = data_elements[data_element_index]['category_option_combo_id']
-                    org_unit = self.state['org_unit']
-                    period = self.state['period']
 
                     # save the value that is received from the user in the state. The key is a concatenation of
                     # data element and category option combo ids.
@@ -62,7 +61,9 @@ class DataElementScreen(Screen):
                     self.save()
 
                     # save into database
-                    # save_to_database.delay(data_element, category_option_combo, org_unit, period, result[1])
+                    save_to_database.delay(self.state['dataset'], data_element, category_option_combo,
+                                           self.state['org_unit'], self.state['passcode'], self.state['period'],
+                                           result[1], self.phone_number)
                     return True
 
         return False

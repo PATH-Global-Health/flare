@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryCombo, CategoryOptionCombo, \
-    Section, SectionDataElement, UserGroup
+    Section, SectionDataElement, UserGroup, DataValueSet, DataValue
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -96,3 +96,21 @@ class SectionDataElementAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SectionDataElement, SectionDataElementAdmin)
+
+
+class DataValueSetAdmin(admin.ModelAdmin):
+    list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status")
+    search_fields = ("data_set__name", "org_unit__name", "user__name", "period", "phone_number")
+    list_filter = ("status", "data_set__name")
+
+
+admin.site.register(DataValueSet, DataValueSetAdmin)
+
+
+class DataValueAdmin(admin.ModelAdmin):
+    list_display = ("data_element", "category_option_combo", "data_value_set", "value")
+    search_fields = ("data_element__name", "category_option_combo__name")
+    list_filter = ("data_value_set", )
+
+
+admin.site.register(DataValue, DataValueAdmin)
