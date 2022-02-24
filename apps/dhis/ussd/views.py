@@ -42,6 +42,10 @@ class USSDView:
             from apps.dhis.ussd.screen import DataElementScreen
             self.screen = DataElementScreen(session_id=self.session_id, phone_number=self.phone_number,
                                             user_response=self.user_response)
+        elif self.screen.state['level'] == Level.SAVE_OPTIONS:
+            from apps.dhis.ussd.screen import SaveOptionsScreen
+            self.screen = SaveOptionsScreen(session_id=self.session_id, phone_number=self.phone_number,
+                                            user_response=self.user_response)
 
         if not self.screen.validate():
             return self.screen.show()

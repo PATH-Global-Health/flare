@@ -94,7 +94,8 @@ class DataElementScreen(Screen):
 
                     # If all sections are visited, show the save options screen
                     if len(sections.keys()) == len(self.state['sections_visited']):
-                        return self.ussd_end("Go to save options")
+                        from apps.dhis.ussd.screen import SaveOptionsScreen
+                        return SaveOptionsScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
                     # to fix circular dependency
                     from apps.dhis.ussd.screen import SectionScreen
