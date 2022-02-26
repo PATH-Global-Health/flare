@@ -63,7 +63,7 @@ class DataElementScreen(Screen):
                     # save into database
                     save_to_database.delay(self.state['dataset'], data_element, category_option_combo,
                                            self.state['org_unit'], self.state['passcode'], self.state['period'],
-                                           result[1], self.phone_number)
+                                           result[1], self.phone_number, self.session_id)
                     return True
 
         return False

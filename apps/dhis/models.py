@@ -196,6 +196,7 @@ class DataValue(CommonModel):
     data_value_set = models.ForeignKey(DataValueSet, on_delete=models.CASCADE, null=True)
     value = models.CharField(max_length=100, null=True, blank=True)
     comment = models.CharField(max_length=200, null=True, blank=True)
+    session_id = models.CharField(max_length=240, null=True, blank=True)
 
     class Meta:
         ordering = ['-pk']

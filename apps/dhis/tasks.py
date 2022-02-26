@@ -53,7 +53,7 @@ def cache_dhis2_metadata():
 
 
 @shared_task
-def save_to_database(data_set, data_element, category_option_combo, org_unit, passcode, period, value, phone_number):
+def save_to_database(data_set, data_element, category_option_combo, org_unit, passcode, period, value, phone_number, session_id):
     try:
         ds = Dataset.objects.get(dataset_id=data_set)
         de = DataElement.objects.get(data_element_id=data_element)
@@ -93,6 +93,7 @@ def save_to_database(data_set, data_element, category_option_combo, org_unit, pa
         data_value.category_option_combo = coc
         data_value.data_value_set = data_value_set
         data_value.value = value
+        data_value.session_id = session_id
         data_value.save()
         logger.info("Saved data into database \n\tData set: {}\n\tData element: {}\n\tCategory option combo: {}\n\tOrg unit: {}\n\tPasscode: {}\n\tPeriod: {}\n\tPhone number: {}\n\tValue: {}"
                     .format(ds.name, de.name, coc.name, ou.name, passcode, period, phone_number, value))

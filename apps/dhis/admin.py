@@ -108,7 +108,7 @@ admin.site.register(DataValueSet, DataValueSetAdmin)
 
 
 class DataValueAdmin(admin.ModelAdmin):
-    list_display = ("data_element", "category_option_combo", "data_value_set", "value")
+    list_display = ("data_element", "category_option_combo", "data_value_set", "session_id", "value")
     search_fields = ("data_element__name", "category_option_combo__name")
     list_filter = ("data_value_set", )
 
