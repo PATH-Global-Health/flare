@@ -53,7 +53,8 @@ def cache_dhis2_metadata():
 
 
 @shared_task
-def save_to_database(data_set, data_element, category_option_combo, org_unit, passcode, period, value, phone_number, session_id):
+def save_values_to_database(data_set, data_element, category_option_combo, org_unit, passcode, period, value,
+                            phone_number, session_id):
     try:
         ds = Dataset.objects.get(dataset_id=data_set)
         de = DataElement.objects.get(data_element_id=data_element)
@@ -95,5 +96,27 @@ def save_to_database(data_set, data_element, category_option_combo, org_unit, pa
         data_value.value = value
         data_value.session_id = session_id
         data_value.save()
-        logger.info("Saved data into database \n\tData set: {}\n\tData element: {}\n\tCategory option combo: {}\n\tOrg unit: {}\n\tPasscode: {}\n\tPeriod: {}\n\tPhone number: {}\n\tValue: {}"
-                    .format(ds.name, de.name, coc.name, ou.name, passcode, period, phone_number, value))
+        logger.info(
+            "Saved data into database \n\tData set: {}\n\tData element: {}\n\tCategory option combo: {}\n\tOrg unit: {}\n\tPasscode: {}\n\tPeriod: {}\n\tPhone number: {}\n\tValue: {}"
+            .format(ds.name, de.name, coc.name, ou.name, passcode, period, phone_number, value))
+
+
+@shared_task
+def save_mark_as_complete_to_database(data_set, org_unit, passcode, period, mark_as_complete):
+    try:
+        ds = Dataset.objects.get(dataset_id=data_set)
+        ou = OrgUnit.objects.get(org_unit_id=org_unit)
+        user = DHIS2User.objects.get(passcode=passcode)
+
+    except Dataset.DoesNotExist:
+        logger.error("Dataset with ID {} doesn't exist.".format(data_set))
+    except OrgUnit.DoesNotExist:
+        logger.error("Org unit with ID {} doesn't exist.".format(org_unit))
+    except DHIS2User.DoesNotExist:
+        logger.error("DHIS2 user with passcode {} doesn't exist.".format(passcode))
+    else:
+        data_value_set = DataValueSet.objects.get_or_none(data_set=ds, org_unit=ou, user=user, period=period)
+
+        if data_value_set is not None:
+            data_value_set.mark_as_complete = True if mark_as_complete == '1' else False
+            data_value_set.save()

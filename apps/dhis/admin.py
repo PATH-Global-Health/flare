@@ -99,9 +99,9 @@ admin.site.register(SectionDataElement, SectionDataElementAdmin)
 
 
 class DataValueSetAdmin(admin.ModelAdmin):
-    list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status")
+    list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status", "mark_as_complete")
     search_fields = ("data_set__name", "org_unit__name", "user__name", "period", "phone_number")
-    list_filter = ("status", "data_set__name")
+    list_filter = ("status", "data_set__name", "mark_as_complete")
 
 
 admin.site.register(DataValueSet, DataValueSetAdmin)

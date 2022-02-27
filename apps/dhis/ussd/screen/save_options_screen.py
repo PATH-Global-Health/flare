@@ -1,5 +1,6 @@
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
+from apps.dhis.tasks import save_mark_as_complete_to_database
 
 
 class SaveOptionsScreen(Screen):
@@ -17,6 +18,8 @@ class SaveOptionsScreen(Screen):
 
     def validate(self):
         if self.user_response in ['1', '2']:
+            save_mark_as_complete_to_database.delay(self.state['dataset'], self.state['org_unit'],
+                                                    self.state['passcode'], self.state['period'], self.user_response)
             return True
 
         return False

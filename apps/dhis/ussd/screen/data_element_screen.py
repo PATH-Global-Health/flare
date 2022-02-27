@@ -1,7 +1,7 @@
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
 from apps.dhis.utils import validate_data_element_by_value_type
-from apps.dhis.tasks import save_to_database
+from apps.dhis.tasks import save_values_to_database
 
 
 class DataElementScreen(Screen):
@@ -61,9 +61,9 @@ class DataElementScreen(Screen):
                     self.save()
 
                     # save into database
-                    save_to_database.delay(self.state['dataset'], data_element, category_option_combo,
-                                           self.state['org_unit'], self.state['passcode'], self.state['period'],
-                                           result[1], self.phone_number, self.session_id)
+                    save_values_to_database.delay(self.state['dataset'], data_element, category_option_combo,
+                                                  self.state['org_unit'], self.state['passcode'], self.state['period'],
+                                                  result[1], self.phone_number, self.session_id)
                     return True
 
         return False

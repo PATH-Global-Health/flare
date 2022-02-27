@@ -176,6 +176,7 @@ class DataValueSet(CommonModel):
     user = models.ForeignKey(DHIS2User, on_delete=models.CASCADE, null=True)
     period = models.CharField(max_length=50, null=True)
     phone_number = models.CharField(max_length=20, null=True)
+    mark_as_complete = models.BooleanField(default=False)
     status = models.CharField(
         max_length=8,
         choices=[("Pending", "Pending"), ("Synced", "Synced")],
