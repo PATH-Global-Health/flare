@@ -197,6 +197,11 @@ CELERY_BEAT_SCHEDULE = {
     'cache-dhis2-metadata': {
         'task': 'apps.dhis.tasks.cache_dhis2_metadata',
         'schedule': timedelta(seconds=604800),
+    },
+    'sync-data-to-dhis2': {
+        'task': 'apps.dhis.tasks.sync_data_to_dhis2',
+        # Executes every 2 hours
+        'schedule': timedelta(hours=2),
     }
 }
 

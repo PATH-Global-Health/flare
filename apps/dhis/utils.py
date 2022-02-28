@@ -64,7 +64,7 @@ def generate_week_periods(open_future_periods, page_limit, begin_period, directi
     for key, i in enumerate(rng):
         w = week + i if direction == '+' else week - (i + 1)
         weeks_to_display[str(key + 1)] = {
-            "period": w.cdcformat(),
+            "period": w.isoformat(),
             "display": "W{} - {} - {}".format(w.weektuple()[1], w.startdate(), w.enddate())
         }
 

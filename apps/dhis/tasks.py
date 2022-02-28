@@ -1,7 +1,11 @@
 import uuid
+import json
 import logging
 from celery import shared_task
-from dhis2 import Api
+from datetime import datetime, timedelta
+from django.utils import timezone
+from dhis2 import Api, RequestException
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import Instance, OrgUnit, Dataset, DataElement, CategoryOptionCombo, DHIS2User, DataValueSet, DataValue
 from apps.dhis.ussd.helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, \
@@ -98,7 +102,7 @@ def save_values_to_database(data_set, data_element, category_option_combo, org_u
         data_value.save()
         logger.info(
             "Saved data into database \n\tData set: {}\n\tData element: {}\n\tCategory option combo: {}\n\tOrg unit: {}\n\tPasscode: {}\n\tPeriod: {}\n\tPhone number: {}\n\tValue: {}"
-            .format(ds.name, de.name, coc.name, ou.name, passcode, period, phone_number, value))
+                .format(ds.name, de.name, coc.name, ou.name, passcode, period, phone_number, value))
 
 
 @shared_task
@@ -120,3 +124,48 @@ def save_mark_as_complete_to_database(data_set, org_unit, passcode, period, mark
         if data_value_set is not None:
             data_value_set.mark_as_complete = True if mark_as_complete == '1' else False
             data_value_set.save()
+
+
+@shared_task
+def sync_data_to_dhis2():
+    data_value_sets_to_delete = []
+    data_value_sets = DataValueSet.objects.filter(updated_at__lte=datetime.now(tz=timezone.utc) + timedelta(hours=1))
+
+    for dvs in data_value_sets:
+        payload = {}
+        api = Api(dvs.user.instance.url, dvs.user.instance.username, dvs.user.instance.password)
+
+        payload['dataSet'] = dvs.data_set.dataset_id
+        if dvs.mark_as_complete:
+            payload['completeDate'] = json.dumps(dvs.created_at, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
+        payload['period'] = dvs.period
+        payload['orgUnit'] = dvs.org_unit.org_unit_id
+        payload['dataValues'] = []
+        for dv in dvs.datavalue_set.all():
+            p = {
+                "dataElement": dv.data_element.data_element_id,
+                "categoryOptionCombo": dv.category_option_combo.category_option_combo_id,
+                "value": dv.value,
+                "comment": ""
+            }
+            payload['dataValues'].append(p)
+
+        try:
+            response = api.post('dataValueSets', json=payload, params={
+                "dataSet": dvs.data_set.dataset_id,
+                "orgUnit": dvs.org_unit.org_unit_id,
+                "period": dvs.period
+            })
+            if response.status_code == 200:
+                data_value_sets_to_delete.append(dvs.pk)
+        except RequestException as ex:
+            logger.error(ex)
+
+    logger.info("Syncing data complete")
+
+    for dvs_id in data_value_sets_to_delete:
+        dvs = DataValueSet.objects.get_or_none(pk=dvs_id)
+        if dvs is not None:
+            dvs.delete()
+    if len(data_value_sets_to_delete) > 0:
+        logger.info("Removing data value sets complete")

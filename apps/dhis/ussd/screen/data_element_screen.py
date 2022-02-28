@@ -30,7 +30,7 @@ class DataElementScreen(Screen):
                 else:
                     self.next()
 
-        return self.ussd_end("No data sets found. show")
+        return self.ussd_end("No data sets found")
 
     # validate will always return false until all data elements are filled
     def validate(self):
@@ -101,7 +101,7 @@ class DataElementScreen(Screen):
                     from apps.dhis.ussd.screen import SectionScreen
                     # all sections are not visited so show section screen
                     return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
-        return self.ussd_end("No data sets are found - next")
+        return self.ussd_end("No data sets are found")
 
     def prev(self):
         pass
