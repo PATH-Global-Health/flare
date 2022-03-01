@@ -1,6 +1,0 @@
-!extends:./invalid_file_to_path
-
-initial_screen:
-  type: initial_screen
-  next_screen: screen_one
-

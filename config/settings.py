@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'knox',
     'django_celery_beat',
-    'ussd',
 ]
 
 MIDDLEWARE = [
@@ -169,25 +168,10 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Africa/Addis_Ababa'
 CELERY_BEAT_SCHEDULE = {
-    'send-summary-every-hour': {
-        'task': 'apps.survey.tasks.sync_survey_result_2_central_repo_task',
-        # Executes every 30 minutes (30 minutes * 60 seconds)
-        'schedule': timedelta(seconds=1800),
-    },
     'generate-report': {
         'task': 'apps.analytics.tasks.generate_report',
         # Executes every 1 day (24 hrs * 60 minutes * 60 seconds)
         'schedule': timedelta(seconds=86400),
-    },
-    'copy-incomplete-data-2-survey-results': {
-        'task': 'apps.survey.tasks.copy_incomplete_data_2_survey_results_task',
-        # Execute every 30 minutes (30 minutes * 60 seconds)
-        'schedule': timedelta(seconds=1800),
-    },
-    'clear-expired-session': {
-        'task': 'apps.survey.tasks.clear_expired_session_task',
-        # Execute every 10 minutes (10 minutes * 60 seconds)
-        'schedule': timedelta(seconds=600),
     },
     'sync-dhis2-metadata': {
         'task': 'apps.dhis.tasks.sync_dhis2_metadata',
