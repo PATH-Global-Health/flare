@@ -7,12 +7,13 @@ from apps.dhis.ussd.store import Store
 
 class Level(IntEnum):
     LOGIN = 1
-    ORG_UNITS = 2
-    DATASETS = 3
-    PERIODS = 4
-    SECTIONS = 5
-    DATA_ELEMENTS = 6
-    SAVE_OPTIONS = 7  # complete and incomplete
+    RESTORE = 2
+    ORG_UNITS = 3
+    DATASETS = 4
+    PERIODS = 5
+    SECTIONS = 6
+    DATA_ELEMENTS = 7
+    SAVE_OPTIONS = 8  # complete and incomplete
 
 
 class Screen(object):
@@ -61,10 +62,11 @@ class Screen(object):
 
     def ussd_end(self, display_text):
         Store.delete(self.session_id)
+        Store.delete(key="usr_state_{}".format(self.state['passcode']))
         display_text = "END {}".format(display_text)
 
         return HttpResponse(display_text)
 
-    def save(self):
-        self.state['level'] = self.level
+    def save(self, level=None):
+        self.state['level'] = self.level if level is None else level
         Store.set(self.session_id, self.state)

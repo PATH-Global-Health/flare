@@ -4,6 +4,7 @@ import random
 from epiweeks import Week, Year
 
 from apps.dhis.models import DHIS2User
+from apps.dhis.ussd.screen import Level
 
 CHARACTERS = "abcdefghijkmnpqrtuvwxyz2345689"
 LENGTH = 6
@@ -147,3 +148,37 @@ def validate_data_element_by_value_type(value_type, value):
     if value_type == "TEXT" or value_type == "LONG_TEXT":
         return validate_text(value)
 
+
+def get_screen(session_id, phone_number, user_response, level):
+    if level == Level.LOGIN:
+        from apps.dhis.ussd.screen import LoginScreen
+        return LoginScreen(session_id=session_id, phone_number=phone_number,
+                           user_response=user_response)
+    elif level == Level.RESTORE:
+        from apps.dhis.ussd.screen import RestoreSessionScreen
+        return RestoreSessionScreen(session_id=session_id, phone_number=phone_number,
+                                    user_response=user_response)
+    elif level == Level.ORG_UNITS:
+        from apps.dhis.ussd.screen import OrgUnitScreen
+        return OrgUnitScreen(session_id=session_id, phone_number=phone_number,
+                             user_response=user_response)
+    elif level == Level.DATASETS:
+        from apps.dhis.ussd.screen import DatasetScreen
+        return DatasetScreen(session_id=session_id, phone_number=phone_number,
+                             user_response=user_response)
+    elif level == Level.SECTIONS:
+        from apps.dhis.ussd.screen import SectionScreen
+        return SectionScreen(session_id=session_id, phone_number=phone_number,
+                             user_response=user_response)
+    elif level == Level.PERIODS:
+        from apps.dhis.ussd.screen import PeriodScreen
+        return PeriodScreen(session_id=session_id, phone_number=phone_number,
+                            user_response=user_response)
+    elif level == Level.DATA_ELEMENTS:
+        from apps.dhis.ussd.screen import DataElementScreen
+        return DataElementScreen(session_id=session_id, phone_number=phone_number,
+                                 user_response=user_response)
+    elif level == Level.SAVE_OPTIONS:
+        from apps.dhis.ussd.screen import SaveOptionsScreen
+        return SaveOptionsScreen(session_id=session_id, phone_number=phone_number,
+                                 user_response=user_response)

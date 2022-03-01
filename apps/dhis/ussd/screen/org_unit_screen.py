@@ -7,6 +7,8 @@ class OrgUnitScreen(Screen):
 
     def __init__(self, session_id, phone_number, user_response=None):
         super().__init__(session_id, phone_number, user_response, Level.ORG_UNITS)
+        # store the current user state and session id
+        Store.set("usr_state_{}".format(self.state['passcode']), self.session_id)
 
     def show(self):
         key = "usr_{}".format(self.state['passcode'])

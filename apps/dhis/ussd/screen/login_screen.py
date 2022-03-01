@@ -26,8 +26,13 @@ class LoginScreen(Screen):
         return False
 
     def next(self):
-        from apps.dhis.ussd.screen import OrgUnitScreen
-        return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        key = "usr_state_{}".format(self.state['passcode'])  # used to restore an expired session
+        if Store.exists(key) and Store.get(key) != self.session_id:
+            from apps.dhis.ussd.screen import RestoreSessionScreen
+            return RestoreSessionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        else:
+            from apps.dhis.ussd.screen import OrgUnitScreen
+            return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass

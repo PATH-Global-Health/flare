@@ -11,6 +11,7 @@ class DataElementScreen(Screen):
         super().__init__(session_id, phone_number, user_response, Level.DATA_ELEMENTS)
 
     def show(self):
+
         key = "ds_{}".format(self.state['dataset'])
         if Store.exists(key):
             sections = Store.get(key)
@@ -71,7 +72,6 @@ class DataElementScreen(Screen):
     def next(self):
 
         key = "ds_{}".format(self.state['dataset'])
-
         if Store.exists(key):
             sections = Store.get(key)
 

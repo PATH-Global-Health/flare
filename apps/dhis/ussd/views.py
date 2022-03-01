@@ -1,4 +1,5 @@
 from apps.dhis.ussd.screen import Screen, Level
+from apps.dhis.utils import get_screen
 
 
 class USSDView:
@@ -11,34 +12,7 @@ class USSDView:
 
     def show(self):
 
-        if self.screen.state['level'] == Level.LOGIN:
-            from apps.dhis.ussd.screen import LoginScreen
-            self.screen = LoginScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                      user_response=self.user_response)
-        elif self.screen.state['level'] == Level.ORG_UNITS:
-            from apps.dhis.ussd.screen import OrgUnitScreen
-            self.screen = OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                        user_response=self.user_response)
-        elif self.screen.state['level'] == Level.DATASETS:
-            from apps.dhis.ussd.screen import DatasetScreen
-            self.screen = DatasetScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                        user_response=self.user_response)
-        elif self.screen.state['level'] == Level.SECTIONS:
-            from apps.dhis.ussd.screen import SectionScreen
-            self.screen = SectionScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                        user_response=self.user_response)
-        elif self.screen.state['level'] == Level.PERIODS:
-            from apps.dhis.ussd.screen import PeriodScreen
-            self.screen = PeriodScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                       user_response=self.user_response)
-        elif self.screen.state['level'] == Level.DATA_ELEMENTS:
-            from apps.dhis.ussd.screen import DataElementScreen
-            self.screen = DataElementScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                            user_response=self.user_response)
-        elif self.screen.state['level'] == Level.SAVE_OPTIONS:
-            from apps.dhis.ussd.screen import SaveOptionsScreen
-            self.screen = SaveOptionsScreen(session_id=self.session_id, phone_number=self.phone_number,
-                                            user_response=self.user_response)
+        self.screen = get_screen(self.session_id, self.phone_number, self.user_response, self.screen.state['level'])
 
         if not self.screen.validate():
             return self.screen.show()
