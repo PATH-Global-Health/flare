@@ -19,4 +19,4 @@ EXPOSE 8000
 
 RUN adduser --disabled-password --gecos '' webuser
 
-CMD ["gunicorn", "flare.wsgi", "0:8000"]
+CMD ["gunicorn", "--workers=1", "flare.wsgi", "--timeout 200", "0:8000"]
