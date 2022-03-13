@@ -1,5 +1,0 @@
-initial_screen: quit_screen
-
-show_details:
-  type: quit_screen
-  text: No screen found
