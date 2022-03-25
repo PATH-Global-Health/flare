@@ -10,7 +10,7 @@ class RestoreSessionScreen(Screen):
         super().__init__(session_id, phone_number, user_response, Level.RESTORE)
 
     def show(self):
-        menu_text = "Do you want to restore the previous session?\n1. Yes\n2. No"
+        menu_text = "Would you like to resume where you left off?\n1. Yes\n2. No"
 
         # print the response on to the page so that our gateway can read it
         return self.ussd_proceed(menu_text)
