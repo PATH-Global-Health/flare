@@ -196,8 +196,9 @@ def store_data_elements_assigned_2_dataset(ds, dataset, version, dhis2_instance)
         if de is not None:
 
             for coc in de.category_combo.categoryoptioncombo_set.all():
-                ds_de = DatasetDataElement.objects.get_or_none(data_element__data_element_id=de.data_element_id,
-                                                           category_option_combo__category_option_combo_id=coc.category_option_combo_id)
+                ds_de = DatasetDataElement.objects.get_or_none(data_set__dataset_id=ds.dataset_id,
+                                                               data_element__data_element_id=de.data_element_id,
+                                                               category_option_combo__category_option_combo_id=coc.category_option_combo_id)
                 if ds_de is None:
                     ds_de = DatasetDataElement()
                 ds_de.data_element = de
