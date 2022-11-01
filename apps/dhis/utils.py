@@ -3,7 +3,7 @@ import random
 
 from epiweeks import Week, Year
 
-from apps.dhis.models import DHIS2User
+from apps.dhis.models import DHIS2User, OrgUnit, DatasetDataElement, DataElement
 from apps.dhis.ussd.screen import Level
 
 CHARACTERS = "abcdefghijkmnpqrtuvwxyz2345689"
@@ -182,3 +182,40 @@ def get_screen(session_id, phone_number, user_response, level):
         from apps.dhis.ussd.screen import SaveOptionsScreen
         return SaveOptionsScreen(session_id=session_id, phone_number=phone_number,
                                  user_response=user_response)
+
+
+def is_data_element_compulsory(compulsory_data_elements, data_element):
+    for de in compulsory_data_elements:
+        if data_element.data_element_id == de['id']:
+            return True
+    return False
+
+def store_data_elements_assigned_2_dataset(ds, dataset, version, dhis2_instance):
+    for data_element in dataset['dataSetElements']:
+        de = DataElement.objects.get_or_none(data_element_id=data_element['dataElement']['id'])
+        if de is not None:
+
+            for coc in de.category_combo.categoryoptioncombo_set.all():
+                ds_de = DatasetDataElement.objects.get_or_none(data_element__data_element_id=de.data_element_id,
+                                                           category_option_combo__category_option_combo_id=coc.category_option_combo_id)
+                if ds_de is None:
+                    ds_de = DatasetDataElement()
+                ds_de.data_element = de
+                ds_de.category_option_combo = coc
+                ds_de.data_set = ds
+
+                if 'compulsoryDataElementOperands' in dataset:
+                    ds_de.compulsory = is_data_element_compulsory(dataset['compulsoryDataElementOperands'], de)
+
+                ds_de.version = version
+                ds_de.instance = dhis2_instance
+                ds_de.save()
+
+    DatasetDataElement.objects.exclude(version=version).delete()
+
+def store_org_units_assigned_2_dataset(ds, org_units):
+    for org_unit in org_units:
+        ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
+        if ou is not None:
+            ds.org_units.add(ou)
+    ds.save()

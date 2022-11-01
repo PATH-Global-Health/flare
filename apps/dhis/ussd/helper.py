@@ -5,8 +5,8 @@ from typing import List
 from django.conf import settings
 
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
-    DataElement, Section, SectionDataElement, UserGroup
-from apps.dhis.utils import unique_passcode
+    DataElement, Section, SectionDataElement, UserGroup, DatasetDataElement
+from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, store_org_units_assigned_2_dataset
 from apps.dhis.ussd.store import Store
 
 logger = logging.getLogger(__name__)
@@ -136,14 +136,14 @@ def sync_data_sets(api, dhis2_instance, version):
     logger.info("Starting to sync data sets")
 
     for pages in api.get_paged('dataSets', page_size=100,
-                               params={'fields': 'id,shortName,periodType,dataSetElements,organisationUnits,openFuturePeriods'}):
+                               params={'fields': 'id,name,shortName,periodType,dataSetElements,organisationUnits,openFuturePeriods,compulsoryDataElementOperands'}):
         for dataset in pages['dataSets']:
             ds = Dataset.objects.get_or_none(dataset_id=dataset['id'])
 
             if ds is None:
                 ds = Dataset()
             ds.dataset_id = dataset['id']
-            ds.name = dataset['shortName'] if 'shortName' in dataset else "No Name"
+            ds.name = dataset['shortName'] if 'shortName' in dataset else dataset['name']
             ds.period_type = dataset['periodType'] if 'periodType' in dataset else ""
 
             try:
@@ -159,20 +159,12 @@ def sync_data_sets(api, dhis2_instance, version):
 
             # save the org units assigned to the dataset
             if 'organisationUnits' in dataset:
-                for org_unit in dataset['organisationUnits']:
-                    ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
-                    if ou is not None:
-                        ds.org_units.add(ou)
-                ds.save()
+                store_org_units_assigned_2_dataset(ds, dataset['organisationUnits'])
 
             ds.data_element.clear()
-            # save the data elements that the dataset contains
+            # save the data elements that the dataset contains in DatasetDataElement table
             if 'dataSetElements' in dataset:
-                for data_element in dataset['dataSetElements']:
-                    de = DataElement.objects.get_or_none(data_element_id=data_element['dataElement']['id'])
-                    if de is not None:
-                        ds.data_element.add(de)
-                ds.save()
+                store_data_elements_assigned_2_dataset(ds, dataset, version, dhis2_instance)
 
     Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
 

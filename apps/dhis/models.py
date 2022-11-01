@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.postgres.fields import ArrayField
 
 from apps.common.models import CommonModel
 
@@ -129,13 +130,28 @@ class Dataset(CommonModel):
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     org_units = models.ManyToManyField(OrgUnit)
-    data_element = models.ManyToManyField(DataElement)
+    data_element = models.ManyToManyField(DataElement, through='DatasetDataElement')
 
     class Meta:
         ordering = ['name']
 
     def __str__(self):
         return self.name
+
+
+# To record the compulsory data elements (to validate data upon entry) as well as to render
+# the list of data elements in the USSD views if the data set doesn't have a section
+class DatasetDataElement(CommonModel):
+    objects = DHIS2Manager()
+    data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE)
+    data_set = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    category_option_combo = models.ForeignKey(CategoryOptionCombo, on_delete=models.CASCADE, null=True, blank=True)
+    compulsory = models.BooleanField(default=False)
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE, null=True, blank=True)
+    version = models.UUIDField(default=uuid.uuid4)
+
+    def __str__(self):
+        return "{} - {}".format(self.data_element.name, self.data_set.name)
 
 
 class Section(CommonModel):
