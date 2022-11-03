@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ussd_be.iml" filepath="$PROJECT_DIR$/.idea/ussd_be.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../flare-app/.idea/flare.iml" filepath="$PROJECT_DIR$/../flare-app/.idea/flare.iml" />
     </modules>
   </component>
 </project>

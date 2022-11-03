@@ -1,43 +1,46 @@
-version: "3.1"
+version: "3.5"
 
 services:
+  # Postgres
   db:
     image: postgres:13-alpine
+    env_file:
+      - .env
     environment:
-      - POSTGRES_DB=flare
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres123882
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /var/lib/postgresql/data/flare
     expose:
-      - "5444"
+      - ${DB_PORT}
     ports:
-      - "5444:5444"
+      - "${DB_PORT}:${DB_PORT}"
     restart: on-failure
     volumes:
       - /Users/belendia/.postgres_flare:/var/lib/postgresql/data
-    command: -p 5444
+    command: -p ${DB_PORT}
+
   # Redis
   redis:
     image: redis:6-alpine
     restart: on-failure
 
+  # Flare
   web:
     container_name: flare_web
+    env_file:
+      - .env
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./flare/Dockerfile
     command: >
-      sh -c "wait-for redis:6379 && wait-for db:5444
-      && python /code/manage.py collectstatic --no-input
-      && python /code/manage.py makemigrations 
-      && python /code/manage.py migrate  --noinput 
-      && python /code/manage.py initadmin 
-      && python /code/manage.py initsurvey 
-      && python /code/manage.py initlang
-      && python /code/manage.py initchannel
-      && python /code/manage.py initconfig 
-      && gunicorn config.wsgi -b 0.0.0.0:8000"
+      sh -c "python /flare/manage.py collectstatic --no-input
+      && python /flare/manage.py makemigrations
+      && python /flare/manage.py migrate  --noinput
+      && python /flare/manage.py initadmin
+      && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-level debug"
     volumes:
-      - .:/code
+      - ./flare:/flare
       - ./staticfiles/admin:/usr/share/nginx/html/static/admin
       - ./staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
     ports:
@@ -49,28 +52,31 @@ services:
 
   # Celery worker
   celery_worker:
+    env_file:
+      - .env
     container_name: flare_celery_worker
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./flare/Dockerfile
     command: >
-      sh -c "wait-for redis:6379 && wait-for web:8000
-      && celery -A config  worker -l info"
+      sh -c "celery -A config  worker -l info"
     volumes:
-      - .:/code
+      - ./flare:/flare
     depends_on:
       - redis
       - web
     restart: on-failure
+
   # Celery worker
   celery_beat:
+    env_file:
+      - .env
     container_name: flare_celery_beat
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./flare/Dockerfile
     command: >
-      sh -c "wait-for redis:6379 && wait-for web:8000
-      && celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+      sh -c "celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     volumes:
       - .:/code
     depends_on:
@@ -78,8 +84,7 @@ services:
       - web
     restart: on-failure
 
-  # ReactJS Frontend + Reverse Proxy for the web
-
+  # Nginx - ReactJS Frontend + Reverse Proxy for the web
   nginx:
     container_name: flare_nginx
     build:
