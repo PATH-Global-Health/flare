@@ -197,7 +197,7 @@ def sync_sections(api, dhis2_instance, version):
                 for data_element in section['dataElements']:
                     de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
                     if de is not None:
-                        for coc in de.category_combo.categoryoptioncombo_set.all():
+                        for coc in de.category_combo.categoryoptioncombo_set.all().order_by('sort_order'):
                             ds_de = DatasetDataElement.objects.get_or_none(data_set__dataset_id=section['dataSet']['id'],
                                                                            data_element__data_element_id=de.data_element_id,
                                                                            category_option_combo__category_option_combo_id=coc.category_option_combo_id)
