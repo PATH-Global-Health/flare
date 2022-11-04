@@ -140,21 +140,6 @@ class Dataset(CommonModel):
         return self.name
 
 
-# To record the compulsory data elements (to validate data upon entry) as well as to render
-# the list of data elements in the USSD views if the data set doesn't have a section
-class DatasetDataElement(CommonModel):
-    objects = DHIS2Manager()
-    data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE)
-    data_set = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    category_option_combo = models.ForeignKey(CategoryOptionCombo, on_delete=models.CASCADE, null=True, blank=True)
-    compulsory = models.BooleanField(default=False)
-    instance = models.ForeignKey(Instance, on_delete=models.CASCADE, null=True, blank=True)
-    version = models.UUIDField(default=uuid.uuid4)
-
-    def __str__(self):
-        return "{} - {}".format(self.data_element.name, self.data_set.name)
-
-
 class Section(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -163,7 +148,6 @@ class Section(CommonModel):
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    data_element = models.ManyToManyField(DataElement, through='SectionDataElement')
 
     class Meta:
         ordering = ['sort_order']
@@ -172,18 +156,21 @@ class Section(CommonModel):
         return self.name
 
 
-class SectionDataElement(CommonModel):
+# To record the compulsory data elements (to validate data upon entry) as well as to render
+# the list of data elements in the USSD views
+class DatasetDataElement(CommonModel):
     objects = DHIS2Manager()
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    sort_order = models.IntegerField(default=0)
     data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE)
-    sort_order = models.IntegerField()
+    data_set = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    category_option_combo = models.ForeignKey(CategoryOptionCombo, on_delete=models.CASCADE, null=True, blank=True)
+    compulsory = models.BooleanField(default=False)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE, null=True, blank=True)
     version = models.UUIDField(default=uuid.uuid4)
 
-    class Meta:
-        ordering = ['sort_order']
-
     def __str__(self):
-        return "{} - {}".format(self.data_element.name, self.section.name)
+        return "{} - {}".format(self.data_element.name, self.data_set.name)
 
 
 class DataValueSet(CommonModel):

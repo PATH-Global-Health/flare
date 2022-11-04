@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryCombo, CategoryOptionCombo, \
-    Section, SectionDataElement, UserGroup, DataValueSet, DataValue, DatasetDataElement
+    Section, UserGroup, DataValueSet, DataValue, DatasetDataElement
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -86,18 +86,6 @@ class SectionsAdmin(admin.ModelAdmin):
 admin.site.register(Section, SectionsAdmin)
 
 
-class SectionDataElementAdmin(admin.ModelAdmin):
-    list_display = ("name", "sort_order")
-    search_fields = ("section__name", "data_element__name")
-    list_filter = ("section__name",)
-
-    def name(self, instance):
-        return instance.data_element.name
-
-
-admin.site.register(SectionDataElement, SectionDataElementAdmin)
-
-
 class DataValueSetAdmin(admin.ModelAdmin):
     list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status", "mark_as_complete")
     search_fields = ("data_set__name", "org_unit__name", "user__name", "period", "phone_number")
@@ -117,9 +105,9 @@ admin.site.register(DataValue, DataValueAdmin)
 
 
 class DatasetDataElementAdmin(admin.ModelAdmin):
-    list_display = ("data_element", "data_set", "category_option_combo", "compulsory")
+    list_display = ("data_element", "data_set", "category_option_combo", "sort_order", "compulsory")
     search_fields = ("data_element",)
-    list_filter = ("compulsory","data_set__name")
+    list_filter = ("compulsory","data_set__name", "section__name")
 
 
 admin.site.register(DatasetDataElement, DatasetDataElementAdmin)

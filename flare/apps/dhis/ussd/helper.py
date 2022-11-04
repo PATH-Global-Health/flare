@@ -5,7 +5,7 @@ from typing import List
 from django.conf import settings
 
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
-    DataElement, Section, SectionDataElement, UserGroup, DatasetDataElement
+    DataElement, Section, UserGroup, DatasetDataElement
 from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, store_org_units_assigned_2_dataset
 from apps.dhis.ussd.store import Store
 
@@ -197,15 +197,15 @@ def sync_sections(api, dhis2_instance, version):
                 for data_element in section['dataElements']:
                     de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
                     if de is not None:
-                        sec_de = SectionDataElement()
-                        sec_de.data_element = de
-                        sec_de.section = sec
-                        sort_order += 1
-                        sec_de.sort_order = sort_order
-                        sec_de.version = version
-                        sec_de.save()
-
-                SectionDataElement.objects.exclude(version=version).delete()
+                        for coc in de.category_combo.categoryoptioncombo_set.all():
+                            ds_de = DatasetDataElement.objects.get_or_none(data_set__dataset_id=section['dataSet']['id'],
+                                                                           data_element__data_element_id=de.data_element_id,
+                                                                           category_option_combo__category_option_combo_id=coc.category_option_combo_id)
+                            if ds_de is not None:
+                                sort_order += 1
+                                ds_de.sort_order = sort_order
+                                ds_de.section = sec
+                                ds_de.save()
 
     Section.objects.exclude(version=version, instance=dhis2_instance).delete()
 

@@ -41,8 +41,8 @@ services:
       && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-level debug"
     volumes:
       - ./flare:/flare
-      - ./staticfiles/admin:/usr/share/nginx/html/static/admin
-      - ./staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
+      - ./flare/staticfiles/admin:/usr/share/nginx/html/static/admin
+      - ./flare/staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
     ports:
       - "8000:8000"
     depends_on:
@@ -98,7 +98,7 @@ services:
     #- LETSENCRYPT_HOST=ussd.covid19.et
     #network_mode: "bridge"
     volumes:
-      - ./staticfiles/admin:/usr/share/nginx/html/static/admin
-      - ./staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
+      - ./flare/staticfiles/admin:/usr/share/nginx/html/static/admin
+      - ./flare/staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
     depends_on:
       - web
