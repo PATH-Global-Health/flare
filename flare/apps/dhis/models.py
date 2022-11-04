@@ -93,13 +93,14 @@ class CategoryCombo(CommonModel):
 class CategoryOptionCombo(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)
+    sort_order = models.IntegerField(default=0)
     category_option_combo_id = models.CharField(max_length=40, null=False)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     category_combo = models.ForeignKey(CategoryCombo, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['sort_order', 'name']
 
     def __str__(self):
         return self.name

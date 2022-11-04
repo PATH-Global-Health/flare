@@ -69,7 +69,7 @@ admin.site.register(CategoryCombo, CategoryCombosAdmin)
 
 
 class CategoryOptionCombosAdmin(admin.ModelAdmin):
-    list_display = ("name", "category_option_combo_id",)
+    list_display = ("name", "sort_order", "category_option_combo_id",)
     search_fields = ("name", "category_option_combo_id")
     list_filter = ("instance__url", "category_combo__name")
 

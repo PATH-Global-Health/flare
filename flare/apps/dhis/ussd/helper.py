@@ -91,13 +91,14 @@ def sync_category_combos(api, dhis2_instance, version):
             cc.save()
 
             if 'categoryOptionCombos' in cat_combo:
-                for coc in cat_combo['categoryOptionCombos']:
+                for index, coc in enumerate(cat_combo['categoryOptionCombos']):
                     coc_obj = CategoryOptionCombo.objects.get_or_none(category_option_combo_id=coc['id'])
                     if coc_obj is None:
                         coc_obj = CategoryOptionCombo()
 
                     coc_obj.category_option_combo_id = coc['id']
                     coc_obj.name = coc['name']
+                    coc_obj.sort_order = index + 1
                     coc_obj.category_combo = cc
                     coc_obj.version = version
                     coc_obj.instance = dhis2_instance
