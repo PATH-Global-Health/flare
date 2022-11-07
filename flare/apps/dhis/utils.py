@@ -225,7 +225,7 @@ def format_dataset_with_section(sections):
     dataset_sections = {}
     for i, section in enumerate(sections):
         dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'data_elements': []}
-        for ds_de in section.datasetdataelement_set.all():
+        for ds_de in section.datasetdataelement_set.all().order_by('sort_order'):
             dataset_sections[i + 1]['data_elements'].append(
                 {
                     'data_element_name': ds_de.data_element.name,
