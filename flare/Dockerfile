@@ -21,5 +21,5 @@ WORKDIR /flare
 
 EXPOSE 8000
 
-CMD ["gunicorn", "config.wsgi:application", "0:8000", "--log-level debug"]
+CMD ["gunicorn", "--workers=3", "config.wsgi:application", "0:8000", "--log-level debug"]
 # ENTRYPOINT ["sh", "./entrypoint.sh"]

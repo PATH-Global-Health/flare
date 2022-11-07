@@ -38,7 +38,7 @@ services:
       && python /flare/manage.py makemigrations
       && python /flare/manage.py migrate  --noinput
       && python /flare/manage.py initadmin
-      && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-level debug"
+      && gunicorn --workers=3 config.wsgi:application --bind 0.0.0.0:8000 --log-level debug"
     volumes:
       - ./flare:/flare
       - ./flare/staticfiles/admin:/usr/share/nginx/html/static/admin
