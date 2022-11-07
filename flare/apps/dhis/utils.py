@@ -220,3 +220,34 @@ def store_org_units_assigned_2_dataset(ds, org_units):
         if ou is not None:
             ds.org_units.add(ou)
     ds.save()
+
+def format_dataset_with_section(sections):
+    dataset_sections = {}
+    for i, section in enumerate(sections):
+        dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'data_elements': []}
+        for ds_de in section.datasetdataelement_set.all():
+            dataset_sections[i + 1]['data_elements'].append(
+                {
+                    'data_element_name': ds_de.data_element.name,
+                    'data_element_id': ds_de.data_element.data_element_id,
+                    'category_option_combo_name': ds_de.category_option_combo.name,
+                    'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
+                    'data_element_value_type': ds_de.data_element.value_type
+                }
+            )
+
+    return dataset_sections
+
+def format_dataset_with_out_section(dataset):
+    data_elements = []
+    for ds_de in dataset.datasetdataelement_set.all():
+        data_elements.append(
+            {
+                'data_element_name': ds_de.data_element.name,
+                'data_element_id': ds_de.data_element.data_element_id,
+                'category_option_combo_name': ds_de.category_option_combo.name,
+                'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
+                'data_element_value_type': ds_de.data_element.value_type
+            }
+        )
+    return data_elements

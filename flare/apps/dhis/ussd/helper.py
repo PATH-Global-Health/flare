@@ -6,7 +6,8 @@ from django.conf import settings
 
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
     DataElement, Section, UserGroup, DatasetDataElement
-from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, store_org_units_assigned_2_dataset
+from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, \
+    store_org_units_assigned_2_dataset, format_dataset_with_section, format_dataset_with_out_section
 from apps.dhis.ussd.store import Store
 
 logger = logging.getLogger(__name__)
@@ -134,7 +135,7 @@ def sync_data_elements(api, dhis2_instance, version):
 
 
 def sync_data_sets(api, dhis2_instance, version):
-    logger.info("Starting to sync data sets")
+    logger.info("Starting to sync dataset")
 
     for pages in api.get_paged('dataSets', page_size=100,
                                params={'fields': 'id,name,shortName,periodType,dataSetElements,organisationUnits,openFuturePeriods,compulsoryDataElementOperands'}):
@@ -169,7 +170,7 @@ def sync_data_sets(api, dhis2_instance, version):
 
     Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
 
-    logger.info("Syncing data sets ............ Done")
+    logger.info("Syncing dataset ............ Done")
 
 
 def sync_sections(api, dhis2_instance, version):
@@ -241,7 +242,7 @@ def invalidate_dataset_cache():
 #               3: {name: org_unit_name3, id: org_unit_id3}
 #            }
 
-def cache_users_with_their_assigned_org_units() -> List[dict]:
+def cache_users_with_assigned_org_units() -> List[dict]:
     org_units_to_cache = []
 
     for user in DHIS2User.objects.all():
@@ -253,7 +254,7 @@ def cache_users_with_their_assigned_org_units() -> List[dict]:
 
         Store.set("usr_{}".format(user.passcode), user_ou)
 
-    logger.info('Caching user with their assigned org units ............ Done')
+    logger.info('Caching users ............ Done')
 
     return org_units_to_cache
 
@@ -275,7 +276,7 @@ def cache_users_with_their_assigned_org_units() -> List[dict]:
 # ou_orgunit_id_2: {
 #               ...
 #            }
-def cache_org_units_with_their_datasets(org_units_to_cache):
+def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
     for ou in org_units_to_cache:
         org_unit = OrgUnit.objects.get_or_none(org_unit_id=ou)
         if org_unit is not None:
@@ -291,10 +292,12 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
 
             Store.set("ou_{}".format(org_unit.org_unit_id), org_unit_datasets)
 
-    logger.info('Caching org units with their datasets ............ Done')
+    logger.info('Caching org units ............ Done')
 
 
+# Data structure of dataset that has a section
 # ds_dataset_id_1: {
+#               has_section: true,
 #               1: {
 #                       name: section_name1,
 #                       id: section_id1
@@ -322,26 +325,49 @@ def cache_org_units_with_their_datasets(org_units_to_cache):
 #                        ]
 #               }
 #            }
-# ds_dataset_id_2: {...}
 
-def cache_datasets_with_their_data_elements():
+# Data structure of dataset that has no section
+# ds_dataset_id_1: {
+#               has_section: false,
+#               data_elements: [
+#                   {
+#                       data_element_name: data_element_name1,
+#                       data_element_id: data_element_id1,
+#                       category_option_combo_name: category_option_combo_name1,
+#                       category_option_combo_id: category_option_combo_id1,
+#                       data_element_value_type: data_element_value_type
+#                   },
+#                   {
+#                       data_element_name: data_element_name2,
+#                       data_element_id: data_element_id2,
+#                       category_option_combo_name: category_option_combo_name2,
+#                       category_option_combo_id: category_option_combo_id2,
+#                       data_element_value_type: data_element_value_type
+#                   }
+#               ]
+#            }
+def cache_datasets_with_data_elements():
     for dataset in Dataset.objects.all():
-        dataset_sections = {}
-        for i, section in enumerate(dataset.section_set.all()):
-            dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'data_elements': []}
-            for sec_de in section.sectiondataelement_set.all():
-                de = sec_de.data_element
-                for coc in de.category_combo.categoryoptioncombo_set.all():
-                    dataset_sections[i + 1]['data_elements'].append(
-                        {
-                            'data_element_name': de.name,
-                            'data_element_id': de.data_element_id,
-                            'category_option_combo_name': coc.name,
-                            'category_option_combo_id': coc.category_option_combo_id,
-                            'data_element_value_type': de.value_type
-                        }
-                    )
+        formatted_dataset = {}
+        sections = dataset.section_set.all()
+        print('============================================')
+        print('============================================')
+        print('============================================')
+        print(dataset.name)
+        print(not sections)
+        print('============================================')
+        print('============================================')
+        print('============================================')
+        if not sections:
+            # dataset with no sections
+            formatted_dataset['data_elements'] = format_dataset_with_out_section(dataset)
+            formatted_dataset['has_section'] = False
+        else:
+            # dataset with sections
+            formatted_dataset = format_dataset_with_section(sections)
+            formatted_dataset['has_section'] = True
 
-        Store.set("ds_{}".format(dataset.dataset_id), dataset_sections)
 
-    logger.info('Caching datasets with sections, data elements and category combos  ............ Done')
+        Store.set("ds_{}".format(dataset.dataset_id), formatted_dataset)
+
+    logger.info('Caching datasets ............ Done')

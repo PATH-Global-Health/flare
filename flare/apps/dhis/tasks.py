@@ -10,8 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from apps.dhis.models import Instance, OrgUnit, Dataset, DataElement, CategoryOptionCombo, DHIS2User, DataValueSet, DataValue
 from apps.dhis.ussd.helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, \
     sync_data_elements, sync_sections, invalidate_users_cache, invalidate_org_units_cache, invalidate_dataset_cache, \
-    cache_users_with_their_assigned_org_units, cache_org_units_with_their_datasets, \
-    cache_datasets_with_their_data_elements
+    cache_users_with_assigned_org_units, cache_org_units_with_datasets, cache_datasets_with_data_elements
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +39,9 @@ def sync_dhis2_metadata():
 
     logger.info("Syncing metadata ............ Done")
 
-    org_units_to_cache = cache_users_with_their_assigned_org_units()
-    cache_org_units_with_their_datasets(org_units_to_cache)
-    cache_datasets_with_their_data_elements()
+    org_units_to_cache = cache_users_with_assigned_org_units()
+    cache_org_units_with_datasets(org_units_to_cache)
+    cache_datasets_with_data_elements()
 
 
 @shared_task
@@ -51,9 +50,9 @@ def cache_dhis2_metadata():
     invalidate_org_units_cache()
     invalidate_dataset_cache()
 
-    org_units_to_cache = cache_users_with_their_assigned_org_units()
-    cache_org_units_with_their_datasets(org_units_to_cache)
-    cache_datasets_with_their_data_elements()
+    org_units_to_cache = cache_users_with_assigned_org_units()
+    cache_org_units_with_datasets(org_units_to_cache)
+    cache_datasets_with_data_elements()
 
 
 @shared_task
