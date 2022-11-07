@@ -350,14 +350,7 @@ def cache_datasets_with_data_elements():
     for dataset in Dataset.objects.all():
         formatted_dataset = {}
         sections = dataset.section_set.all()
-        print('============================================')
-        print('============================================')
-        print('============================================')
-        print(dataset.name)
-        print(not sections)
-        print('============================================')
-        print('============================================')
-        print('============================================')
+        
         if not sections:
             # dataset with no sections
             formatted_dataset['data_elements'] = format_dataset_with_out_section(dataset)
