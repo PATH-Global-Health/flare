@@ -30,6 +30,7 @@ class Screen(object):
             'dataset': '',
             'period_type': '',
             'open_future_periods': '',
+            'dataset_has_section': '',
             'section': '',
             'begin_period': '',
             'direction': '-',

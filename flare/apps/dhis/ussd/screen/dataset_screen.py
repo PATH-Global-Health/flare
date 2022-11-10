@@ -28,6 +28,7 @@ class DatasetScreen(Screen):
                 self.state['dataset'] = datasets[self.user_response]['id']
                 self.state['period_type'] = datasets[self.user_response]['period_type']
                 self.state['open_future_periods'] = datasets[self.user_response]['open_future_periods']
+                self.state['has_section'] = datasets[self.user_response]['has_section']
                 self.save()
                 return True
 

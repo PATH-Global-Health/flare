@@ -265,12 +265,14 @@ def cache_users_with_assigned_org_units() -> List[dict]:
 #                           id: dataset_id1,
 #                           period_type: period_type1,
 #                           open_future_periods: open_future_periods1
+#                           has_section: True,
 #                      },
 #                   2: {
 #                           name: dataset_name2,
 #                           id: dataset_id2,
 #                           period_type: period_type2,
-#                           open_future_periods: open_future_periods2
+#                           open_future_periods: open_future_periods2,
+#                           has_section: False,
 #                      }
 #            }
 # ou_orgunit_id_2: {
@@ -283,11 +285,16 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
             datasets = org_unit.dataset_set.all()
             org_unit_datasets = {}
             for i, dataset in enumerate(datasets):
+                # check dataset has section or not
+                section_count = dataset.section_set.count()
+                has_section = section_count > 0
+
                 org_unit_datasets[i + 1] = {
                     'name': dataset.name,
                     'id': dataset.dataset_id,
                     'period_type': dataset.period_type,
-                    'open_future_periods': dataset.open_future_periods
+                    'open_future_periods': dataset.open_future_periods,
+                    'has_section': has_section
                 }
 
             Store.set("ou_{}".format(org_unit.org_unit_id), org_unit_datasets)
@@ -297,7 +304,6 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 
 # Data structure of dataset that has a section
 # ds_dataset_id_1: {
-#               has_section: true,
 #               1: {
 #                       name: section_name1,
 #                       id: section_id1
@@ -328,7 +334,6 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 
 # Data structure of dataset that has no section
 # ds_dataset_id_1: {
-#               has_section: false,
 #               data_elements: [
 #                   {
 #                       data_element_name: data_element_name1,
@@ -354,11 +359,9 @@ def cache_datasets_with_data_elements():
         if not sections:
             # dataset with no sections
             formatted_dataset['data_elements'] = format_dataset_with_out_section(dataset)
-            formatted_dataset['has_section'] = False
         else:
             # dataset with sections
             formatted_dataset = format_dataset_with_section(sections)
-            formatted_dataset['has_section'] = True
 
 
         Store.set("ds_{}".format(dataset.dataset_id), formatted_dataset)
