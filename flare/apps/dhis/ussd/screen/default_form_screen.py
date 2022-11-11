@@ -20,9 +20,12 @@ class DefaultFormScreen(Screen):
             data_element_index = int(self.state['data_element_index'])
 
             if data_element_index < len(data_elements):
-                # append the category option combination name is not default, then append it to the data element
+                # If the category option combination name is not default, then append it to the data element
                 # name
-                menu_text = data_elements[data_element_index]['data_element_name']
+                compulsory = data_elements[data_element_index]['compulsory']
+                data_element_name = data_elements[data_element_index]['data_element_name']
+                menu_text = " * {}".format(data_element_name) if compulsory else data_element_name
+
                 cat_opt_combo_name = data_elements[data_element_index]['category_option_combo_name']
                 menu_text += " - {}".format(cat_opt_combo_name) if cat_opt_combo_name != 'default' else ""
 
@@ -41,9 +44,10 @@ class DefaultFormScreen(Screen):
             data_elements = dataset['data_elements']
             data_element_index = int(self.state['data_element_index'])
             data_element_value_type = data_elements[data_element_index]['data_element_value_type']
+            compulsory = data_elements[data_element_index]['compulsory']
 
             # validate the data element
-            result = validate_data_element_by_value_type(data_element_value_type, self.user_response)
+            result = validate_data_element_by_value_type(compulsory, data_element_value_type, self.user_response)
 
             if result[0]:
                 data_element = data_elements[data_element_index]['data_element_id']

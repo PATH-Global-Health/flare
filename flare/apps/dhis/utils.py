@@ -129,24 +129,28 @@ def validate_text(value):
     return False, value
 
 
-def validate_data_element_by_value_type(value_type, value):
-    if value_type == "NUMBER":
-        return validate_number(value)
+def validate_data_element_by_value_type(compulsory, value_type, value):
+    if compulsory:
+        if value_type == "NUMBER":
+            return validate_number(value)
 
-    if value_type == "INTEGER":
-        return validate_integer(value)
+        if value_type == "INTEGER":
+            return validate_integer(value)
 
-    if value_type == "INTEGER_POSITIVE":
-        return validate_positive_integer(value)
+        if value_type == "INTEGER_POSITIVE":
+            return validate_positive_integer(value)
 
-    if value_type == "INTEGER_ZERO_OR_POSITIVE":
-        return validate_int_zero_or_positive(value)
+        if value_type == "INTEGER_ZERO_OR_POSITIVE":
+            return validate_int_zero_or_positive(value)
 
-    if value_type == "INTEGER_NEGATIVE":
-        return validate_int_negative(value)
+        if value_type == "INTEGER_NEGATIVE":
+            return validate_int_negative(value)
 
-    if value_type == "TEXT" or value_type == "LONG_TEXT":
-        return validate_text(value)
+        if value_type == "TEXT" or value_type == "LONG_TEXT":
+            return validate_text(value)
+    # The data element is not compulsory so we don't need to validate the data type.
+    # Just return true with empty value.
+    return True, ""
 
 
 def get_screen(session_id, phone_number, user_response, level):
@@ -237,7 +241,8 @@ def format_dataset_with_section(sections):
                     'data_element_id': ds_de.data_element.data_element_id,
                     'category_option_combo_name': ds_de.category_option_combo.name,
                     'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
-                    'data_element_value_type': ds_de.data_element.value_type
+                    'data_element_value_type': ds_de.data_element.value_type,
+                    'compulsory': ds_de.compulsory
                 }
             )
 
@@ -252,7 +257,8 @@ def format_dataset_with_out_section(dataset):
                 'data_element_id': ds_de.data_element.data_element_id,
                 'category_option_combo_name': ds_de.category_option_combo.name,
                 'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
-                'data_element_value_type': ds_de.data_element.value_type
+                'data_element_value_type': ds_de.data_element.value_type,
+                'compulsory': ds_de.compulsory
             }
         )
     return data_elements

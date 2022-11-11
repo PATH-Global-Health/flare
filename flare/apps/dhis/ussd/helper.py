@@ -313,7 +313,8 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                               data_element_id: data_element_id1,
 #                               category_option_combo_name: category_option_combo_name1,
 #                               category_option_combo_id: category_option_combo_id,
-#                               data_element_value_type: data_element_value_type
+#                               data_element_value_type: data_element_value_type,
+#                               compulsory: true
 #                           }
 #                       ]
 #                  },
@@ -327,6 +328,7 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                                category_option_combo_name: category_option_combo_name2,
 #                                category_option_combo_id: category_option_combo_id2,
 #                                data_element_value_type: data_element_value_type
+#                                compulsory: false
 #                            }
 #                        ]
 #               }
@@ -341,6 +343,7 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                       category_option_combo_name: category_option_combo_name1,
 #                       category_option_combo_id: category_option_combo_id1,
 #                       data_element_value_type: data_element_value_type
+#                       compulsory: false
 #                   },
 #                   {
 #                       data_element_name: data_element_name2,
@@ -348,6 +351,7 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                       category_option_combo_name: category_option_combo_name2,
 #                       category_option_combo_id: category_option_combo_id2,
 #                       data_element_value_type: data_element_value_type
+#                       compulsory: true
 #                   }
 #               ]
 #            }
