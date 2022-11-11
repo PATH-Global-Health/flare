@@ -12,8 +12,9 @@ class Level(IntEnum):
     DATASETS = 4
     PERIODS = 5
     SECTIONS = 6
-    DATA_ELEMENTS = 7
-    SAVE_OPTIONS = 8  # complete and incomplete
+    SECTION_FORM = 7
+    DEFAULT_FORM=8
+    SAVE_OPTIONS = 9  # complete and incomplete
 
 
 class Screen(object):
@@ -30,7 +31,7 @@ class Screen(object):
             'dataset': '',
             'period_type': '',
             'open_future_periods': '',
-            'dataset_has_section': '',
+            'has_section': '',
             'section': '',
             'begin_period': '',
             'direction': '-',

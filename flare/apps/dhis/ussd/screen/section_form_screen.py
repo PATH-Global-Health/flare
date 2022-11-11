@@ -4,11 +4,11 @@ from apps.dhis.utils import validate_data_element_by_value_type
 from apps.dhis.tasks import save_values_to_database
 
 
-class DataElementScreen(Screen):
+class SectionFormScreen(Screen):
     """displays the data elements in the selected section"""
 
     def __init__(self, session_id, phone_number, user_response=None):
-        super().__init__(session_id, phone_number, user_response, Level.DATA_ELEMENTS)
+        super().__init__(session_id, phone_number, user_response, Level.SECTION_FORM)
 
     def show(self):
 

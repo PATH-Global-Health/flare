@@ -52,10 +52,15 @@ class PeriodScreen(Screen):
         return False
 
     def next(self):
-        from apps.dhis.ussd.screen import SectionScreen
-        # clear sections visited list
-        self.state['sections_visited'].clear()
-        return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        # Show the section screen only if the dataset has section
+        if self.state['has_section']:
+            from apps.dhis.ussd.screen import SectionScreen
+            # clear sections visited list
+            self.state['sections_visited'].clear()
+            return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        else:
+            from apps.dhis.ussd.screen import DefaultFormScreen
+            return DefaultFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass

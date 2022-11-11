@@ -36,8 +36,8 @@ class SectionScreen(Screen):
 
     def next(self):
         # to fix circular import
-        from apps.dhis.ussd.screen import DataElementScreen
-        return DataElementScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        from apps.dhis.ussd.screen import SectionFormScreen
+        return SectionFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         pass

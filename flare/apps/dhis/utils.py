@@ -174,10 +174,15 @@ def get_screen(session_id, phone_number, user_response, level):
         from apps.dhis.ussd.screen import PeriodScreen
         return PeriodScreen(session_id=session_id, phone_number=phone_number,
                             user_response=user_response)
-    elif level == Level.DATA_ELEMENTS:
-        from apps.dhis.ussd.screen import DataElementScreen
-        return DataElementScreen(session_id=session_id, phone_number=phone_number,
+    elif level == Level.SECTION_FORM:
+        from apps.dhis.ussd.screen import SectionFormScreen
+        return SectionFormScreen(session_id=session_id, phone_number=phone_number,
                                  user_response=user_response)
+    elif level == Level.DEFAULT_FORM:
+        from apps.dhis.ussd.screen import DefaultFormScreen
+        return DefaultFormScreen(session_id=session_id, phone_number=phone_number,
+                                 user_response=user_response)
+
     elif level == Level.SAVE_OPTIONS:
         from apps.dhis.ussd.screen import SaveOptionsScreen
         return SaveOptionsScreen(session_id=session_id, phone_number=phone_number,
