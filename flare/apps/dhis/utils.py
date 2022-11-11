@@ -130,7 +130,9 @@ def validate_text(value):
 
 
 def validate_data_element_by_value_type(compulsory, value_type, value):
-    if compulsory:
+    if compulsory or len(value)>0:
+        # Check the data type of a value if the data element is compulsory or if the user enters data even if the
+        # data element is optional.
         if value_type == "NUMBER":
             return validate_number(value)
 

@@ -87,7 +87,8 @@ admin.site.register(Section, SectionsAdmin)
 
 
 class DataValueSetAdmin(admin.ModelAdmin):
-    list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status", "mark_as_complete")
+    list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status", "mark_as_complete",
+                    "created_at", "updated_at")
     search_fields = ("data_set__name", "org_unit__name", "user__name", "period", "phone_number")
     list_filter = ("status", "data_set__name", "mark_as_complete")
 
@@ -96,7 +97,8 @@ admin.site.register(DataValueSet, DataValueSetAdmin)
 
 
 class DataValueAdmin(admin.ModelAdmin):
-    list_display = ("data_element", "category_option_combo", "data_value_set", "session_id", "value")
+    list_display = ("data_element", "category_option_combo", "data_value_set", "session_id", "value", "created_at",
+                    "updated_at")
     search_fields = ("data_element__name", "category_option_combo__name")
     list_filter = ("data_value_set",)
 

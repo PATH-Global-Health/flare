@@ -136,7 +136,7 @@ def sync_data_to_dhis2():
 
         payload['dataSet'] = dvs.data_set.dataset_id
         if dvs.mark_as_complete:
-            payload['completeDate'] = json.dumps(dvs.created_at, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
+            payload['completeDate'] = dvs.created_at.strftime("%Y-%m-%d")
         payload['period'] = dvs.period
         payload['orgUnit'] = dvs.org_unit.org_unit_id
         payload['dataValues'] = []
@@ -150,12 +150,8 @@ def sync_data_to_dhis2():
             payload['dataValues'].append(p)
 
         try:
-            response = api.post('dataValueSets', json=payload, params={
-                "dataSet": dvs.data_set.dataset_id,
-                "orgUnit": dvs.org_unit.org_unit_id,
-                "period": dvs.period
-            })
-            if response.status_code == 200:
+            response = api.post('dataValueSets', json=payload)
+            if response.status_code == 200 and response.json()['status']=="SUCCESS":
                 data_value_sets_to_delete.append(dvs.pk)
         except RequestException as ex:
             logger.error(ex)
