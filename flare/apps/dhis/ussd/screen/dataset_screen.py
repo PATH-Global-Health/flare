@@ -7,13 +7,16 @@ class DatasetScreen(Screen):
 
     def __init__(self, session_id, phone_number, user_response=None):
         super().__init__(session_id, phone_number, user_response, Level.DATASETS)
+        self.datasets = None
+        dataset_key = "ou_{}".format(self.state['org_unit'])
+
+        if Store.exists(dataset_key):
+            self.datasets = Store.get(key)
 
     def show(self):
-        key = "ou_{}".format(self.state['org_unit'])
-        if Store.exists(key):
-            datasets = Store.get(key)
+        if self.datasets:
             menu_text = "Dataset:\n"
-            for key, value in datasets.items():
+            for key, value in self.datasets.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
 
             return self.ussd_proceed(menu_text)
@@ -21,10 +24,8 @@ class DatasetScreen(Screen):
         return self.ussd_end("No data set found.")
 
     def validate(self):
-        key = "ou_{}".format(self.state['org_unit'])
-        if Store.exists(key):
-            datasets = Store.get(key)
-            if self.user_response in datasets.keys():
+        if self.datasets:
+            if self.user_response in self.datasets.keys():
                 self.state['dataset'] = datasets[self.user_response]['id']
                 self.state['period_type'] = datasets[self.user_response]['period_type']
                 self.state['open_future_periods'] = datasets[self.user_response]['open_future_periods']
