@@ -12,7 +12,7 @@ class DatasetScreen(Screen):
         key = "ou_{}".format(self.state['org_unit'])
         if Store.exists(key):
             datasets = Store.get(key)
-            menu_text = "Data set:\n"
+            menu_text = "Dataset:\n"
             for key, value in datasets.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
 
