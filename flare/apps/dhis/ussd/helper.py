@@ -114,15 +114,15 @@ def sync_category_combos(api, dhis2_instance, version):
 def sync_data_elements(api, dhis2_instance, version):
     logger.info("Starting to sync data elements")
 
-    for pages in api.get_paged('dataElements', page_size=100, params={'fields': 'id,formName,categoryCombo,valueType'}):
+    for pages in api.get_paged('dataElements', page_size=100, params={'fields': 'id,formName,shortName,categoryCombo,valueType'}):
         for data_element in pages['dataElements']:
             de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
 
             if de is None:
                 de = DataElement()
             de.data_element_id = data_element['id']
-            de.name = data_element['formName'] if 'formName' in data_element else "No Name"
-            de.value_type = data_element['valueType'] if 'valueType' in data_element else "No Name"
+            de.name = data_element['formName'] if 'formName' in data_element else data_element['shortName']
+            de.value_type = data_element['valueType']
             de.category_combo = CategoryCombo.objects.get_or_none(category_combo_id=data_element['categoryCombo']['id'])
             de.version = version
             de.instance = dhis2_instance
