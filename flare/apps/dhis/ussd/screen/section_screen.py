@@ -7,13 +7,15 @@ class SectionScreen(Screen):
 
     def __init__(self, session_id, phone_number, user_response=None):
         super().__init__(session_id, phone_number, user_response, Level.SECTIONS)
+        self.sections = None
+        section_key = "ds_{}".format(self.state['dataset'])
+        if Store.exists(section_key):
+            self.sections = Store.get(section_key)
 
     def show(self):
-        key = "ds_{}".format(self.state['dataset'])
-        if Store.exists(key):
-            sections = Store.get(key)
+        if self.sections:
             menu_text = "Section:\n"
-            for key, value in sections.items():
+            for key, value in self.sections.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
 
             return self.ussd_proceed(menu_text)
@@ -21,10 +23,8 @@ class SectionScreen(Screen):
         return self.ussd_end("No sections found.")
 
     def validate(self):
-        key = "ds_{}".format(self.state['dataset'])
-        if Store.exists(key):
-            sections = Store.get(key)
-            if self.user_response in sections.keys():
+        if self.sections:
+            if self.user_response in self.sections.keys():
                 # self.state['section'] = sections[self.user_response]['id']
                 self.state['section'] = self.user_response
                 # Always reset the data element index in the selected section to 0 to show the first data element.
