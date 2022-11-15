@@ -11,7 +11,7 @@ class DatasetScreen(Screen):
         dataset_key = "ou_{}".format(self.state['org_unit'])
 
         if Store.exists(dataset_key):
-            self.datasets = Store.get(key)
+            self.datasets = Store.get(dataset_key)
 
     def show(self):
         if self.datasets:
@@ -26,10 +26,10 @@ class DatasetScreen(Screen):
     def validate(self):
         if self.datasets:
             if self.user_response in self.datasets.keys():
-                self.state['dataset'] = datasets[self.user_response]['id']
-                self.state['period_type'] = datasets[self.user_response]['period_type']
-                self.state['open_future_periods'] = datasets[self.user_response]['open_future_periods']
-                self.state['has_section'] = datasets[self.user_response]['has_section']
+                self.state['dataset'] = self.datasets[self.user_response]['id']
+                self.state['period_type'] = self.datasets[self.user_response]['period_type']
+                self.state['open_future_periods'] = self.datasets[self.user_response]['open_future_periods']
+                self.state['has_section'] = self.datasets[self.user_response]['has_section']
                 self.save()
                 return True
 
