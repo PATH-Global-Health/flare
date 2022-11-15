@@ -35,4 +35,5 @@ class LoginScreen(Screen):
             return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        pass
+        # We don't have any screens to return to because the login screen is the first one.
+        return self.show()

@@ -43,4 +43,4 @@ class RestoreSessionScreen(Screen):
             return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        pass
+        return self.show()

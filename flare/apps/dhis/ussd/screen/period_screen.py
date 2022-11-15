@@ -22,6 +22,7 @@ class PeriodScreen(Screen):
             menu_text += "{}. {}\n".format(key, value["display"])
 
         menu_text += "-. Prev"
+        menu_text += "\n#. Back"
 
         return self.ussd_proceed(menu_text)
 
@@ -63,4 +64,5 @@ class PeriodScreen(Screen):
             return DefaultFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        pass
+        from apps.dhis.ussd.screen import DatasetScreen
+        return DatasetScreen(session_id=self.session_id, phone_number=self.phone_number).show()

@@ -17,6 +17,7 @@ class SectionScreen(Screen):
             menu_text = "Section:\n"
             for key, value in self.sections.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
+            menu_text += "#. Back"
 
             return self.ussd_proceed(menu_text)
 
@@ -40,4 +41,5 @@ class SectionScreen(Screen):
         return SectionFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        pass
+        from apps.dhis.ussd.screen import PeriodScreen
+        return PeriodScreen(session_id=self.session_id, phone_number=self.phone_number).show()

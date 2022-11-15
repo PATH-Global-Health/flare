@@ -18,6 +18,7 @@ class DatasetScreen(Screen):
             menu_text = "Dataset:\n"
             for key, value in self.datasets.items():
                 menu_text += "{}. {}\n".format(key, value['name'])
+            menu_text += "#. Back"
 
             return self.ussd_proceed(menu_text)
 
@@ -39,4 +40,5 @@ class DatasetScreen(Screen):
         return PeriodScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        pass
+        from apps.dhis.ussd.screen import OrgUnitScreen
+        return OrgUnitScreen(session_id=self.session_id, phone_number=self.phone_number).show()

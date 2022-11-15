@@ -32,6 +32,7 @@ class SectionFormScreen(Screen):
 
                 cat_opt_combo_name = self.data_elements[self.data_element_index]['category_option_combo_name']
                 menu_text += " - {}".format(cat_opt_combo_name) if cat_opt_combo_name != 'default' else ""
+                menu_text += "\n#. Back"
 
                 return self.ussd_proceed(menu_text)
             else:
@@ -94,4 +95,13 @@ class SectionFormScreen(Screen):
         return self.ussd_end("No datasets are found")
 
     def prev(self):
-        pass
+        self.data_element_index -= 1
+
+        if self.data_element_index < 0:
+            # We've shown the first data element, so return to the section screen.
+            from apps.dhis.ussd.screen import SectionScreen
+            return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        else:
+            self.state['data_element_index'] = self.data_element_index
+            self.save()
+            return self.show()

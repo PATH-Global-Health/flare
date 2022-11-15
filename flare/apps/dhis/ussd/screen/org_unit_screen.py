@@ -39,4 +39,5 @@ class OrgUnitScreen(Screen):
         return DatasetScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        pass
+        # We should not return to the login screen from the org unit screen once we are authenticated successfully.
+        return self.show()

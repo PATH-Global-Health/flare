@@ -12,7 +12,8 @@ class SaveOptionsScreen(Screen):
     def show(self):
         menu_text = "Save options:\n"
         menu_text += "1. Complete\n"
-        menu_text += "2. Save"
+        menu_text += "2. Save\n"
+        menu_text += "#. Back"
 
         return self.ussd_proceed(menu_text)
 
@@ -28,4 +29,12 @@ class SaveOptionsScreen(Screen):
         return self.ussd_end("Thank you")
 
     def prev(self):
-        pass
+        # Show section form if the dataset has one; otherwise, show default form
+        if self.state['has_section']:
+            from apps.dhis.ussd.screen import SectionFormScreen
+            # clear sections visited list
+            self.state['sections_visited'].clear()
+            return SectionFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        else:
+            from apps.dhis.ussd.screen import DefaultFormScreen
+            return DefaultFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
