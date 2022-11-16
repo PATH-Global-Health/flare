@@ -20,6 +20,8 @@ class SectionFormScreen(Screen):
                 self.data_element_index = int(self.state['data_element_index'])
                 self.compulsory = self.data_elements[self.data_element_index]['compulsory']
                 self.data_element_value_type = self.data_elements[self.data_element_index]['data_element_value_type']
+                self.data_element = self.data_elements[self.data_element_index]['data_element_id']
+                self.category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
 
     def show(self):
         if self.dataset:
@@ -35,12 +37,12 @@ class SectionFormScreen(Screen):
                 # If the key (data element id and cat opt combo id) is within the data element values dictionary and
                 # the value is not empty, display the value to the user.
 
-                data_element = self.data_elements[self.data_element_index]['data_element_id']
-                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
-                key = "{}-{}".format(data_element, category_option_combo)
+                key = self.get_key()
 
-                if key in self.state['data_element_values'] and self.state['data_element_values'][key]:
-                    menu_text += " - [{}]".format(self.state['data_element_values'][key])
+                if key in self.state['data_element_values']:
+                    if self.state['data_element_values'][key]:
+                        menu_text += " - [{}]".format(self.state['data_element_values'][key])
+                    menu_text += "\n*. Skip"
                 menu_text += "\n#. Back"
 
                 return self.ussd_proceed(menu_text)
@@ -56,6 +58,14 @@ class SectionFormScreen(Screen):
             if self.state['section'] not in self.state['sections_visited']:
                 self.state['sections_visited'].append(self.state['section'])
 
+            key = self.get_key()
+
+            # If the user entered * to skip entering a value and there is a previously entered data value, return true.
+            # This is useful when editing data because it allows you to skip through data elements and only enter values
+            # for those that need to be edited.
+            if self.user_response == '*' and key in self.state['data_element_values']:
+                return True
+
             # validate the data element
             result = validate_data_element_by_value_type(self.compulsory, self.data_element_value_type, self.user_response)
 
@@ -63,19 +73,11 @@ class SectionFormScreen(Screen):
                 # save the value that is received from the user in the state. The key is a concatenation of
                 # data element and category option combo ids.
 
-                # This is repeated because the show function is called again after incrementing the current data element
-                # index to extract the next data element, and the variables in the constructor always contain the
-                # previous data element.
-                # The key is generated in order to temporarily store the value in redis.
-                data_element = self.data_elements[self.data_element_index]['data_element_id']
-                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
-                key = "{}-{}".format(data_element, category_option_combo)
-
                 self.state['data_element_values'][key] = result[1]
                 self.save()
 
                 # Save into database
-                save_values_to_database.delay(self.state['dataset'], data_element, category_option_combo,
+                save_values_to_database.delay(self.state['dataset'], self.data_element, self.category_option_combo,
                                               self.state['org_unit'], self.state['passcode'], self.state['period'],
                                               result[1], self.phone_number, self.session_id)
                 return True
@@ -119,3 +121,9 @@ class SectionFormScreen(Screen):
             self.state['data_element_index'] = self.data_element_index
             self.save()
             return self.show()
+
+    def get_key(self):
+        # The key is generated in order to temporarily store the value in redis.
+        data_element = self.data_elements[self.data_element_index]['data_element_id']
+        category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
+        return "{}-{}".format(data_element, category_option_combo)

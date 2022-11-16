@@ -38,12 +38,12 @@ class DefaultFormScreen(Screen):
                 # This is repeated because the show function is called again after incrementing the current data element
                 # index to extract the next data element, and the variables in the constructor always contain the
                 # previous data element.
-                data_element = self.data_elements[self.data_element_index]['data_element_id']
-                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
-                key = "{}-{}".format(data_element, category_option_combo)
+                key = self.get_key()
 
-                if key in self.state['data_element_values'] and self.state['data_element_values'][key]:
-                    menu_text += " - [{}]".format(self.state['data_element_values'][key])
+                if key in self.state['data_element_values']:
+                    if self.state['data_element_values'][key]:
+                        menu_text += " - [{}]".format(self.state['data_element_values'][key])
+                    menu_text += "\n*. Skip"
                 menu_text += "\n#. Back"
 
                 return self.ussd_proceed(menu_text)
@@ -55,16 +55,22 @@ class DefaultFormScreen(Screen):
     # validate will always return false until all data elements are filled
     def validate(self):
         if self.dataset:
+
+            key = self.get_key()
+
+            # If the user entered * to skip entering a value and there is a previously entered data value, return true.
+            # This is useful when editing data because it allows you to skip through data elements and only enter values
+            # for those that need to be edited.
+            if self.user_response == '*' and key in self.state['data_element_values']:
+                return True
+
             # validate the data element
             result = validate_data_element_by_value_type(self.compulsory, self.data_element_value_type, self.user_response)
 
             if result[0]:
                 # save the value that is received from the user in the state. The key is a concatenation of
                 # data element and category option combo ids.
-                # The key is generated in order to temporarily store the value in redis.
-                data_element = self.data_elements[self.data_element_index]['data_element_id']
-                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
-                key = "{}-{}".format(data_element, category_option_combo)
+
 
                 self.state['data_element_values'][key] = result[1]
                 self.save()
@@ -104,3 +110,9 @@ class DefaultFormScreen(Screen):
             self.state['data_element_index'] = self.data_element_index
             self.save()
             return self.show()
+
+    def get_key(self):
+        # The key is generated in order to temporarily store the value in redis.
+        data_element = self.data_elements[self.data_element_index]['data_element_id']
+        category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
+        return "{}-{}".format(data_element, category_option_combo)
