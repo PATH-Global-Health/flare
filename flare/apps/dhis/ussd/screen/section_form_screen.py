@@ -66,6 +66,7 @@ class SectionFormScreen(Screen):
                 # This is repeated because the show function is called again after incrementing the current data element
                 # index to extract the next data element, and the variables in the constructor always contain the
                 # previous data element.
+                # The key is generated in order to temporarily store the value in redis.
                 data_element = self.data_elements[self.data_element_index]['data_element_id']
                 category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
                 key = "{}-{}".format(data_element, category_option_combo)
@@ -73,7 +74,7 @@ class SectionFormScreen(Screen):
                 self.state['data_element_values'][key] = result[1]
                 self.save()
 
-                # save into database
+                # Save into database
                 save_values_to_database.delay(self.state['dataset'], data_element, category_option_combo,
                                               self.state['org_unit'], self.state['passcode'], self.state['period'],
                                               result[1], self.phone_number, self.session_id)
