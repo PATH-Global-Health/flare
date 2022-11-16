@@ -32,6 +32,15 @@ class SectionFormScreen(Screen):
 
                 cat_opt_combo_name = self.data_elements[self.data_element_index]['category_option_combo_name']
                 menu_text += " - {}".format(cat_opt_combo_name) if cat_opt_combo_name != 'default' else ""
+                # If the key (data element id and cat opt combo id) is within the data element values dictionary and
+                # the value is not empty, display the value to the user.
+
+                data_element = self.data_elements[self.data_element_index]['data_element_id']
+                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
+                key = "{}-{}".format(data_element, category_option_combo)
+
+                if key in self.state['data_element_values'] and self.state['data_element_values'][key]:
+                    menu_text += " - [{}]".format(self.state['data_element_values'][key])
                 menu_text += "\n#. Back"
 
                 return self.ussd_proceed(menu_text)
@@ -51,12 +60,16 @@ class SectionFormScreen(Screen):
             result = validate_data_element_by_value_type(self.compulsory, self.data_element_value_type, self.user_response)
 
             if result[0]:
-                data_element = self.data_elements[self.data_element_index]['data_element_id']
-                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
-
                 # save the value that is received from the user in the state. The key is a concatenation of
                 # data element and category option combo ids.
+
+                # This is repeated because the show function is called again after incrementing the current data element
+                # index to extract the next data element, and the variables in the constructor always contain the
+                # previous data element.
+                data_element = self.data_elements[self.data_element_index]['data_element_id']
+                category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
                 key = "{}-{}".format(data_element, category_option_combo)
+
                 self.state['data_element_values'][key] = result[1]
                 self.save()
 
