@@ -99,9 +99,6 @@ def save_values_to_database(data_set, data_element, category_option_combo, org_u
         data_value.value = value
         data_value.session_id = session_id
         data_value.save()
-        logger.info(
-            "Saved data into database \n\tData set: {}\n\tData element: {}\n\tCategory option combo: {}\n\tOrg unit: {}\n\tPasscode: {}\n\tPeriod: {}\n\tPhone number: {}\n\tValue: {}"
-                .format(ds.name, de.name, coc.name, ou.name, passcode, period, phone_number, value))
 
 
 @shared_task
@@ -151,8 +148,11 @@ def sync_data_to_dhis2():
 
         try:
             response = api.post('dataValueSets', json=payload)
+
             if response.status_code == 200 and response.json()['status']=="SUCCESS":
                 data_value_sets_to_delete.append(dvs.pk)
+            else:
+                print(response.json())
         except RequestException as ex:
             logger.error(ex)
 
