@@ -147,6 +147,7 @@ def sync_data_to_dhis2():
             payload['dataValues'].append(p)
 
         try:
+            logger.print(payload)
             response = api.post('dataValueSets', json=payload)
 
             if response.status_code == 200 and response.json()['status']=="SUCCESS":
