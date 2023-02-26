@@ -86,10 +86,10 @@ services:
 
   # Nginx - ReactJS Frontend + Reverse Proxy for the web
   nginx:
-    container_name: flare_nginx
+    container_name: nginx
     build:
       context: .
-      dockerfile: ./flare_frontend/Dockerfile
+      dockerfile: ./nginx/Dockerfile
     ports:
       - "8999:8999"
     # environment:
