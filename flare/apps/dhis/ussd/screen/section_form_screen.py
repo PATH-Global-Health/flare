@@ -18,7 +18,6 @@ class SectionFormScreen(Screen):
             if self.state['section'] in self.dataset.keys():
                 self.data_elements = self.dataset[self.state['section']]['data_elements']
                 self.data_element_index = int(self.state['data_element_index'])
-                self.compulsory = self.data_elements[self.data_element_index]['compulsory']
                 self.data_element_value_type = self.data_elements[self.data_element_index]['data_element_value_type']
                 self.data_element = self.data_elements[self.data_element_index]['data_element_id']
                 self.category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
@@ -30,7 +29,7 @@ class SectionFormScreen(Screen):
                 # name
 
                 data_element_name = self.data_elements[self.data_element_index]['data_element_name']
-                menu_text = " * {}".format(data_element_name) if self.compulsory else data_element_name
+                menu_text = " * {}".format(data_element_name) if self.get_compulsory() else data_element_name
 
                 cat_opt_combo_name = self.data_elements[self.data_element_index]['category_option_combo_name']
                 menu_text += " - {}".format(cat_opt_combo_name) if cat_opt_combo_name != 'default' else ""
@@ -38,10 +37,17 @@ class SectionFormScreen(Screen):
                 # the value is not empty, display the value to the user.
 
                 key = self.get_key()
+                skip_menu_added = False
 
                 if key in self.state['data_element_values']:
                     if self.state['data_element_values'][key]:
                         menu_text += " - [{}]".format(self.state['data_element_values'][key])
+                    skip_menu_added = True # we already added a skip menu
+                    # user can skip modifying the value previously entered.
+                    menu_text += "\n*. Skip"
+
+                # if no skip menu is added and the data element is not compulsory, add the skip menu
+                if not skip_menu_added and not self.get_compulsory():
                     menu_text += "\n*. Skip"
                 menu_text += "\n#. Back"
 
@@ -58,6 +64,10 @@ class SectionFormScreen(Screen):
             if self.state['section'] not in self.state['sections_visited']:
                 self.state['sections_visited'].append(self.state['section'])
 
+            # if the data element is not compulsory and the user entered *, skip it.
+            if self.user_response == '*' and not self.get_compulsory():
+                return True
+
             key = self.get_key()
 
             # If the user entered * to skip entering a value and there is a previously entered data value, return true.
@@ -67,7 +77,7 @@ class SectionFormScreen(Screen):
                 return True
 
             # validate the data element
-            result = validate_data_element_by_value_type(self.compulsory, self.data_element_value_type, self.user_response)
+            result = validate_data_element_by_value_type(self.get_compulsory(), self.data_element_value_type, self.user_response)
 
             if result[0]:
                 # save the value that is received from the user in the state. The key is a concatenation of
@@ -127,3 +137,6 @@ class SectionFormScreen(Screen):
         data_element = self.data_elements[self.data_element_index]['data_element_id']
         category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
         return "{}-{}".format(data_element, category_option_combo)
+
+    def get_compulsory(self):
+        return self.data_elements[self.data_element_index]['compulsory']

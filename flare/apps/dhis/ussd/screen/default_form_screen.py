@@ -17,7 +17,6 @@ class DefaultFormScreen(Screen):
             self.data_elements = self.dataset['data_elements']
             self.data_element_index = int(self.state['data_element_index'])
             self.data_element_value_type = self.data_elements[self.data_element_index]['data_element_value_type']
-            self.compulsory = self.data_elements[self.data_element_index]['compulsory']
             self.data_element = self.data_elements[self.data_element_index]['data_element_id']
             self.category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
 
@@ -39,10 +38,17 @@ class DefaultFormScreen(Screen):
                 # index to extract the next data element, and the variables in the constructor always contain the
                 # previous data element.
                 key = self.get_key()
+                skip_menu_added = False
 
                 if key in self.state['data_element_values']:
                     if self.state['data_element_values'][key]:
                         menu_text += " - [{}]".format(self.state['data_element_values'][key])
+                    skip_menu_added = True  # we already added a skip menu
+                    # user can skip modifying the value previously entered.
+                    menu_text += "\n*. Skip"
+
+                # if no skip menu is added and the data element is not compulsory, add the skip menu
+                if not skip_menu_added and not self.get_compulsory():
                     menu_text += "\n*. Skip"
                 menu_text += "\n#. Back"
 
@@ -55,6 +61,10 @@ class DefaultFormScreen(Screen):
     # validate will always return false until all data elements are filled
     def validate(self):
         if self.dataset:
+
+            # if the data element is not compulsory and the user entered *, skip it.
+            if self.user_response == '*' and not self.get_compulsory():
+                return True
 
             key = self.get_key()
 
@@ -116,3 +126,6 @@ class DefaultFormScreen(Screen):
         data_element = self.data_elements[self.data_element_index]['data_element_id']
         category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
         return "{}-{}".format(data_element, category_option_combo)
+
+    def get_compulsory(self):
+        return self.data_elements[self.data_element_index]['compulsory']
