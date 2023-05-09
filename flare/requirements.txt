@@ -1,7 +1,7 @@
 attrs==21.4.0
 celery==5.2.3
 dhis2.py==2.3.0
-Django==3.2.16
+Django==3.2.19
 django-celery-beat==2.2.1
 django-cors-headers==3.11.0
 django-filter==21.1
