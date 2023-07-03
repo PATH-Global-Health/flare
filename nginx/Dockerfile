@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:latest-alpine
 LABEL maintainer="Belendia Serda belendia@gmail.com"
 
 ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
