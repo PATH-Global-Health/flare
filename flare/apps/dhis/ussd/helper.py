@@ -7,7 +7,8 @@ from django.conf import settings
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
     DataElement, Section, UserGroup, DatasetDataElement
 from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, \
-    store_org_units_assigned_2_dataset, format_dataset_with_section, format_dataset_with_out_section
+    store_org_units_assigned_2_dataset, format_dataset_with_section, format_dataset_with_out_section, \
+    store_data_elements_assigned_2_data_element_group
 from apps.dhis.ussd.store import Store
 
 logger = logging.getLogger(__name__)
@@ -64,12 +65,14 @@ def sync_users(api, dhis2_instance, version):
 
                 if 'organisationUnits' in user:
                     for org_unit in user['organisationUnits']:
-                        ou = OrgUnit.objects.get_or_none(org_unit_id=org_unit['id'])
+                        ou = OrgUnit.objects.get_or_none(
+                            org_unit_id=org_unit['id'])
                         if ou is not None:
                             usr.org_units.add(ou)
                     usr.save()
 
-    DHIS2User.objects.exclude(version=version, instance=dhis2_instance).delete()
+    DHIS2User.objects.exclude(
+        version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing users ............ Done")
 
@@ -80,7 +83,8 @@ def sync_category_combos(api, dhis2_instance, version):
     for pages in api.get_paged('categoryCombos', page_size=100,
                                params={'fields': 'id,name,categoryOptionCombos[id,name]'}):
         for cat_combo in pages['categoryCombos']:
-            cc = CategoryCombo.objects.get_or_none(category_combo_id=cat_combo['id'])
+            cc = CategoryCombo.objects.get_or_none(
+                category_combo_id=cat_combo['id'])
 
             if cc is None:
                 cc = CategoryCombo()
@@ -93,7 +97,8 @@ def sync_category_combos(api, dhis2_instance, version):
 
             if 'categoryOptionCombos' in cat_combo:
                 for index, coc in enumerate(cat_combo['categoryOptionCombos']):
-                    coc_obj = CategoryOptionCombo.objects.get_or_none(category_option_combo_id=coc['id'])
+                    coc_obj = CategoryOptionCombo.objects.get_or_none(
+                        category_option_combo_id=coc['id'])
                     if coc_obj is None:
                         coc_obj = CategoryOptionCombo()
 
@@ -105,8 +110,10 @@ def sync_category_combos(api, dhis2_instance, version):
                     coc_obj.instance = dhis2_instance
                     coc_obj.save()
 
-    CategoryCombo.objects.exclude(version=version, instance=dhis2_instance).delete()
-    CategoryOptionCombo.objects.exclude(version=version, instance=dhis2_instance).delete()
+    CategoryCombo.objects.exclude(
+        version=version, instance=dhis2_instance).delete()
+    CategoryOptionCombo.objects.exclude(
+        version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing category combos ............ Done")
 
@@ -116,22 +123,55 @@ def sync_data_elements(api, dhis2_instance, version):
 
     for pages in api.get_paged('dataElements', page_size=100, params={'fields': 'id,formName,shortName,categoryCombo,valueType'}):
         for data_element in pages['dataElements']:
-            de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
+            de = DataElement.objects.get_or_none(
+                data_element_id=data_element['id'])
 
             if de is None:
                 de = DataElement()
             de.data_element_id = data_element['id']
             de.name = data_element['formName'] if 'formName' in data_element else data_element['shortName']
             de.value_type = data_element['valueType']
-            de.category_combo = CategoryCombo.objects.get_or_none(category_combo_id=data_element['categoryCombo']['id'])
+            de.category_combo = CategoryCombo.objects.get_or_none(
+                category_combo_id=data_element['categoryCombo']['id'])
             de.version = version
             de.instance = dhis2_instance
 
             de.save()
 
-    DataElement.objects.exclude(version=version, instance=dhis2_instance).delete()
+    DataElement.objects.exclude(
+        version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing data elements ............ Done")
+
+
+def sync_data_element_groups(api, dhis2_instance, version):
+    logger.info("Starting to sync data element groups")
+
+    for pages in api.get_paged('dataElementGroups', page_size=100, params={'fields': 'id,name,dataElements'}):
+        for data_element_group in pages['dataElementGroups']:
+            deg = DataElementGroup.objects.get_or_none(
+                data_element_group_id=data_element_group['id'])
+
+            if deg is None:
+                deg = DataElementGroup()
+            deg.data_element_group_id = data_element_group['id']
+            deg.name = data_element_group['name']
+
+            deg.version = version
+            deg.instance = dhis2_instance
+
+            deg.save()
+            deg.data_elements.clear()
+
+            # save the data elements assigned to the dataset
+            if 'dataElements' in data_element_group:
+                store_data_elements_assigned_2_data_element_group(
+                    deg, data_element_group['dataElements'])
+
+    DataElementGroup.objects.exclude(
+        version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing data element groups ............ Done")
 
 
 def sync_data_sets(api, dhis2_instance, version):
@@ -149,7 +189,8 @@ def sync_data_sets(api, dhis2_instance, version):
             ds.period_type = dataset['periodType'] if 'periodType' in dataset else ""
 
             try:
-                ds.open_future_periods = int(dataset['openFuturePeriods']) if 'openFuturePeriods' in dataset else 0
+                ds.open_future_periods = int(
+                    dataset['openFuturePeriods']) if 'openFuturePeriods' in dataset else 0
             except ValueError:
                 ds.open_future_periods = 0
 
@@ -161,12 +202,14 @@ def sync_data_sets(api, dhis2_instance, version):
 
             # save the org units assigned to the dataset
             if 'organisationUnits' in dataset:
-                store_org_units_assigned_2_dataset(ds, dataset['organisationUnits'])
+                store_org_units_assigned_2_dataset(
+                    ds, dataset['organisationUnits'])
 
             ds.data_element.clear()
             # save the data elements that the dataset contains in DatasetDataElement table
             if 'dataSetElements' in dataset:
-                store_data_elements_assigned_2_dataset(ds, dataset, version, dhis2_instance)
+                store_data_elements_assigned_2_dataset(
+                    ds, dataset, version, dhis2_instance)
 
     Dataset.objects.exclude(version=version, instance=dhis2_instance).delete()
 
@@ -188,7 +231,8 @@ def sync_sections(api, dhis2_instance, version):
             sec.version = version
             sec.instance = dhis2_instance
             sec.sort_order = section['sortOrder']
-            sec.dataset = Dataset.objects.get_or_none(dataset_id=section['dataSet']['id'])
+            sec.dataset = Dataset.objects.get_or_none(
+                dataset_id=section['dataSet']['id'])
 
             sec.save()
 
@@ -196,7 +240,8 @@ def sync_sections(api, dhis2_instance, version):
             if 'dataElements' in section:
                 sort_order = 0
                 for data_element in section['dataElements']:
-                    de = DataElement.objects.get_or_none(data_element_id=data_element['id'])
+                    de = DataElement.objects.get_or_none(
+                        data_element_id=data_element['id'])
                     if de is not None:
                         for coc in de.category_combo.categoryoptioncombo_set.all().order_by('sort_order'):
                             ds_de = DatasetDataElement.objects.get_or_none(data_set__dataset_id=section['dataSet']['id'],
@@ -362,12 +407,40 @@ def cache_datasets_with_data_elements():
 
         if not sections:
             # dataset with no sections
-            formatted_dataset['data_elements'] = format_dataset_with_out_section(dataset)
+            formatted_dataset['data_elements'] = format_dataset_with_out_section(
+                dataset)
         else:
             # dataset with sections
             formatted_dataset = format_dataset_with_section(sections)
 
-
         Store.set("ds_{}".format(dataset.dataset_id), formatted_dataset)
 
     logger.info('Caching datasets ............ Done')
+
+
+# Data structure of dataset with data element group
+# "ds_deg_dataset_id_1":{
+#          "deg_id_1":{
+#             "name":"data element group",
+#             "data_elements":[
+#                {
+#                   "data_element_name":"data_element_name1",
+#                   "data_element_id":"data_element_id1",
+#                   "category_option_combo_name":"category_option_combo_name1",
+#                   "category_option_combo_id":"category_option_combo_id1",
+#                   "data_element_value_type":"data_element_value_type",
+#                   "compulsory":"false"
+#                },
+#                {
+#                   "data_element_name":"data_element_name2",
+#                   "data_element_id":"data_element_id2",
+#                   "category_option_combo_name":"category_option_combo_name2",
+#                   "category_option_combo_id":"category_option_combo_id2",
+#                   "data_element_value_type":"data_element_value_type",
+#                   "compulsory":true
+#                }
+#             ]
+#          }
+#    }
+def cache_datasets_with_data_element_group_and_data_element():
+    pass

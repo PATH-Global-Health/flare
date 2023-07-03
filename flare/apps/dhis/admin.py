@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryCombo, CategoryOptionCombo, \
-    Section, UserGroup, DataValueSet, DataValue, DatasetDataElement
+    Section, UserGroup, DataValueSet, DataValue, DatasetDataElement, DataElementGroup
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -59,6 +59,15 @@ class DataElementsAdmin(admin.ModelAdmin):
 admin.site.register(DataElement, DataElementsAdmin)
 
 
+class DataElementGroupAdmin(admin.ModelAdmin):
+    list_display = ("name", "data_element_group_id",)
+    search_fields = ("name", "data_element_group_id")
+    list_filter = ("instance__url",)
+
+
+admin.site.register(DataElementGroup, DataElementGroupAdmin)
+
+
 class CategoryCombosAdmin(admin.ModelAdmin):
     list_display = ("name", "category_combo_id",)
     search_fields = ("name", "category_combo_id")
@@ -89,7 +98,8 @@ admin.site.register(Section, SectionsAdmin)
 class DataValueSetAdmin(admin.ModelAdmin):
     list_display = ("data_set", "org_unit", "user", "period", "phone_number", "status", "mark_as_complete",
                     "created_at", "updated_at")
-    search_fields = ("data_set__name", "org_unit__name", "user__name", "period", "phone_number")
+    search_fields = ("data_set__name", "org_unit__name",
+                     "user__name", "period", "phone_number")
     list_filter = ("status", "data_set__name", "mark_as_complete")
 
 
@@ -107,9 +117,10 @@ admin.site.register(DataValue, DataValueAdmin)
 
 
 class DatasetDataElementAdmin(admin.ModelAdmin):
-    list_display = ("data_element", "data_set", "category_option_combo", "sort_order", "compulsory")
+    list_display = ("data_element", "data_set",
+                    "category_option_combo", "sort_order", "compulsory")
     search_fields = ("data_element",)
-    list_filter = ("compulsory","data_set__name", "section__name")
+    list_filter = ("compulsory", "data_set__name", "section__name")
 
 
 admin.site.register(DatasetDataElement, DatasetDataElementAdmin)

@@ -79,7 +79,8 @@ class DHIS2User(CommonModel):
 class CategoryCombo(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)
-    category_combo_id = models.CharField(max_length=40, null=False, unique=True)
+    category_combo_id = models.CharField(
+        max_length=40, null=False, unique=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
 
@@ -113,7 +114,24 @@ class DataElement(CommonModel):
     value_type = models.CharField(max_length=50, null=True, blank=True)
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
-    category_combo = models.ForeignKey(CategoryCombo, null=True, on_delete=models.CASCADE)
+    category_combo = models.ForeignKey(
+        CategoryCombo, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class DataElementGroup(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    data_element_group_id = models.CharField(
+        max_length=40, null=False, unique=True)
+    version = models.UUIDField()
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+    data_element = models.ManyToManyField(DataElement)
 
     class Meta:
         ordering = ['name']
@@ -131,7 +149,8 @@ class Dataset(CommonModel):
     version = models.UUIDField()
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     org_units = models.ManyToManyField(OrgUnit)
-    data_element = models.ManyToManyField(DataElement, through='DatasetDataElement')
+    data_element = models.ManyToManyField(
+        DataElement, through='DatasetDataElement')
 
     class Meta:
         ordering = ['name']
@@ -163,10 +182,13 @@ class DatasetDataElement(CommonModel):
     sort_order = models.IntegerField(default=0)
     data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE)
     data_set = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    category_option_combo = models.ForeignKey(CategoryOptionCombo, on_delete=models.CASCADE, null=True, blank=True)
+    category_option_combo = models.ForeignKey(
+        CategoryOptionCombo, on_delete=models.CASCADE, null=True, blank=True)
     compulsory = models.BooleanField(default=False)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
-    instance = models.ForeignKey(Instance, on_delete=models.CASCADE, null=True, blank=True)
+    section = models.ForeignKey(
+        Section, on_delete=models.CASCADE, null=True, blank=True)
+    instance = models.ForeignKey(
+        Instance, on_delete=models.CASCADE, null=True, blank=True)
     version = models.UUIDField(default=uuid.uuid4)
 
     def __str__(self):
@@ -196,9 +218,12 @@ class DataValueSet(CommonModel):
 
 class DataValue(CommonModel):
     objects = DHIS2Manager()
-    data_element = models.ForeignKey(DataElement, on_delete=models.CASCADE, null=True)
-    category_option_combo = models.ForeignKey(CategoryOptionCombo, on_delete=models.CASCADE, null=True)
-    data_value_set = models.ForeignKey(DataValueSet, on_delete=models.CASCADE, null=True)
+    data_element = models.ForeignKey(
+        DataElement, on_delete=models.CASCADE, null=True)
+    category_option_combo = models.ForeignKey(
+        CategoryOptionCombo, on_delete=models.CASCADE, null=True)
+    data_value_set = models.ForeignKey(
+        DataValueSet, on_delete=models.CASCADE, null=True)
     value = models.CharField(max_length=100, null=True, blank=True)
     comment = models.CharField(max_length=200, null=True, blank=True)
     session_id = models.CharField(max_length=240, null=True, blank=True)
@@ -208,7 +233,3 @@ class DataValue(CommonModel):
 
     def __str__(self):
         return "{} - {} - {}".format(self.data_element.name, self.category_option_combo.name, self.value)
-
-
-
-

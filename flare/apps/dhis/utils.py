@@ -20,7 +20,8 @@ def generate_passcode():
 def unique_passcode():
     passcode = generate_passcode()
     user = DHIS2User.objects.get_or_none(passcode=passcode)
-    n = 593775  # combination - 𝐶(30,6) 30 unique characters and passcode length is 6
+    # combination - 𝐶(30,6) 30 unique characters and passcode length is 6
+    n = 593775
     i = 0
     while i <= n and user is not None:
         i += 1
@@ -48,7 +49,8 @@ def generate_week_periods(open_future_periods, page_limit, begin_period, directi
 
     # If begin_period variable has a date, use it to calculate the weeks to display.
     if begin_period != '':
-        week = Week.fromdate(datetime.datetime.strptime(begin_period, '%Y-%m-%d'), 'iso')
+        week = Week.fromdate(datetime.datetime.strptime(
+            begin_period, '%Y-%m-%d'), 'iso')
         # This logic is to fix week discrepancy when a user clicks + and changes the direction and press - or vice versa
         if direction_change:
             if direction == '+':
@@ -130,7 +132,7 @@ def validate_text(value):
 
 
 def validate_data_element_by_value_type(compulsory, value_type, value):
-    if compulsory or len(value)>0:
+    if compulsory or len(value) > 0:
         # Check the data type of a value if the data element is compulsory or if the user enters data even if the
         # data element is optional.
         if value_type == "NUMBER":
@@ -201,9 +203,11 @@ def is_data_element_compulsory(compulsory_data_elements, data_element):
             return True
     return False
 
+
 def store_data_elements_assigned_2_dataset(ds, dataset, version, dhis2_instance):
     for data_element in dataset['dataSetElements']:
-        de = DataElement.objects.get_or_none(data_element_id=data_element['dataElement']['id'])
+        de = DataElement.objects.get_or_none(
+            data_element_id=data_element['dataElement']['id'])
         if de is not None:
 
             for coc in de.category_combo.categoryoptioncombo_set.all():
@@ -217,13 +221,15 @@ def store_data_elements_assigned_2_dataset(ds, dataset, version, dhis2_instance)
                 ds_de.data_set = ds
 
                 if 'compulsoryDataElementOperands' in dataset:
-                    ds_de.compulsory = is_data_element_compulsory(dataset['compulsoryDataElementOperands'], de)
+                    ds_de.compulsory = is_data_element_compulsory(
+                        dataset['compulsoryDataElementOperands'], de)
 
                 ds_de.version = version
                 ds_de.instance = dhis2_instance
                 ds_de.save()
 
     DatasetDataElement.objects.exclude(version=version).delete()
+
 
 def store_org_units_assigned_2_dataset(ds, org_units):
     for org_unit in org_units:
@@ -232,10 +238,21 @@ def store_org_units_assigned_2_dataset(ds, org_units):
             ds.org_units.add(ou)
     ds.save()
 
+
+def store_data_elements_assigned_2_data_element_group(deg, data_elements):
+    for data_element in data_elements:
+        de = DataElement.objects.get_or_none(
+            data_element_id=data_elements['id'])
+        if de is not None:
+            deg.data_elements.add(de)
+    deg.save()
+
+
 def format_dataset_with_section(sections):
     dataset_sections = {}
     for i, section in enumerate(sections):
-        dataset_sections[i + 1] = {'name': section.name, 'id': section.section_id, 'data_elements': []}
+        dataset_sections[i + 1] = {'name': section.name,
+                                   'id': section.section_id, 'data_elements': []}
         for ds_de in section.datasetdataelement_set.all().order_by('sort_order'):
             dataset_sections[i + 1]['data_elements'].append(
                 {
@@ -249,6 +266,7 @@ def format_dataset_with_section(sections):
             )
 
     return dataset_sections
+
 
 def format_dataset_with_out_section(dataset):
     data_elements = []
