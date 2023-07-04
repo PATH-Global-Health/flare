@@ -5,7 +5,7 @@ from typing import List
 from django.conf import settings
 
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
-    DataElement, Section, UserGroup, DatasetDataElement
+    DataElement, DataElementGroup, Section, UserGroup, DatasetDataElement
 from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, \
     store_org_units_assigned_2_dataset, format_dataset_with_section, format_dataset_with_out_section, \
     store_data_elements_assigned_2_data_element_group
@@ -161,7 +161,7 @@ def sync_data_element_groups(api, dhis2_instance, version):
             deg.instance = dhis2_instance
 
             deg.save()
-            deg.data_elements.clear()
+            deg.data_element.clear()
 
             # save the data elements assigned to the dataset
             if 'dataElements' in data_element_group:

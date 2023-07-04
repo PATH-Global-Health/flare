@@ -242,9 +242,9 @@ def store_org_units_assigned_2_dataset(ds, org_units):
 def store_data_elements_assigned_2_data_element_group(deg, data_elements):
     for data_element in data_elements:
         de = DataElement.objects.get_or_none(
-            data_element_id=data_elements['id'])
+            data_element_id=data_element['id'])
         if de is not None:
-            deg.data_elements.add(de)
+            deg.data_element.add(de)
     deg.save()
 
 
