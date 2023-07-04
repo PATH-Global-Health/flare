@@ -274,6 +274,7 @@ def invalidate_org_units_cache():
 def invalidate_dataset_cache():
     for dataset in Dataset.objects.all():
         Store.unlink("ds_{}".format(dataset.dataset_id))
+        Store.unlink("ds_deg_{}".format(dataset.dataset_id))
     logger.info("Invalidating datasets from cache ............ Done")
 
 
@@ -443,4 +444,31 @@ def cache_datasets_with_data_elements():
 #          }
 #    }
 def cache_datasets_with_data_element_group_and_data_element():
-    pass
+    for dataset in Dataset.objects.all():
+        deg = {}
+
+        # Read all data elements of a given dataset
+        for ds_de in dataset.datasetdataelement_set.all():
+            # read all data element groups of a given data element
+            for de_deg in ds_de.data_element.dataelementgroup_set.all():
+                # assign the data element to all data element groups
+                if de_deg.data_element_group_id not in deg:
+                    deg[de_deg.data_element_group_id] = {
+                        "name": de_deg.name,
+                        "data_elements": []
+                    }
+
+                deg[de_deg.data_element_group_id]['data_elements'].append(
+                    {
+                        'data_element_name': ds_de.data_element.name,
+                        'data_element_id': ds_de.data_element.data_element_id,
+                        'category_option_combo_name': ds_de.category_option_combo.name,
+                        'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
+                        'data_element_value_type': ds_de.data_element.value_type,
+                        'compulsory': ds_de.compulsory
+                    }
+                )
+
+        Store.set("ds_deg_{}".format(dataset.dataset_id), deg)
+
+    logger.info('Caching datasets by data element group ............ Done')
