@@ -147,6 +147,8 @@ class DataElementGroupSet(CommonModel):
     name = models.CharField(max_length=200, null=True, blank=True)
     data_element_groupset_id = models.CharField(
         max_length=40, null=False, unique=True)
+    data_element_groups = models.ManyToManyField(
+        DataElementGroup, through='DataElementGroupGroupSet')
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
 
     class Meta:
@@ -154,6 +156,26 @@ class DataElementGroupSet(CommonModel):
 
     def __str__(self):
         return self.name
+
+# Table to resolve the many-to-many relationship between data element group and data element groupset
+
+
+class DataElementGroupGroupSet(CommonModel):
+    objects = DHIS2Manager()
+    sort_order = models.IntegerField(default=0)
+    data_element_group = models.ForeignKey(
+        DataElementGroup, on_delete=models.CASCADE)
+    data_element_groupset = models.ForeignKey(
+        DataElementGroupSet, on_delete=models.CASCADE)
+    instance = models.ForeignKey(
+        Instance, on_delete=models.CASCADE, null=True, blank=True)
+    version = models.UUIDField(default=uuid.uuid4)
+
+    class Meta:
+        ordering = ['sort_order']
+
+    def __str__(self):
+        return "{} - {} - {}".format(self.data_element_group.name, self.data_element_groupset.name, self.sort_order)
 
 
 class Dataset(CommonModel):

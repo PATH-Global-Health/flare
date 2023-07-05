@@ -5,10 +5,10 @@ from typing import List
 from django.conf import settings
 
 from apps.dhis.models import OrgUnit, DHIS2User, Dataset, CategoryCombo, CategoryOptionCombo, \
-    DataElement, DataElementGroup, Section, UserGroup, DatasetDataElement
+    DataElement, DataElementGroup, Section, UserGroup, DatasetDataElement, DataElementGroupSet, DataElementGroupGroupSet
 from apps.dhis.utils import unique_passcode, store_data_elements_assigned_2_dataset, \
     store_org_units_assigned_2_dataset, format_dataset_with_section, format_dataset_with_out_section, \
-    store_data_elements_assigned_2_data_element_group
+    store_data_elements_assigned_2_data_element_group, in_groupset
 from apps.dhis.ussd.store import Store
 
 logger = logging.getLogger(__name__)
@@ -147,31 +147,67 @@ def sync_data_elements(api, dhis2_instance, version):
 def sync_data_element_groups(api, dhis2_instance, version):
     logger.info("Starting to sync data element groups")
 
-    for pages in api.get_paged('dataElementGroups', page_size=100, params={'fields': 'id,name,dataElements'}):
+    # read data element groupsets from the database
+    data_element_groupsets = DataElementGroupSet.objects.values_list(
+        'data_element_groupset_id', flat=True)
+
+    for pages in api.get_paged('dataElementGroups', page_size=100, params={'fields': 'id,name,dataElements, groupSets'}):
         for data_element_group in pages['dataElementGroups']:
-            deg = DataElementGroup.objects.get_or_none(
-                data_element_group_id=data_element_group['id'])
+            # Determine whether the data element group is part of the data element groupsets that were indicated by the user
+            if in_groupset(data_element_group, data_element_groupsets):
+                deg = DataElementGroup.objects.get_or_none(
+                    data_element_group_id=data_element_group['id'])
 
-            if deg is None:
-                deg = DataElementGroup()
-            deg.data_element_group_id = data_element_group['id']
-            deg.name = data_element_group['name']
+                if deg is None:
+                    deg = DataElementGroup()
+                deg.data_element_group_id = data_element_group['id']
+                deg.name = data_element_group['name']
 
-            deg.version = version
-            deg.instance = dhis2_instance
+                deg.version = version
+                deg.instance = dhis2_instance
 
-            deg.save()
-            deg.data_element.clear()
+                deg.save()
+                deg.data_element.clear()
 
-            # save the data elements assigned to the dataset
-            if 'dataElements' in data_element_group:
-                store_data_elements_assigned_2_data_element_group(
-                    deg, data_element_group['dataElements'])
+                # save the data elements assigned to the dataset
+                if 'dataElements' in data_element_group:
+                    store_data_elements_assigned_2_data_element_group(
+                        deg, data_element_group['dataElements'])
 
     DataElementGroup.objects.exclude(
         version=version, instance=dhis2_instance).delete()
 
     logger.info("Syncing data element groups ............ Done")
+
+
+def sync_data_element_groups_sort_order(api, dhis2_instance, version):
+    logger.info("Starting to sync data element groups sort order")
+
+    for pages in api.get_paged('dataElementGroupSets', page_size=100, params={'fields': 'id,name,dataElementGroups'}):
+        for groupset in pages['dataElementGroupSets']:
+            degs = DataElementGroupSet.objects.get_or_none(
+                data_element_groupset_id=groupset['id'])
+
+            # Proceed if the user has manually registered the groupset in the database.
+            if degs:
+                for index, group in enumerate(groupset['dataElementGroups']):
+                    deg = DataElementGroup.objects.get_or_none(
+                        data_element_group_id=group['id'])
+                    # Proceed if you can find the data element group
+                    if deg:
+                        deggs = DataElementGroupGroupSet()
+                        deggs.sort_order = index
+                        deggs.data_element_group = deg
+                        deggs.data_element_groupset = degs
+                        deggs.version = version
+                        deggs.instance = dhis2_instance
+
+                        deggs.save()
+
+    DataElementGroupGroupSet.objects.exclude(
+        version=version, instance=dhis2_instance).delete()
+
+    logger.info("Syncing data element groups sort order ............ Done")
 
 
 def sync_data_sets(api, dhis2_instance, version):

@@ -282,3 +282,13 @@ def format_dataset_with_out_section(dataset):
             }
         )
     return data_elements
+
+
+def in_groupset(data_element_group, data_element_groupsets):
+    is_deg_belongs_2_degs = False
+    if 'groupSets' in data_element_group:
+        for groupset in data_element_group['groupSets']:
+            if groupset['id'] in data_element_groupsets:
+                is_deg_belongs_2_degs = True
+                break
+    return is_deg_belongs_2_degs

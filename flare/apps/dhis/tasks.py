@@ -11,7 +11,7 @@ from apps.dhis.models import Instance, OrgUnit, Dataset, DataElement, CategoryOp
 from apps.dhis.ussd.helper import sync_org_units, sync_users, sync_data_sets, sync_category_combos, \
     sync_data_elements, sync_sections, sync_data_element_groups, invalidate_users_cache, invalidate_org_units_cache, \
     invalidate_dataset_cache, cache_users_with_assigned_org_units, cache_org_units_with_datasets, cache_datasets_with_data_elements, \
-    cache_datasets_with_data_element_group_and_data_element
+    cache_datasets_with_data_element_group_and_data_element, sync_data_element_groups_sort_order
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ def sync_dhis2_metadata():
         sync_category_combos(api, dhis2, version)
         sync_data_elements(api, dhis2, version)
         sync_data_element_groups(api, dhis2, version)
+        sync_data_element_groups_sort_order(api, dhis2, version)
         sync_data_sets(api, dhis2, version)
         sync_sections(api, dhis2, version)
 
