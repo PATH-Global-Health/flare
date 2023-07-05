@@ -140,6 +140,22 @@ class DataElementGroup(CommonModel):
         return self.name
 
 
+# The user manually populates this model using the admin interface to ensure that the system only
+# downloads data element groups that are part of this specific data element groupset.
+class DataElementGroupSet(CommonModel):
+    objects = DHIS2Manager()
+    name = models.CharField(max_length=200, null=True, blank=True)
+    data_element_groupset_id = models.CharField(
+        max_length=40, null=False, unique=True)
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class Dataset(CommonModel):
     objects = DHIS2Manager()
     name = models.CharField(max_length=200, null=True, blank=True)

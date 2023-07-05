@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Instance, OrgUnit, DHIS2User, Dataset, DataElement, CategoryCombo, CategoryOptionCombo, \
-    Section, UserGroup, DataValueSet, DataValue, DatasetDataElement, DataElementGroup
+    Section, UserGroup, DataValueSet, DataValue, DatasetDataElement, DataElementGroup, DataElementGroupSet
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -66,6 +66,15 @@ class DataElementGroupAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DataElementGroup, DataElementGroupAdmin)
+
+
+class DataElementGroupSetAdmin(admin.ModelAdmin):
+    list_display = ("name", "data_element_groupset_id",)
+    search_fields = ("name", "data_element_groupset_id")
+    list_filter = ("instance__url",)
+
+
+admin.site.register(DataElementGroupSet, DataElementGroupSetAdmin)
 
 
 class CategoryCombosAdmin(admin.ModelAdmin):
