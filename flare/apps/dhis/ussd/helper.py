@@ -459,6 +459,7 @@ def cache_datasets_with_data_elements():
 # "ds_deg_dataset_id_1":{
 #          "deg_id_1":{
 #             "name":"data element group",
+#             "sort_order": 0,
 #             "data_elements":[
 #                {
 #                   "data_element_name":"data_element_name1",
@@ -491,8 +492,15 @@ def cache_datasets_with_data_element_group_and_data_element():
                 if de_deg.data_element_group_id not in deg:
                     deg[de_deg.data_element_group_id] = {
                         "name": de_deg.name,
+                        "sort_order": 0,
                         "data_elements": []
                     }
+
+                    # Read the sort order from the 'data element group groupset' table and assign it to
+                    # the data element group
+                    if de_deg.dataelementgroupgroupset_set.exists():
+                        deg[de_deg.data_element_group_id]['sort_order'] = de_deg.dataelementgroupgroupset_set.first(
+                        ).sort_order
 
                 deg[de_deg.data_element_group_id]['data_elements'].append(
                     {
@@ -504,7 +512,8 @@ def cache_datasets_with_data_element_group_and_data_element():
                         'compulsory': ds_de.compulsory
                     }
                 )
-
+        # Sort the data element groups using sort order
+        deg = dict(sorted(deg.items(), key=lambda x: x[1]['sort_order']))
         Store.set("ds_deg_{}".format(dataset.dataset_id), deg)
 
     logger.info('Caching datasets by data element group ............ Done')
