@@ -8,3 +8,6 @@ from .section_form_screen import SectionFormScreen
 from .default_form_screen import DefaultFormScreen
 from .save_options_screen import SaveOptionsScreen
 from .restore_session_screen import RestoreSessionScreen
+from .form_type_screen import FormTypeScreen
+from .group_screen import GroupScreen
+from .group_form_screen import GroupFormScreen

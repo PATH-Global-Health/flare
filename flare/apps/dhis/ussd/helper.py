@@ -196,7 +196,7 @@ def sync_data_element_groups_sort_order(api, dhis2_instance, version):
                     # Proceed if you can find the data element group
                     if deg:
                         deggs = DataElementGroupGroupSet()
-                        deggs.sort_order = index
+                        deggs.sort_order = index + 1
                         deggs.data_element_group = deg
                         deggs.data_element_groupset = degs
                         deggs.version = version
@@ -492,7 +492,7 @@ def cache_datasets_with_data_element_group_and_data_element():
                 if de_deg.data_element_group_id not in deg:
                     deg[de_deg.data_element_group_id] = {
                         "name": de_deg.name,
-                        "sort_order": 0,
+                        "sort_order": 1,
                         "data_elements": []
                     }
 

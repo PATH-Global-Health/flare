@@ -190,7 +190,18 @@ def get_screen(session_id, phone_number, user_response, level):
         from apps.dhis.ussd.screen import DefaultFormScreen
         return DefaultFormScreen(session_id=session_id, phone_number=phone_number,
                                  user_response=user_response)
-
+    elif level == Level.FORM_TYPES:
+        from apps.dhis.ussd.screen import FormTypeScreen
+        return FormTypeScreen(session_id=session_id, phone_number=phone_number,
+                              user_response=user_response)
+    elif level == Level.GROUPS:
+        from apps.dhis.ussd.screen import GroupScreen
+        return GroupScreen(session_id=session_id, phone_number=phone_number,
+                           user_response=user_response)
+    elif level == Level.GROUP_FORM:
+        from apps.dhis.ussd.screen import GroupFormScreen
+        return GroupFormScreen(session_id=session_id, phone_number=phone_number,
+                               user_response=user_response)
     elif level == Level.SAVE_OPTIONS:
         from apps.dhis.ussd.screen import SaveOptionsScreen
         return SaveOptionsScreen(session_id=session_id, phone_number=phone_number,

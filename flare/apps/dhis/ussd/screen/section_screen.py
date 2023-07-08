@@ -41,5 +41,5 @@ class SectionScreen(Screen):
         return SectionFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
-        from apps.dhis.ussd.screen import PeriodScreen
-        return PeriodScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        from apps.dhis.ussd.screen import FormTypeScreen
+        return FormTypeScreen(session_id=self.session_id, phone_number=self.phone_number).show()

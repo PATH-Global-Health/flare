@@ -13,7 +13,8 @@ class PeriodScreen(Screen):
 
     def show(self):
         periods = generate_period(self.state['period_type'], self.state['open_future_periods'],
-                                  int(os.getenv('PAGE_LIMIT', 3)), self.state['begin_period'], self.state['direction'],
+                                  int(os.getenv(
+                                      'PAGE_LIMIT', 3)), self.state['begin_period'], self.state['direction'],
                                   self.state['direction_change'])
         menu_text = "Period:\n"
         menu_text += "+. Next\n"
@@ -28,7 +29,8 @@ class PeriodScreen(Screen):
 
     def validate(self):
         periods = generate_period(self.state['period_type'], self.state['open_future_periods'],
-                                  int(os.getenv('PAGE_LIMIT', 3)), self.state['begin_period'], self.state['direction'],
+                                  int(os.getenv(
+                                      'PAGE_LIMIT', 3)), self.state['begin_period'], self.state['direction'],
                                   self.state['direction_change'])
 
         if self.user_response == '+' or self.user_response == '-':
@@ -53,15 +55,8 @@ class PeriodScreen(Screen):
         return False
 
     def next(self):
-        # Show the section screen only if the dataset has section
-        if self.state['has_section']:
-            from apps.dhis.ussd.screen import SectionScreen
-            # clear sections visited list
-            self.state['sections_visited'].clear()
-            return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
-        else:
-            from apps.dhis.ussd.screen import DefaultFormScreen
-            return DefaultFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        from apps.dhis.ussd.screen import FormTypeScreen
+        return FormTypeScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         from apps.dhis.ussd.screen import DatasetScreen
