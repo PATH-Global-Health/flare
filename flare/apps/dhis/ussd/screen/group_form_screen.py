@@ -11,8 +11,6 @@ class GroupFormScreen(Screen):
         super().__init__(session_id, phone_number, user_response, Level.GROUP_FORM)
         dataset_de_group_key = "ds_deg_{}".format(self.state['dataset'])
         self.groups = None
-        # This represents the data element group id the user selected
-        self.group_key = self.state['group']
 
         if Store.exists(dataset_de_group_key):
             self.groups = Store.get(dataset_de_group_key)
@@ -124,9 +122,9 @@ class GroupFormScreen(Screen):
                     return SaveOptionsScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
                 # to fix circular dependency
-                from apps.dhis.ussd.screen import GroupSecreen
+                from apps.dhis.ussd.screen import GroupScreen
                 # all data element groups are not visited so show group screen
-                return GroupSecreen(session_id=self.session_id, phone_number=self.phone_number).show()
+                return GroupScreen(session_id=self.session_id, phone_number=self.phone_number).show()
         return self.ussd_end("No datasets with data element group are found")
 
     def prev(self):
@@ -134,8 +132,8 @@ class GroupFormScreen(Screen):
 
         if self.data_element_index < 0:
             # We've shown the first data element, so return to the group screen.
-            from apps.dhis.ussd.screen import GroupSecreen
-            return GroupSecreen(session_id=self.session_id, phone_number=self.phone_number).show()
+            from apps.dhis.ussd.screen import GroupScreen
+            return GroupScreen(session_id=self.session_id, phone_number=self.phone_number).show()
         else:
             self.state['data_element_index'] = self.data_element_index
             self.save()

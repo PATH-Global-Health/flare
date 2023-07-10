@@ -39,7 +39,7 @@ class GroupScreen(Screen):
                 # The user selects the sequential number for the data element group. However, we wanted
                 # to store the data element group ID we got from DHIS2.
                 for key, val in self.groups.items():
-                    if self.user_response == val['sort_order']:
+                    if self.user_response == str(val['sort_order']):
                         group_key = key
                         break
                 self.state['group'] = group_key
