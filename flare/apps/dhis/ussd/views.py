@@ -8,11 +8,13 @@ class USSDView:
         self.session_id = session_id
         self.phone_number = phone_number
         self.user_response = user_response
-        self.screen = Screen(session_id=self.session_id, phone_number=self.phone_number)
+        self.screen = Screen(session_id=self.session_id,
+                             phone_number=self.phone_number)
 
     def show(self):
 
-        self.screen = get_screen(self.session_id, self.phone_number, self.user_response, self.screen.state['level'])
+        self.screen = get_screen(
+            self.session_id, self.phone_number, self.user_response, self.screen.state['level'])
 
         # If the user enters #, go back one screen.
         if self.user_response == "#":
@@ -21,4 +23,6 @@ class USSDView:
         if not self.screen.validate():
             return self.screen.show()
         else:
+            # Reset the pagination indexes (sliding window) for screens that want to display menu items in a paginated view.
+            self.screen.reset_state()
             return self.screen.next()

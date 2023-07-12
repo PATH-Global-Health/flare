@@ -30,7 +30,8 @@ class GroupScreen(Screen):
             paginated_menu = self.paginate_menu_item(self.user_response)
             # Add a menu title at the beginning of the menu options
             paginated_menu.insert(0, "Groups:")
-            paginated_menu.append("#. Back")  # Add back option at the end
+            # Add back option at the end
+            paginated_menu.append("0. Exit #. Back")
 
             return self.ussd_proceed("\n".join(paginated_menu))
 
@@ -51,6 +52,8 @@ class GroupScreen(Screen):
                 # Always reset the data element index in the selected section to 0 to show the first data element.
                 self.state['data_element_index'] = 0
                 self.save()
+                return True
+            elif self.user_response == '0':
                 return True
 
         return False

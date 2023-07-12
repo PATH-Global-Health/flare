@@ -86,12 +86,8 @@ class Screen(object):
         start = int(self.state['slide_window_start'])
         end = int(self.state['slide_window_end'])
         paginated_menu_items = []
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        print(self.menu_items)
-        print('start = {}'.format(start))
-        print('end = {}'.format(end))
-        print('menu_items_size = {}'.format(self.menu_items_size))
 
+        # Compute the indices for the start and end of the sliding window
         if direction == '-':
             self.state['slide_window_start'] = start - \
                 self.menu_items_size if start - self.menu_items_size >= 0 else start
@@ -112,19 +108,13 @@ class Screen(object):
                 self.menu_items_size if end + \
                 self.menu_items_size <= max_upper_boundary else end
 
-        print("self.state['slide_window_start'] = {}".format(
-            self.state['slide_window_start']))
-        print("self.state['slide_window_end'] = {}".format(
-            self.state['slide_window_end']))
-
-        if len(self.menu_items) > 0:
-            print(
-                self.menu_items[self.state['slide_window_start']:self.state['slide_window_end']])
-            paginated_menu_items = self.menu_items[self.state['slide_window_start']                                                   :self.state['slide_window_end']]
-
-        # A pagination menu is necessary when there are more menu items than can be displayed on a single screen.
+        # A pagination is necessary when there are more menu items than can be displayed on a single screen.
         if len(self.menu_items) > self.menu_items_size:
+            paginated_menu_items = self.menu_items[self.state['slide_window_start']:self.state['slide_window_end']]
             paginated_menu_items.append('+. Next -. Prev')
+        else:
+            # no need for pagination
+            paginated_menu_items = self.menu_items
 
         Store.set(self.session_id, self.state)
 
@@ -132,7 +122,7 @@ class Screen(object):
 
     def reset_state(self):
         self.state['slide_window_start'] = 0
-        self.state['slide_window_end'] = 2
+        self.state['slide_window_end'] = self.menu_items_size
         Store.set(self.session_id, self.state)
 
     def ussd_proceed(self, display_text):
