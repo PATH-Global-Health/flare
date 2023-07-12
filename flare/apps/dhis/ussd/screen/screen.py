@@ -99,7 +99,7 @@ class Screen(object):
             # Based on this, we can set the min_upper_boundary to 39 and the max_upper_boundary to 42.
             # 42 = ((41/3) + (1 if 41 % 3 > 0 else 0)) * 3
             max_upper_boundary = (int(len(
-                self.menu_items) / self.menu_items_size) + 1 if len(self.menu_items) % self.menu_items_size > 0 else 0) * self.menu_items_size
+                self.menu_items) / self.menu_items_size) + (1 if len(self.menu_items) % self.menu_items_size > 0 else 0)) * self.menu_items_size
             min_upper_boundary = max_upper_boundary - self.menu_items_size
 
             self.state['slide_window_start'] = start + self.menu_items_size if start + \
