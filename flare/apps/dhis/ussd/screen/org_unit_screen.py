@@ -8,20 +8,26 @@ class OrgUnitScreen(Screen):
     def __init__(self, session_id, phone_number, user_response=None):
         super().__init__(session_id, phone_number, user_response, Level.ORG_UNITS)
         # store the current user state and session id
-        Store.set("usr_state_{}".format(self.state['passcode']), self.session_id)
+        Store.set("usr_state_{}".format(
+            self.state['passcode']), self.session_id)
         org_unit_key = "usr_{}".format(self.state['passcode'])
         self.org_units = None
 
         if Store.exists(org_unit_key):
             self.org_units = Store.get(org_unit_key)
 
+    def generate_menu_item(self):
+        for key, value in self.org_units.items():
+            self.menu_items.append("{}. {}".format(key, value['name']))
+
     def show(self):
         if self.org_units:
-            menu_text = "Org unit:\n"
-            for key, value in self.org_units.items():
-                menu_text += "{}. {}\n".format(key, value['name'])
+            self.generate_menu_item()
+            paginated_menu = self.paginate_menu_item(self.user_response)
+            # Add a menu title at the beginning of the menu options
+            paginated_menu.insert(0, "Org unit:")
 
-            return self.ussd_proceed(menu_text)
+            return self.ussd_proceed("\n".join(paginated_menu))
 
         return self.ussd_end("No org unit found.")
 
