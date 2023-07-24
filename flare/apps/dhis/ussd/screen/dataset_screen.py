@@ -13,14 +13,20 @@ class DatasetScreen(Screen):
         if Store.exists(dataset_key):
             self.datasets = Store.get(dataset_key)
 
+    def generate_menu_item(self):
+        for key, value in self.datasets.items():
+            self.menu_items.append("{}. {}".format(key, value['name']))
+
     def show(self):
         if self.datasets:
-            menu_text = "Dataset:\n"
-            for key, value in self.datasets.items():
-                menu_text += "{}. {}\n".format(key, value['name'])
-            menu_text += "#. Back"
+            self.generate_menu_item()
+            paginated_menu = self.paginate_menu_item(self.user_response)
+            # Add a menu title at the beginning of the menu options
+            paginated_menu.insert(0, "Dataset:")
+            # Add back option at the end
+            paginated_menu.append("#. Back")
 
-            return self.ussd_proceed(menu_text)
+            return self.ussd_proceed("\n".join(paginated_menu))
 
         return self.ussd_end("No data set found.")
 
