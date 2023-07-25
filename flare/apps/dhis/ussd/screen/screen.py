@@ -48,10 +48,6 @@ class Screen(object):
             'group': '',  # The group index that is selected by the user
             # Used in the period screen. The first period to start generating periods.
             'begin_period': '',
-            # Used in the period screen. The default option is - so that users will see past periods.
-            'direction': '-',
-            # This is used in the period screen. The user had been pressing the - option but had now begun to press the + option.
-            'direction_change': False,
             # Slides through the content list to generate paginated menu
             'slide_window_start': 0,  # Index of the first menu item
             'slide_window_end': self.menu_items_size,  # Index of the last menu item
@@ -120,7 +116,7 @@ class Screen(object):
 
         return paginated_menu_items
 
-    def reset_state(self):
+    def reset_slide_window(self):
         self.state['slide_window_start'] = 0
         self.state['slide_window_end'] = self.menu_items_size
         Store.set(self.session_id, self.state)

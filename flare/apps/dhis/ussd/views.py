@@ -24,5 +24,5 @@ class USSDView:
             return self.screen.show()
         else:
             # Reset the pagination indexes (sliding window) for screens that want to display menu items in a paginated view.
-            self.screen.reset_state()
+            self.screen.reset_slide_window()
             return self.screen.next()

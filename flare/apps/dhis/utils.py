@@ -1,13 +1,18 @@
 import datetime
 import random
+import logging
 
 from epiweeks import Week, Year
+from dhis2 import Api, RequestException
 
 from apps.dhis.models import DHIS2User, OrgUnit, DatasetDataElement, DataElement
 from apps.dhis.ussd.screen import Level
 
+
 CHARACTERS = "abcdefghijkmnpqrtuvwxyz2345689"
 LENGTH = 6
+
+logger = logging.getLogger(__name__)
 
 
 def generate_passcode():
@@ -300,3 +305,32 @@ def in_groupset(data_element_group, data_element_groupsets):
                 is_deg_belongs_2_degs = True
                 break
     return is_deg_belongs_2_degs
+
+
+# Retrieve previously reported data from DHIS2 so that the user can edit it.
+def get_data_from_dhis2(passcode, dataset, orgunit, period):
+
+    try:
+        user = DHIS2User.objects.get(passcode=passcode)
+        api = Api(user.instance.url, user.instance.username,
+                  user.instance.password)
+
+        logger.info('Getting data for dataset = {} orgunit = {} period = {}'.format(
+            dataset, orgunit, period))
+        response = api.get('dataValueSets', params={
+            'dataSet': dataset,
+            'orgUnit': orgunit,
+            'period': period
+        })
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            logger.error(response.json())
+
+    except DHIS2User.DoesNotExist:
+        logger.error(
+            "DHIS2 user with passcode {} doesn't exist.".format(passcode))
+    except RequestException as ex:
+        logger.error(ex)
+    return {}

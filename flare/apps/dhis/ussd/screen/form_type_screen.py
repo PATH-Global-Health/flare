@@ -1,5 +1,6 @@
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
+from apps.dhis.utils import get_data_from_dhis2
 
 
 class FormTypeScreen(Screen):
@@ -11,6 +12,17 @@ class FormTypeScreen(Screen):
         section_key = "ds_{}".format(self.state['dataset'])
         if Store.exists(section_key):
             self.sections = Store.get(section_key)
+
+        # Retrieve information from DHIS2 and save it in Redis, allowing the user to make updates as needed.
+        dhis2_data = get_data_from_dhis2(
+            self.state['passcode'], self.state['dataset'], self.state['org_unit'], self.state['period'])
+        if 'dataValues' in dhis2_data:
+            for data_value in dhis2_data['dataValues']:
+                key = '{}-{}'.format(data_value['dataElement'],
+                                     data_value['categoryOptionCombo'])
+                if key not in self.state['data_element_values']:
+                    self.state['data_element_values'][key] = data_value['value']
+            self.save()
 
     def show(self):
         default_or_section_form_type = 'Section' if self.state['has_section'] else 'Default'
