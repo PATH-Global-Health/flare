@@ -13,39 +13,29 @@ class PeriodScreen(Screen):
 
     def show(self):
         periods = generate_period(self.state['period_type'], self.state['open_future_periods'],
-                                  self.menu_items_size, self.state['begin_period'], self.state['direction'],
-                                  self.state['direction_change'])
+                                  self.menu_items_size, self.state['begin_period'], self.user_response)
         menu_text = "Period:\n"
-        menu_text += "+. Next\n"
 
         for key, value in periods[1].items():
             menu_text += "{}. {}\n".format(key, value["display"])
 
-        menu_text += "-. Prev"
-        menu_text += "\n#. Back"
+        menu_text += "+. Next -. Prev \n"
+        menu_text += "#. Back"
+
+        self.state['begin_period'] = periods[0]
+        self.save()
 
         return self.ussd_proceed(menu_text)
 
     def validate(self):
         periods = generate_period(self.state['period_type'], self.state['open_future_periods'],
-                                  self.menu_items_size, self.state['begin_period'], self.state['direction'],
-                                  self.state['direction_change'])
+                                  self.menu_items_size, self.state['begin_period'])
 
+        print('begin_period = {}'.format(periods[0]))
         if self.user_response == '+' or self.user_response == '-':
-            self.state['begin_period'] = periods[0]
-            # this state is required to fix a one week discrepancy when user presses + and then - or vice versa
-            self.state['direction_change'] = True if self.user_response != self.state['direction'] else False
-            self.state['direction'] = self.user_response
-            self.save()
             return False
 
         if self.user_response in periods[1].keys():
-            self.state['begin_period'] = periods[0]
-            # this is the period. The data is structured in such as way
-            # {
-            #     1: {'period': '202050', display:"W50 - 2020-12-07 - 2020-12-13"},
-            #     2: {...}
-            # }
             self.state['period'] = periods[1][self.user_response]['period']
             self.save()
             return True

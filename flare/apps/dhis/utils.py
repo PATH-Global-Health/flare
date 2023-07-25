@@ -39,52 +39,49 @@ def unique_passcode():
 #             2: {...}
 #         })
 # The first value in the tuple is used as begin period and the second value is list of periods
-# to display. The amount of periods generated depends on the value set for PAGINATION_LIMIT in .env file.
-def generate_week_periods(open_future_periods, page_limit, begin_period, direction, direction_change):
+# to display. The amount of periods generated depends on the value set for MENU_ITEM_SIZE in .env file.
+def generate_week_periods(open_future_periods, menu_item_size, begin_period, direction):
     weeks_to_display = {}
 
     # When the user first visits the period screen the begin_period variable is empty.
     # Therefore, use the current week as default.
-    week = Week.thisweek("iso") + open_future_periods
+    week = Week.thisweek("iso") + open_future_periods - 1
 
     # If begin_period variable has a date, use it to calculate the weeks to display.
     if begin_period != '':
         week = Week.fromdate(datetime.datetime.strptime(
             begin_period, '%Y-%m-%d'), 'iso')
-        # This logic is to fix week discrepancy when a user clicks + and changes the direction and press - or vice versa
-        if direction_change:
-            if direction == '+':
-                week += page_limit - 1
-            if direction == '-':
-                week -= page_limit - 1
 
     # We should not open future dates for data entry. The -1 is to prevent from opening this week.
-    if direction == '+' and week + page_limit > Week.thisweek("iso") + open_future_periods:
-        week = Week.thisweek("iso") + open_future_periods - page_limit - 1
+    if direction == '+' and week + menu_item_size > Week.thisweek("iso") + open_future_periods - 1:
+        week = Week.thisweek("iso") + open_future_periods - menu_item_size - 1
 
-    rng = range(page_limit, 0, -1) if direction == '+' else range(page_limit)
+    # To generate a list of weeks for the user, it's necessary to adjust the start of the week in
+    # order to obtain a range of weeks with the desired page limit. This can be achieved by either
+    # adding or subtracting from the start of the week.
+    if direction == '+':
+        week += menu_item_size
+    elif direction == '-':
+        week -= menu_item_size
 
-    for key, i in enumerate(rng):
-        w = week + i if direction == '+' else week - (i + 1)
+    # begin period will be retrieved and saved in the Redis cache for future reference in this function
+    begin_period = str(week.startdate())
+
+    # generate menu items
+    for key, i in enumerate(range(menu_item_size)):
+        w = week - i
         weeks_to_display[str(key + 1)] = {
             "period": w.isoformat(),
-            "display": "W{} - {} - {}".format(w.weektuple()[1], w.startdate(), w.enddate())
+            "display": "W{} - {}".format(w.weektuple()[1], w.startdate())
+            # "display": "W{} - {} - {}".format(w.weektuple()[1], w.startdate(), w.enddate())
         }
-
-        # Take the first week to calculate the beginning period in the next screen.
-        if direction == '+' and i == page_limit:
-            begin_period = str(w.enddate())
-        # Take the final week to calculate the beginning week in the next screen.
-        if direction == '-' and i == page_limit - 1:
-            begin_period = str(w.startdate())
 
     return begin_period, weeks_to_display
 
 
-def generate_period(period_type, open_future_periods, page_limit, begin_period='', direction='-',
-                    direction_change=False):
+def generate_period(period_type, open_future_periods, menu_item_size, begin_period='', direction=''):
     if period_type == "Weekly":
-        return generate_week_periods(open_future_periods, page_limit, begin_period, direction, direction_change)
+        return generate_week_periods(open_future_periods, menu_item_size, begin_period, direction)
 
     return {}
 
