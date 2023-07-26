@@ -53,7 +53,7 @@ class Screen(object):
             'slide_window_end': self.menu_items_size,  # Index of the last menu item
             # The index of the currently displayed data element to the user.
             'data_element_index': 0,
-            'data_element_values': {},  # {data_element_id-category_option_combo_id : value}
+            'data_values': {},  # {data_element_id-category_option_combo_id : value}
             # Index of the sections that the user visited.
             'sections_visited': [],
             # Index of the groups that the user visited.
@@ -119,6 +119,10 @@ class Screen(object):
     def reset_slide_window(self):
         self.state['slide_window_start'] = 0
         self.state['slide_window_end'] = self.menu_items_size
+        Store.set(self.session_id, self.state)
+
+    def reset_data_values(self):
+        self.state['data_values'] = {}
         Store.set(self.session_id, self.state)
 
     def ussd_proceed(self, display_text):

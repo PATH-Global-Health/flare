@@ -1,6 +1,7 @@
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
 from apps.dhis.utils import get_data_from_dhis2
+from apps.dhis.models import DataValueSet
 
 
 class FormTypeScreen(Screen):
@@ -13,15 +14,30 @@ class FormTypeScreen(Screen):
         if Store.exists(section_key):
             self.sections = Store.get(section_key)
 
+        # Resetting data values is useful for preventing values from one dimension leaking into another when a user
+        # switches between orgunits, datasets, or periods.
+        self.reset_data_values()
+
+        # If any data values are stored in the Flare app database, retrieve and store them in Redis.
+        data_value_sets = DataValueSet.objects.filter(
+            data_set__dataset_id=self.state['dataset'], org_unit__org_unit_id=self.state['org_unit'], period=self.state['period'])
+        if data_value_sets.count() > 0:
+            dvs = data_value_sets[0]
+            for dv in dvs.datavalue_set.all():
+                key = '{}-{}'.format(dv.data_element.data_element_id,
+                                     dv.category_option_combo.category_option_combo_id)
+                self.state['data_values'][key] = dv.value
+
         # Retrieve information from DHIS2 and save it in Redis, allowing the user to make updates as needed.
+        # Cache data retrieved from DHIS2, if the same data is not found in the Flare database.
         dhis2_data = get_data_from_dhis2(
             self.state['passcode'], self.state['dataset'], self.state['org_unit'], self.state['period'])
         if 'dataValues' in dhis2_data:
             for data_value in dhis2_data['dataValues']:
                 key = '{}-{}'.format(data_value['dataElement'],
                                      data_value['categoryOptionCombo'])
-                if key not in self.state['data_element_values']:
-                    self.state['data_element_values'][key] = data_value['value']
+                if key not in self.state['data_values']:
+                    self.state['data_values'][key] = data_value['value']
             self.save()
 
     def show(self):

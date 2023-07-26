@@ -44,10 +44,10 @@ class GroupFormScreen(Screen):
                 key = self.get_key()
                 skip_menu_added = False
 
-                if key in self.state['data_element_values']:
-                    if self.state['data_element_values'][key]:
+                if key in self.state['data_values']:
+                    if self.state['data_values'][key]:
                         menu_text += " - [{}]".format(
-                            self.state['data_element_values'][key])
+                            self.state['data_values'][key])
                     skip_menu_added = True  # we already added a skip menu
                     # user can skip modifying the value previously entered.
                     menu_text += "\n*. Skip"
@@ -79,7 +79,7 @@ class GroupFormScreen(Screen):
             # If the user entered * to skip entering a value and there is a previously entered data value, return true.
             # This is useful when editing data because it allows you to skip through data elements and only enter values
             # for those that need to be edited.
-            if self.user_response == '*' and key in self.state['data_element_values']:
+            if self.user_response == '*' and key in self.state['data_values']:
                 return True
 
             # validate the data element
@@ -90,7 +90,7 @@ class GroupFormScreen(Screen):
                 # save the value that is received from the user in the state. The key is a concatenation of
                 # data element and category option combo ids.
 
-                self.state['data_element_values'][key] = result[1]
+                self.state['data_values'][key] = result[1]
                 self.save()
 
                 # Save into database

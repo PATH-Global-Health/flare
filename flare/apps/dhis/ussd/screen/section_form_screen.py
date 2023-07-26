@@ -16,11 +16,14 @@ class SectionFormScreen(Screen):
             self.dataset = Store.get(dataset_key)
 
             if self.state['section'] in self.dataset.keys():
-                self.data_elements = self.dataset[self.state['section']]['data_elements']
+                self.data_elements = self.dataset[self.state['section']
+                                                  ]['data_elements']
                 self.data_element_index = int(self.state['data_element_index'])
-                self.data_element_value_type = self.data_elements[self.data_element_index]['data_element_value_type']
+                self.data_element_value_type = self.data_elements[
+                    self.data_element_index]['data_element_value_type']
                 self.data_element = self.data_elements[self.data_element_index]['data_element_id']
-                self.category_option_combo = self.data_elements[self.data_element_index]['category_option_combo_id']
+                self.category_option_combo = self.data_elements[
+                    self.data_element_index]['category_option_combo_id']
 
     def show(self):
         if self.dataset:
@@ -29,20 +32,23 @@ class SectionFormScreen(Screen):
                 # name
 
                 data_element_name = self.data_elements[self.data_element_index]['data_element_name']
-                menu_text = " * {}".format(data_element_name) if self.get_compulsory() else data_element_name
+                menu_text = " * {}".format(
+                    data_element_name) if self.get_compulsory() else data_element_name
 
                 cat_opt_combo_name = self.data_elements[self.data_element_index]['category_option_combo_name']
-                menu_text += " - {}".format(cat_opt_combo_name) if cat_opt_combo_name != 'default' else ""
+                menu_text += " - {}".format(
+                    cat_opt_combo_name) if cat_opt_combo_name != 'default' else ""
                 # If the key (data element id and cat opt combo id) is within the data element values dictionary and
                 # the value is not empty, display the value to the user.
 
                 key = self.get_key()
                 skip_menu_added = False
 
-                if key in self.state['data_element_values']:
-                    if self.state['data_element_values'][key]:
-                        menu_text += " - [{}]".format(self.state['data_element_values'][key])
-                    skip_menu_added = True # we already added a skip menu
+                if key in self.state['data_values']:
+                    if self.state['data_values'][key]:
+                        menu_text += " - [{}]".format(
+                            self.state['data_values'][key])
+                    skip_menu_added = True  # we already added a skip menu
                     # user can skip modifying the value previously entered.
                     menu_text += "\n*. Skip"
 
@@ -73,17 +79,18 @@ class SectionFormScreen(Screen):
             # If the user entered * to skip entering a value and there is a previously entered data value, return true.
             # This is useful when editing data because it allows you to skip through data elements and only enter values
             # for those that need to be edited.
-            if self.user_response == '*' and key in self.state['data_element_values']:
+            if self.user_response == '*' and key in self.state['data_values']:
                 return True
 
             # validate the data element
-            result = validate_data_element_by_value_type(self.get_compulsory(), self.data_element_value_type, self.user_response)
+            result = validate_data_element_by_value_type(
+                self.get_compulsory(), self.data_element_value_type, self.user_response)
 
             if result[0]:
                 # save the value that is received from the user in the state. The key is a concatenation of
                 # data element and category option combo ids.
 
-                self.state['data_element_values'][key] = result[1]
+                self.state['data_values'][key] = result[1]
                 self.save()
 
                 # Save into database
