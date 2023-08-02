@@ -66,9 +66,9 @@ class GroupFormScreen(Screen):
     # validate will always return false until all data elements are filled
     def validate(self):
         if self.groups:
-            # if the current section selected is not in the section visited list, add it
+            # if the current section selected is not in the group visited list, add it
             if self.state['group'] not in self.state['groups_visited']:
-                self.state['groups_visited'].append(self.state['section'])
+                self.state['groups_visited'].append(self.state['group'])
 
             # if the data element is not compulsory and the user entered *, skip it.
             if self.user_response == '*' and not self.get_compulsory():
