@@ -138,9 +138,17 @@ admin.site.register(DataValue, DataValueAdmin)
 
 class DatasetDataElementAdmin(admin.ModelAdmin):
     list_display = ("data_element", "data_set",
-                    "category_option_combo", "sort_order", "compulsory")
-    search_fields = ("data_element",)
-    list_filter = ("compulsory", "data_set__name", "section__name")
+                    "category_option_combo", "sort_order", "compulsory", "initialize_with_zero")
+    search_fields = ("data_element__name",)
+    list_filter = ("initialize_with_zero", "compulsory",
+                   "data_set__name", "section__name")
+    actions = ["toggle_initialize_with_zero", ]
+
+    def toggle_initialize_with_zero(modeladmin, request, queryset):
+        for dsde in queryset:
+            dsde.initialize_with_zero = not dsde.initialize_with_zero
+            dsde.save()
+    toggle_initialize_with_zero.short_description = "Toggle Init With 0"
 
 
 admin.site.register(DatasetDataElement, DatasetDataElementAdmin)

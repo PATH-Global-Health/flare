@@ -215,6 +215,11 @@ class Section(CommonModel):
 
 # To record the compulsory data elements (to validate data upon entry) as well as to render
 # the list of data elements in the USSD views
+
+# initialize_with_zero sets data elements to zero if value is true. Health facilities report zero
+# for most data elements weekly. This ensures data elements are initialized with zero and users don't
+# report all elements, making reporting faster.
+
 class DatasetDataElement(CommonModel):
     objects = DHIS2Manager()
     sort_order = models.IntegerField(default=0)
@@ -223,6 +228,7 @@ class DatasetDataElement(CommonModel):
     category_option_combo = models.ForeignKey(
         CategoryOptionCombo, on_delete=models.CASCADE, null=True, blank=True)
     compulsory = models.BooleanField(default=False)
+    initialize_with_zero = models.BooleanField(default=True)
     section = models.ForeignKey(
         Section, on_delete=models.CASCADE, null=True, blank=True)
     instance = models.ForeignKey(

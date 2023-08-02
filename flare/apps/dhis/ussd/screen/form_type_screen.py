@@ -2,6 +2,7 @@ from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
 from apps.dhis.utils import get_data_from_dhis2
 from apps.dhis.models import DataValueSet
+from apps.dhis.tasks import save_values_to_database_batch
 
 
 class FormTypeScreen(Screen):
@@ -14,6 +15,9 @@ class FormTypeScreen(Screen):
         if Store.exists(section_key):
             self.sections = Store.get(section_key)
 
+        self.__initialize_data_values()
+
+    def __initialize_data_values(self):
         # Resetting data values is useful for preventing values from one dimension leaking into another when a user
         # switches between orgunits, datasets, or periods.
         self.reset_data_values()
@@ -38,7 +42,15 @@ class FormTypeScreen(Screen):
                                      data_value['categoryOptionCombo'])
                 if key not in self.state['data_values']:
                     self.state['data_values'][key] = data_value['value']
-            self.save()
+
+        self.save()
+
+    def __store_data_elements(self, data_elements):
+        # Save into database
+        if len(data_elements) > 0:
+            save_values_to_database_batch.delay(
+                self.state['dataset'], self.state['org_unit'], self.state['passcode'], self.state['period'], self.phone_number, data_elements)
+        self.save()
 
     def show(self):
         default_or_section_form_type = 'Section' if self.state['has_section'] else 'Default'
@@ -62,17 +74,29 @@ class FormTypeScreen(Screen):
             from apps.dhis.ussd.screen import GroupScreen
             # clear groups visited list
             self.state['groups_visited'].clear()
-            return GroupScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+            group_screen = GroupScreen(
+                session_id=self.session_id, phone_number=self.phone_number)
+            data_elements = group_screen.initialize_with_zero()
+            self.__store_data_elements(data_elements)
+            return group_screen.show()
         else:
             # Show the section screen only if the dataset has section
             if self.state['has_section']:
                 from apps.dhis.ussd.screen import SectionScreen
                 # clear sections visited list
                 self.state['sections_visited'].clear()
-                return SectionScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+                session_screen = SectionScreen(
+                    session_id=self.session_id, phone_number=self.phone_number)
+                data_elements = session_screen.initialize_with_zero()
+                self.__store_data_elements(data_elements)
+                return session_screen.show()
             else:
                 from apps.dhis.ussd.screen import DefaultFormScreen
-                return DefaultFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+                default_form_screen = DefaultFormScreen(
+                    session_id=self.session_id, phone_number=self.phone_number)
+                data_elements = default_form_screen.initialize_with_zero()
+                self.__store_data_elements(data_elements)
+                return default_form_screen.show()
 
     def prev(self):
         from apps.dhis.ussd.screen import PeriodScreen

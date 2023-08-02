@@ -22,6 +22,24 @@ class DefaultFormScreen(Screen):
             self.category_option_combo = self.data_elements[
                 self.data_element_index]['category_option_combo_id']
 
+    # Because most of the data elements reported are zero, we should initialize them to zero.
+    # Users should only report data elements that have a case.
+    def initialize_with_zero(self):
+        data_elements = []
+        for de in self.data_elements:
+            key = '{}-{}'.format(de['data_element_id'],
+                                 de['category_option_combo_id'])
+            if de['initialize_with_zero'] and key not in self.state['data_values']:
+                self.state['data_values'][key] = 0
+                data_elements.append({
+                    'data_element': de['data_element_id'],
+                    'category_option_combo': de['category_option_combo_id'],
+                    'value': 0,
+                    'session_id': self.session_id
+                })
+
+        return data_elements
+
     def show(self):
         if self.dataset:
             if self.data_element_index < len(self.data_elements):

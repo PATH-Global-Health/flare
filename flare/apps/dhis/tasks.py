@@ -12,6 +12,7 @@ from apps.dhis.ussd.helper import sync_org_units, sync_users, sync_data_sets, sy
     sync_data_elements, sync_sections, sync_data_element_groups, invalidate_users_cache, invalidate_org_units_cache, \
     invalidate_dataset_cache, cache_users_with_assigned_org_units, cache_org_units_with_datasets, cache_datasets_with_data_elements, \
     cache_datasets_with_data_element_group_and_data_element, sync_data_element_groups_sort_order
+from apps.dhis.utils import store_data_value_set, store_data_value
 
 logger = logging.getLogger(__name__)
 
@@ -64,52 +65,69 @@ def cache_dhis2_metadata():
 @shared_task
 def save_values_to_database(data_set, data_element, category_option_combo, org_unit, passcode, period, value,
                             phone_number, session_id):
-    try:
-        ds = Dataset.objects.get(dataset_id=data_set)
-        de = DataElement.objects.get(data_element_id=data_element)
-        coc = CategoryOptionCombo.objects.get(
-            category_option_combo_id=category_option_combo)
-        ou = OrgUnit.objects.get(org_unit_id=org_unit)
-        user = DHIS2User.objects.get(passcode=passcode)
+    data_value_set = store_data_value_set(
+        data_set, org_unit, passcode, period, phone_number)
+    if data_value_set:
+        store_data_value(
+            data_value_set, data_element, category_option_combo, value, session_id)
 
-    except Dataset.DoesNotExist:
-        logger.error("Dataset with ID {} doesn't exist.".format(data_set))
-    except DataElement.DoesNotExist:
-        logger.error(
-            "DataElement with ID {} doesn't exist.".format(data_element))
-    except CategoryOptionCombo.DoesNotExist:
-        logger.error("Category option combo with ID {} doesn't exist.".format(
-            category_option_combo))
-    except OrgUnit.DoesNotExist:
-        logger.error("Org unit with ID {} doesn't exist.".format(org_unit))
-    except DHIS2User.DoesNotExist:
-        logger.error(
-            "DHIS2 user with passcode {} doesn't exist.".format(passcode))
-    else:
-        data_value_set = DataValueSet.objects.get_or_none(
-            data_set=ds, org_unit=ou, user=user, period=period)
-        if data_value_set is None:
-            data_value_set = DataValueSet()
+    # try:
+    #     ds = Dataset.objects.get(dataset_id=data_set)
+    #     de = DataElement.objects.get(data_element_id=data_element)
+    #     coc = CategoryOptionCombo.objects.get(
+    #         category_option_combo_id=category_option_combo)
+    #     ou = OrgUnit.objects.get(org_unit_id=org_unit)
+    #     user = DHIS2User.objects.get(passcode=passcode)
 
-        data_value_set.data_set = ds
-        data_value_set.org_unit = ou
-        data_value_set.user = user
-        data_value_set.period = period
-        data_value_set.phone_number = phone_number
-        data_value_set.status = "Pending"
-        data_value_set.save()
+    # except Dataset.DoesNotExist:
+    #     logger.error("Dataset with ID {} doesn't exist.".format(data_set))
+    # except DataElement.DoesNotExist:
+    #     logger.error(
+    #         "DataElement with ID {} doesn't exist.".format(data_element))
+    # except CategoryOptionCombo.DoesNotExist:
+    #     logger.error("Category option combo with ID {} doesn't exist.".format(
+    #         category_option_combo))
+    # except OrgUnit.DoesNotExist:
+    #     logger.error("Org unit with ID {} doesn't exist.".format(org_unit))
+    # except DHIS2User.DoesNotExist:
+    #     logger.error(
+    #         "DHIS2 user with passcode {} doesn't exist.".format(passcode))
+    # else:
+    #     data_value_set = DataValueSet.objects.get_or_none(
+    #         data_set=ds, org_unit=ou, user=user, period=period)
+    #     if data_value_set is None:
+    #         data_value_set = DataValueSet()
 
-        data_value = DataValue.objects.get_or_none(
-            data_element=de, category_option_combo=coc, data_value_set=data_value_set)
-        if data_value is None:
-            data_value = DataValue()
+    #     data_value_set.data_set = ds
+    #     data_value_set.org_unit = ou
+    #     data_value_set.user = user
+    #     data_value_set.period = period
+    #     data_value_set.phone_number = phone_number
+    #     data_value_set.status = "Pending"
+    #     data_value_set.save()
 
-        data_value.data_element = de
-        data_value.category_option_combo = coc
-        data_value.data_value_set = data_value_set
-        data_value.value = value
-        data_value.session_id = session_id
-        data_value.save()
+    #     data_value = DataValue.objects.get_or_none(
+    #         data_element=de, category_option_combo=coc, data_value_set=data_value_set)
+    #     if data_value is None:
+    #         data_value = DataValue()
+
+    #     data_value.data_element = de
+    #     data_value.category_option_combo = coc
+    #     data_value.data_value_set = data_value_set
+    #     data_value.value = value
+    #     data_value.session_id = session_id
+    #     data_value.save()
+
+
+@shared_task
+def save_values_to_database_batch(data_set, org_unit, passcode, period, phone_number, data_elements=[]):
+    if len(data_elements) > 0:
+        data_value_set = store_data_value_set(
+            data_set, org_unit, passcode, period, phone_number)
+        if data_value_set:
+            for de in data_elements:
+                store_data_value(
+                    data_value_set, de['data_element'], de['category_option_combo'], de['value'], de['session_id'])
 
 
 @shared_task

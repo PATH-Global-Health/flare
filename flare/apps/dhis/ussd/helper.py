@@ -396,7 +396,8 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                               category_option_combo_name: category_option_combo_name1,
 #                               category_option_combo_id: category_option_combo_id,
 #                               data_element_value_type: data_element_value_type,
-#                               compulsory: true
+#                               compulsory: true,
+#                               initialize_with_zero: true
 #                           }
 #                       ]
 #                  },
@@ -410,7 +411,8 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                                category_option_combo_name: category_option_combo_name2,
 #                                category_option_combo_id: category_option_combo_id2,
 #                                data_element_value_type: data_element_value_type
-#                                compulsory: false
+#                                compulsory: false,
+#                                initialize_with_zero: false
 #                            }
 #                        ]
 #               }
@@ -425,7 +427,8 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                       category_option_combo_name: category_option_combo_name1,
 #                       category_option_combo_id: category_option_combo_id1,
 #                       data_element_value_type: data_element_value_type
-#                       compulsory: false
+#                       compulsory: false,
+#                       initialize_with_zero: false
 #                   },
 #                   {
 #                       data_element_name: data_element_name2,
@@ -433,7 +436,8 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
 #                       category_option_combo_name: category_option_combo_name2,
 #                       category_option_combo_id: category_option_combo_id2,
 #                       data_element_value_type: data_element_value_type
-#                       compulsory: true
+#                       compulsory: true,
+#                       initialize_with_zero: false
 #                   }
 #               ]
 #            }
@@ -468,6 +472,7 @@ def cache_datasets_with_data_elements():
 #                   "category_option_combo_id":"category_option_combo_id1",
 #                   "data_element_value_type":"data_element_value_type",
 #                   "compulsory":"false"
+#                   "initialize_with_zero": true
 #                },
 #                {
 #                   "data_element_name":"data_element_name2",
@@ -475,7 +480,8 @@ def cache_datasets_with_data_elements():
 #                   "category_option_combo_name":"category_option_combo_name2",
 #                   "category_option_combo_id":"category_option_combo_id2",
 #                   "data_element_value_type":"data_element_value_type",
-#                   "compulsory":true
+#                   "compulsory":true,
+#                   "initialize_with_zero": false
 #                }
 #             ]
 #          }
@@ -509,7 +515,8 @@ def cache_datasets_with_data_element_group_and_data_element():
                         'category_option_combo_name': ds_de.category_option_combo.name,
                         'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
                         'data_element_value_type': ds_de.data_element.value_type,
-                        'compulsory': ds_de.compulsory
+                        'compulsory': ds_de.compulsory,
+                        'initialize_with_zero': ds_de.initialize_with_zero
                     }
                 )
         # Sort the data element groups using sort order

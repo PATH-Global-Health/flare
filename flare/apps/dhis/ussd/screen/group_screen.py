@@ -19,6 +19,27 @@ class GroupScreen(Screen):
             self.group_keys = [str(val['sort_order'])
                                for val in self.groups.values()]
 
+    # Because most of the data elements reported are zero, we should initialize them to zero.
+    # Users should only report data elements that have a case.
+    def initialize_with_zero(self):
+        data_elements = []
+
+        for de_group_key, de_group in self.groups.items():
+            for de in de_group['data_elements']:
+                key = '{}-{}'.format(de['data_element_id'],
+                                     de['category_option_combo_id'])
+
+                if de['initialize_with_zero'] and key not in self.state['data_values']:
+                    self.state['data_values'][key] = 0
+                    data_elements.append({
+                        'data_element': de['data_element_id'],
+                        'category_option_combo': de['category_option_combo_id'],
+                        'value': 0,
+                        'session_id': self.session_id
+                    })
+
+        return data_elements
+
     def generate_menu_item(self):
         for key, value in self.groups.items():
             self.menu_items.append("{}. {}".format(

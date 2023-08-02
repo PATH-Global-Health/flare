@@ -1,7 +1,7 @@
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
 from apps.dhis.utils import validate_data_element_by_value_type
-from apps.dhis.tasks import save_values_to_database
+from apps.dhis.tasks import save_values_to_database, save_values_to_database_batch
 
 
 class SectionFormScreen(Screen):

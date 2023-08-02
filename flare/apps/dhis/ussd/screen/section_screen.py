@@ -12,6 +12,26 @@ class SectionScreen(Screen):
         if Store.exists(section_key):
             self.sections = Store.get(section_key)
 
+    # Because most of the data elements reported are zero, we should initialize them to zero.
+    # Users should only report data elements that have a case.
+    def initialize_with_zero(self):
+        data_elements = []
+
+        for section_key, section in self.sections.items():
+            for de in section['data_elements']:
+                key = '{}-{}'.format(de['data_element_id'],
+                                     de['category_option_combo_id'])
+                if de['initialize_with_zero'] and key not in self.state['data_values']:
+                    self.state['data_values'][key] = 0
+                    data_elements.append({
+                        'data_element': de['data_element_id'],
+                        'category_option_combo': de['category_option_combo_id'],
+                        'value': 0,
+                        'session_id': self.session_id
+                    })
+
+        return data_elements
+
     def generate_menu_item(self):
         for key, value in self.sections.items():
             self.menu_items.append("{}. {}".format(key, value['name']))

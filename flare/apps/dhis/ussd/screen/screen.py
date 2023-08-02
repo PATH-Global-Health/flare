@@ -78,6 +78,11 @@ class Screen(object):
     def generate_menu_item(self):
         raise NotImplementedError
 
+    # Because most of the data elements reported are zero, we should initialize them to zero.
+    # Users should only report data elements that have a case.
+    def initialize_with_zero(self):
+        raise NotImplementedError
+
     def paginate_menu_item(self, direction=''):
         start = int(self.state['slide_window_start'])
         end = int(self.state['slide_window_end'])

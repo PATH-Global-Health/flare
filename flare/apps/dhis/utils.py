@@ -5,7 +5,8 @@ import logging
 from epiweeks import Week, Year
 from dhis2 import Api, RequestException
 
-from apps.dhis.models import DHIS2User, OrgUnit, DatasetDataElement, DataElement
+from apps.dhis.models import DHIS2User, OrgUnit, DatasetDataElement, DataElement, \
+    DataValueSet, Dataset, CategoryOptionCombo, DataValue
 from apps.dhis.ussd.screen import Level
 
 
@@ -274,7 +275,8 @@ def format_dataset_with_section(sections):
                     'category_option_combo_name': ds_de.category_option_combo.name,
                     'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
                     'data_element_value_type': ds_de.data_element.value_type,
-                    'compulsory': ds_de.compulsory
+                    'compulsory': ds_de.compulsory,
+                    'initialize_with_zero': ds_de.initialize_with_zero
                 }
             )
 
@@ -291,7 +293,8 @@ def format_dataset_with_out_section(dataset):
                 'category_option_combo_name': ds_de.category_option_combo.name,
                 'category_option_combo_id': ds_de.category_option_combo.category_option_combo_id,
                 'data_element_value_type': ds_de.data_element.value_type,
-                'compulsory': ds_de.compulsory
+                'compulsory': ds_de.compulsory,
+                'initialize_with_zero': ds_de.initialize_with_zero
             }
         )
     return data_elements
@@ -334,3 +337,60 @@ def get_data_from_dhis2(passcode, dataset, orgunit, period):
     except RequestException as ex:
         logger.error(ex)
     return {}
+
+
+def store_data_value_set(data_set, org_unit, passcode, period, phone_number):
+    try:
+        ds = Dataset.objects.get(dataset_id=data_set)
+        ou = OrgUnit.objects.get(org_unit_id=org_unit)
+        user = DHIS2User.objects.get(passcode=passcode)
+    except Dataset.DoesNotExist:
+        logger.error("Dataset with ID {} doesn't exist.".format(data_set))
+        return None
+    except OrgUnit.DoesNotExist:
+        logger.error("Org unit with ID {} doesn't exist.".format(org_unit))
+        return None
+    except DHIS2User.DoesNotExist:
+        logger.error(
+            "DHIS2 user with passcode {} doesn't exist.".format(passcode))
+        return None
+    else:
+        data_value_set = DataValueSet.objects.get_or_none(
+            data_set=ds, org_unit=ou, user=user, period=period)
+        if data_value_set is None:
+            data_value_set = DataValueSet()
+
+        data_value_set.data_set = ds
+        data_value_set.org_unit = ou
+        data_value_set.user = user
+        data_value_set.period = period
+        data_value_set.phone_number = phone_number
+        data_value_set.status = "Pending"
+        data_value_set.save()
+
+    return data_value_set
+
+
+def store_data_value(data_value_set, data_element, category_option_combo, value, session_id):
+    try:
+        de = DataElement.objects.get(data_element_id=data_element)
+        coc = CategoryOptionCombo.objects.get(
+            category_option_combo_id=category_option_combo)
+    except DataElement.DoesNotExist:
+        logger.error(
+            "DataElement with ID {} doesn't exist.".format(data_element))
+    except CategoryOptionCombo.DoesNotExist:
+        logger.error("Category option combo with ID {} doesn't exist.".format(
+            category_option_combo))
+    else:
+        data_value = DataValue.objects.get_or_none(
+            data_element=de, category_option_combo=coc, data_value_set=data_value_set)
+        if data_value is None:
+            data_value = DataValue()
+
+        data_value.data_element = de
+        data_value.category_option_combo = coc
+        data_value.data_value_set = data_value_set
+        data_value.value = value
+        data_value.session_id = session_id
+        data_value.save()
