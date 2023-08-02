@@ -63,9 +63,9 @@ class DefaultFormScreen(Screen):
                 skip_menu_added = False
 
                 if key in self.state['data_values']:
-                    if self.state['data_values'][key]:
-                        menu_text += " - [{}]".format(
-                            self.state['data_values'][key])
+                    # if self.state['data_values'][key]:
+                    menu_text += " - [{}]".format(
+                        self.state['data_values'][key])
                     skip_menu_added = True  # we already added a skip menu
                     # user can skip modifying the value previously entered.
                     menu_text += "\n*. Skip"
