@@ -25,7 +25,7 @@ class Store:
         cls.redis_instance.set(key, json.dumps(data))
         if ttl:
             cls.redis_instance.expire(
-                key, ex=os.getenv('KEY_EXPIRE_AFTER', 7200))
+                key, os.getenv('KEY_EXPIRE_AFTER', 7200))
 
     @classmethod
     def unlink(cls, key):

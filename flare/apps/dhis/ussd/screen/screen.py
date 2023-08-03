@@ -145,4 +145,4 @@ class Screen(object):
 
     def save(self, level=None):
         self.state['level'] = self.level if level is None else level
-        Store.set(self.session_id, self.state)
+        Store.set(self.session_id, self.state, ttl=True)
