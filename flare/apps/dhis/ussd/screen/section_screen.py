@@ -43,7 +43,7 @@ class SectionScreen(Screen):
             # Add a menu title at the beginning of the menu options
             paginated_menu.insert(0, "Section:")
             # Add back option at the end
-            paginated_menu.append("#. Back")
+            paginated_menu.append("0. Exit #. Back")
 
             return self.ussd_proceed("\n".join(paginated_menu))
 
@@ -58,13 +58,20 @@ class SectionScreen(Screen):
                 self.state['data_element_index'] = 0
                 self.save()
                 return True
+            elif self.user_response == '0':
+                return True
 
         return False
 
     def next(self):
-        # to fix circular import
-        from apps.dhis.ussd.screen import SectionFormScreen
-        return SectionFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        # if the user selects 0, close the group screen
+        if self.user_response == '0':
+            from apps.dhis.ussd.screen import SaveOptionsScreen
+            return SaveOptionsScreen(session_id=self.session_id, phone_number=self.phone_number).show()
+        else:
+            # to fix circular import
+            from apps.dhis.ussd.screen import SectionFormScreen
+            return SectionFormScreen(session_id=self.session_id, phone_number=self.phone_number).show()
 
     def prev(self):
         from apps.dhis.ussd.screen import FormTypeScreen
