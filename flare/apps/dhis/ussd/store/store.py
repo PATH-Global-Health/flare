@@ -1,3 +1,4 @@
+import os
 import json
 import redis
 
@@ -20,8 +21,11 @@ class Store:
         return json.loads(cls.redis_instance.get(key))
 
     @classmethod
-    def set(cls, key, data):
+    def set(cls, key, data, ttl=True):
         cls.redis_instance.set(key, json.dumps(data))
+        if ttl:
+            cls.redis_instance.expire(
+                key, ex=os.getenv('KEY_EXPIRE_AFTER', 7200))
 
     @classmethod
     def unlink(cls, key):

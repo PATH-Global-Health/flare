@@ -334,7 +334,7 @@ def cache_users_with_assigned_org_units() -> List[dict]:
             if ou.org_unit_id not in org_units_to_cache:
                 org_units_to_cache.append(ou.org_unit_id)
 
-        Store.set("usr_{}".format(user.passcode), user_ou)
+        Store.set("usr_{}".format(user.passcode), user_ou, ttl=False)
 
     logger.info('Caching users ............ Done')
 
@@ -379,7 +379,8 @@ def cache_org_units_with_datasets(org_units_to_cache: List[dict]):
                     'has_section': has_section
                 }
 
-            Store.set("ou_{}".format(org_unit.org_unit_id), org_unit_datasets)
+            Store.set("ou_{}".format(org_unit.org_unit_id),
+                      org_unit_datasets, ttl=False)
 
     logger.info('Caching org units ............ Done')
 
@@ -454,7 +455,8 @@ def cache_datasets_with_data_elements():
             # dataset with sections
             formatted_dataset = format_dataset_with_section(sections)
 
-        Store.set("ds_{}".format(dataset.dataset_id), formatted_dataset)
+        Store.set("ds_{}".format(dataset.dataset_id),
+                  formatted_dataset, ttl=False)
 
     logger.info('Caching datasets ............ Done')
 
@@ -521,6 +523,6 @@ def cache_datasets_with_data_element_group_and_data_element():
                 )
         # Sort the data element groups using sort order
         deg = dict(sorted(deg.items(), key=lambda x: x[1]['sort_order']))
-        Store.set("ds_deg_{}".format(dataset.dataset_id), deg)
+        Store.set("ds_deg_{}".format(dataset.dataset_id), deg, ttl=False)
 
     logger.info('Caching datasets by data element group ............ Done')
