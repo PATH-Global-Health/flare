@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import environ
 from datetime import timedelta
 
 # from ussd.store.journey_store import YamlJourneyStore
@@ -18,14 +19,28 @@ from datetime import timedelta
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    INSTITUTE_NAME=(str, 'Flare'),
+    KEY_EXPIRE_AFTER=(int, 7200),
+    REDIS_HOST=(str, 'redis'),
+    REDIS_PORT=(int, 6379),
+    MENU_ITEMS_SIZE=(int, 3)
+)
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.getenv('DEBUG', default=False) == 'True')
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'app']  # ["*"]
 
@@ -92,11 +107,11 @@ ASGI_APPLICATION = 'config.routing.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', None),
-        'USER': os.getenv('DB_USER', None),
-        'PASSWORD': os.getenv('DB_PASSWORD', None),
-        'HOST': os.getenv('DB_HOST', None),
-        'PORT': os.getenv('DB_PORT', None),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
@@ -184,7 +199,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.getenv('REDIS_URL', 'redis://redis:6379')]
+            "hosts": [env('REDIS_URL')]
         },
     }
 }
@@ -193,11 +208,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'journeys')
 MEDIA_URL = '/journeys/'
 
 # To cache language of the subscriber on redis
-REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
-REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
 
 ADMINS = (
     ('admin', 'admin@example.com'),
 )
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+INSTITUTE_NAME = env('INSTITUTE_NAME')
+KEY_EXPIRE_AFTER = env('KEY_EXPIRE_AFTER')
+MENU_ITEMS_SIZE = env('MENU_ITEMS_SIZE')

@@ -1,5 +1,8 @@
 import os
 
+
+from django.conf import settings
+
 from apps.dhis.ussd.screen import Screen, Level
 from apps.dhis.ussd.store import Store
 
@@ -12,7 +15,7 @@ class LoginScreen(Screen):
 
     def show(self):
         menu_text = "Welcome to {}'s USSD service. Please enter your passcode:".format(
-            os.getenv('INSTITUTE_NAME', 'Flare')
+            settings.INSTITUTE_NAME
         )
 
         # print the response on to the page so that our gateway can read it
@@ -26,7 +29,8 @@ class LoginScreen(Screen):
         return False
 
     def next(self):
-        key = "usr_state_{}".format(self.state['passcode'])  # used to restore an expired session
+        # used to restore an expired session
+        key = "usr_state_{}".format(self.state['passcode'])
         if Store.exists(key) and Store.get(key) != self.session_id:
             from apps.dhis.ussd.screen import RestoreSessionScreen
             return RestoreSessionScreen(session_id=self.session_id, phone_number=self.phone_number).show()

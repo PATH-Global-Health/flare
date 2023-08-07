@@ -2,6 +2,7 @@ import os
 from enum import IntEnum
 
 from django.http import HttpResponse
+from django.conf import settings
 
 from apps.dhis.ussd.store import Store
 
@@ -28,7 +29,7 @@ class Screen(object):
         self.user_response = user_response
         self.level = level
         # The size of the menu items to display in a screen
-        self.menu_items_size = int(os.getenv('MENU_ITEMS_SIZE', 2))
+        self.menu_items_size = int(settings.MENU_ITEMS_SIZE)
         # Lists all the menu items available on a particular screen
         self.menu_items = []
 
