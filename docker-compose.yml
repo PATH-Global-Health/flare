@@ -30,12 +30,12 @@ services:
       context: .
       dockerfile: ./flare/Dockerfile
     image: flare-web:v1
+    user: flare
     command: >
-      sh -c "python /flare/manage.py collectstatic --no-input
-      && python /flare/manage.py makemigrations
-      && python /flare/manage.py migrate  --noinput
-      && python /flare/manage.py initadmin
-      && gunicorn --workers=3 config.wsgi:application --bind 0.0.0.0:8000 --worker-tmp-dir /dev/shm --log-level info"
+      sh -c "
+      chmod + /flare/migrate.sh
+      && sh /flare/migrate.sh
+      && /flare/entrypoint.sh"
     volumes:
       - ./flare:/flare
       - ./flare/staticfiles/admin:/usr/share/nginx/html/static/admin
