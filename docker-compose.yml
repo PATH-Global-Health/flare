@@ -29,6 +29,7 @@ services:
     build:
       context: .
       dockerfile: ./flare/Dockerfile
+    image: flare-web:v1
     command: >
       sh -c "python /flare/manage.py collectstatic --no-input
       && python /flare/manage.py makemigrations
@@ -52,6 +53,7 @@ services:
     build:
       context: .
       dockerfile: ./flare/Dockerfile
+    image: flare-worker:v1
     command: >
       sh -c "celery -A config  worker -l info"
     volumes:
@@ -67,6 +69,7 @@ services:
     build:
       context: .
       dockerfile: ./flare/Dockerfile
+    image: flare-beat:v1
     command: >
       sh -c "celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     volumes:
