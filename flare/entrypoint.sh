@@ -5,4 +5,4 @@ python manage.py collectstatic --no-input
 python manage.py makemigrations
 python manage.py migrate  --noinput
 python manage.py initadmin
-gunicorn config.wsgi:application --bind "0.0.0.0:${APP_PORT}" --log-level debug
+gunicorn --workers=3 config.wsgi:application --bind "0.0.0.0:${APP_PORT}" --worker-tmp-dir /dev/shm --log-level info
