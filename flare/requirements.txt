@@ -4,7 +4,6 @@ dhis2.py==2.3.0
 Django==3.2.20
 django-celery-beat==2.5.0
 django-cors-headers==4.1.0
-django-environ==0.10.0
 django-filter==23.2
 django-rest-knox==4.2.0
 djangorestframework==3.14.0

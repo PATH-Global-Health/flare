@@ -5,18 +5,18 @@ services:
   db:
     image: postgres:13-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123882
-      POSTGRES_DB: flare
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
       PGDATA: /var/lib/postgresql/data/flare
     expose:
-      - 5432
+      - ${DB_PORT}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
     restart: on-failure
     volumes:
       - /Users/belendia/.postgres_flare:/var/lib/postgresql/data
-    command: -p 5432
+    command: -p ${DB_PORT}
 
   # Redis
   redis:
@@ -26,6 +26,8 @@ services:
   # Flare
   web:
     container_name: flare_web
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./flare/Dockerfile
@@ -50,6 +52,8 @@ services:
   # Celery worker
   celery_worker:
     container_name: flare_celery_worker
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./flare/Dockerfile
@@ -66,6 +70,8 @@ services:
   # Celery worker
   celery_beat:
     container_name: flare_celery_beat
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./flare/Dockerfile
