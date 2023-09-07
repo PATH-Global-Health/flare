@@ -3,10 +3,6 @@ name: Flare Test CI
 on:
   workflow_call:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 jobs:
   build:
@@ -37,6 +33,11 @@ jobs:
           POSTGRES_DB: ${{ env.DB_NAME }}
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
       redis:
         image: redis:6-alpine
