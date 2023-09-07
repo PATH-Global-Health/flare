@@ -11,7 +11,7 @@ on:
 jobs:
   test_flare:
     # Call the flare-test.yaml workflow and wait until it finishes testing
-    users: PATH-Global-Health/flare/.github/workflows/flare-test.yaml@main
+    uses: PATH-Global-Health/flare/.github/workflows/flare-test.yaml@main
   build_flare:
     runs-on: ubuntu-latest
     env:
