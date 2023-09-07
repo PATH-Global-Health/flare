@@ -1,0 +1,21 @@
+name: Build Flare Container & Push to DockerHub registry
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test_flare:
+    # Call the flare-test.yaml workflow and wait until it finishes testing
+    users: PATH-Global-Health/flare/.github/workflows/flare-test.yaml@main
+  build_flare:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: test-key-for-testing-only
+
+    steps:
+      - uses: actions/checkout@v3
