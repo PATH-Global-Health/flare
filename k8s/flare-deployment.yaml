@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flare-deployment
+  labels:
+    app: flare
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flare
+  template:
+    metadata:
+      labels:
+        app: flare
+    spec:
+      containers:
+        - name: flare
+          image: belendia/flare:1.0.6
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: SECRET_KEY
+            - name: DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: DEBUG
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: DB_PORT
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: REDIS_URL
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: REDIS_PORT
+            - name: INSTITUTE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: INSTITUTE_NAME
+            - name: KEY_EXPIRE_AFTER
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: KEY_EXPIRE_AFTER
+            - name: MENU_ITEMS_SIZE
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: MENU_ITEMS_SIZE
+          ports:
+            - containerPort: 8000
+      imagePullSecrets:
+        - name: docker-hub-registry-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flare
+spec:
+  ports:
+    - name: flare
+      port: 8000
+  selector:
+    app: flare
