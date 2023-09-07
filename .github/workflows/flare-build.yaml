@@ -9,11 +9,13 @@ on:
     branches: [main]
 
 jobs:
-  test_flare:
+  test_flare_job:
     # Call the flare-test.yaml workflow and wait until it finishes testing
     uses: PATH-Global-Health/flare/.github/workflows/flare-test.yaml@main
-  build_flare:
+  build_flare_job:
     runs-on: ubuntu-latest
+    # Complete test_flare_job before running build_lare_job
+    needs: [flare_test_job]
     env:
       SECRET_KEY: test-key-for-testing-only
 
