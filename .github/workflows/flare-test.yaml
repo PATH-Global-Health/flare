@@ -14,6 +14,29 @@ jobs:
     defaults:
       run:
         working-directory: ./flare
+    env:
+      SECRET_KEY: test-key-for-testing-only
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: flare
+      POSTGRES_DB: flare
+      DB_NAME: flare
+      DB_USER: postgres
+      DB_PASSWORD: flare
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KEY_EXPIRE_AFTER: 7200
+      INSTITUTE_NAME: EPHI
+      MENU_ITEMS_SIZE: 3
+
+    services:
+      db:
+        image: postgres:15-alpine
+      redis:
+        image: redis:6-alpine
+
     strategy:
       max-parallel: 4
       matrix:
