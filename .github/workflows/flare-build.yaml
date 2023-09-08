@@ -30,9 +30,10 @@ jobs:
       - name: Build container image
         working-directory: ./flare
         run: |
-          docker build --platform linux/amd64 
-            -f ./flare/Dockerfile.prod
-            -t belendia/flare:${GITHUB_SHA::7} 
+          docker buildx build \
+            --platform linux/amd64 \
+            -f ./flare/Dockerfile.prod \
+            -t belendia/flare:${GITHUB_SHA::7} \
             -t belendia/flare:latest .
       - name: Push image
         run: |
