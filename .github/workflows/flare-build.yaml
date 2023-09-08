@@ -15,7 +15,7 @@ jobs:
   build_flare_job:
     runs-on: ubuntu-latest
     # Complete test_flare_job before running build_lare_job
-    needs: [flare_test_job]
+    needs: [test_flare_job]
     env:
       SECRET_KEY: test-key-for-testing-only
 
