@@ -32,7 +32,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64 \
-            -f ./flare/Dockerfile.prod \
+            -f Dockerfile.prod \
             -t belendia/flare:${GITHUB_SHA::7} \
             -t belendia/flare:latest .
       - name: Push image
