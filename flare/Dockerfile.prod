@@ -14,10 +14,10 @@ RUN pip install --upgrade pip
 ENV PYTHONUNBUFFERED 1
 ENV DOCKER_CONTAINER 1
 
-COPY ./flare/requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY ./flare /flare
+COPY . /flare
 WORKDIR /flare
 
 RUN chmod +x /flare/entrypoint.sh
