@@ -39,10 +39,7 @@ jobs:
         run: |
           docker push belendia/flare --all-tags
       - name: Install Linode CLI
-        run: |
-          git clone https://github.com/linode/linode-cli.git
-          cd linode-cli
-          sudo ./install.sh
+        run: pip3 install linode-cli
       - name: Authenticate with Linode
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
