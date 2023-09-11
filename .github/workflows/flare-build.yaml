@@ -39,11 +39,9 @@ jobs:
         run: |
           docker push belendia/flare --all-tags
       - name: Install Linode CLI
-        run: pip3 install linode-cli
-      - name: Authenticate with Linode
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: linode-cli configure --api-key $LINODE_TOKEN
+        uses: linode/action-linode-cli@v1
+        with:
+          token: ${{ secrets.LINODE_TOKEN }}
       - name: Update deployment secrets
         env:
           LINODE_CLUSTER: Macepa-Ethiopia
