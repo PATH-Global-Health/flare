@@ -38,10 +38,19 @@ jobs:
       - name: Push image
         run: |
           docker push belendia/flare --all-tags
-      - name: Kubernetes set context
-        uses: actions-hub/kubectl@master
+      - name: Linode CLI setup
+        run: |
+          curl -sL https://raw.githubusercontent.com/linode/linode-cli/master/install.sh | sudo bash
+          linode-cli configure
+      - name: Authenticate with Linode
         env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+        run: linode-cli configure --api-key $LINODE_TOKEN
+      - name: Apply deployment
+        env:
+          LINODE_CLUSTER: Macepa-Ethiopia
+        run: |
+          linode-cli k8s context-switch $LINODE_CLUSTER
       - name: Update deployment secrets
         run: |
           cat << EOF >> flare/.env.prod
