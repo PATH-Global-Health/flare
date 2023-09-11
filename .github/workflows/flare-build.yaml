@@ -38,21 +38,20 @@ jobs:
       - name: Push image
         run: |
           docker push belendia/flare --all-tags
-      - name: Linode CLI setup
+      - name: Install Linode CLI
         run: |
-          curl -sL https://raw.githubusercontent.com/linode/linode-cli/master/install.sh | sudo bash
-          linode-cli configure
+          git clone https://github.com/linode/linode-cli.git
+          cd linode-cli
+          sudo ./install.sh
       - name: Authenticate with Linode
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         run: linode-cli configure --api-key $LINODE_TOKEN
-      - name: Apply deployment
+      - name: Update deployment secrets
         env:
           LINODE_CLUSTER: Macepa-Ethiopia
         run: |
           linode-cli k8s context-switch $LINODE_CLUSTER
-      - name: Update deployment secrets
-        run: |
           cat << EOF >> flare/.env.prod
           DEBUG=${{ secrets.DEBUG }}
           DB_NAME=${{ secrets.DB_NAME }}
