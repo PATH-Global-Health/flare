@@ -38,10 +38,11 @@ jobs:
       - name: Push image
         run: |
           docker push belendia/flare --all-tags
-      - name: Kubernetes set context and create secret
+      - name: Kubernetes set context
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      - name: Update deployment secrets
         run: |
           cat << EOF >> flare/.env.prod
           DEBUG=${{ secrets.DEBUG }}
