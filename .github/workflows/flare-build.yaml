@@ -42,10 +42,10 @@ jobs:
         uses: azure/setup-kubectl@v3
         with:
           version: "latest"
-      - name: get linode kubernetes config
-        uses: mavieth/linode-authenticator@master
+      - name: Login to Linode Kubernetes Engine
+        uses: litmus/kubectl-login@v1
         with:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+          config: ${{ secrets.KUBE_CONFIG }}
       # - name: Install Linode CLI
       #   uses: linode/action-linode-cli@v1
       #   with:
