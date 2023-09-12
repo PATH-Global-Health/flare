@@ -38,10 +38,18 @@ jobs:
       # - name: Push image
       #   run: |
       #     docker push belendia/flare --all-tags
-      - name: Install Linode CLI
-        uses: linode/action-linode-cli@v1
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
         with:
-          token: ${{ secrets.LINODE_TOKEN }}
+          version: "latest"
+      - name: get linode kubernetes config
+        uses: mavieth/linode-authenticator@master
+        with:
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+      # - name: Install Linode CLI
+      #   uses: linode/action-linode-cli@v1
+      #   with:
+      #     token: ${{ secrets.LINODE_TOKEN }}
       - name: Kubectl
         run: |
           kubectl get pods
