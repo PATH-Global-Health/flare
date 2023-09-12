@@ -70,6 +70,6 @@ jobs:
           kubectl rollout status deployment/flare-deployment
       - name: Post-build Django Commands - Migrate / Collectstatic
         run: |
-          export SINGLE_POD_NAME=$(kubectl get pod -l app=flare-deployment -o jsonpath="{.items[0].metadata.name}")
+          export SINGLE_POD_NAME=$(kubectl get pod -l app=flare -o jsonpath="{.items[0].metadata.name}")
           kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
           kubectl exec -it $SINGLE_POD_NAME -- bash /app/collectstatic.sh
