@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: flare
-          image: belendia/flare:IMAGE_LABEL
+          image: belendia/flare:latest
           imagePullPolicy: Always
           env:
             - name: SECRET_KEY

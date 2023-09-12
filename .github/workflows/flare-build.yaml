@@ -67,7 +67,7 @@ jobs:
           kubectl set image deployment/flare-deployment flare=belendia/flare:${GITHUB_SHA::7}
       - name: Wait for rollout to finish
         run: |
-          kubectl rollout status deployment/flare
+          kubectl rollout status deployment/flare-deployment
       - name: Post-build Django Commands - Migrate / Collectstatic
         run: |
           export SINGLE_POD_NAME=$(kubectl get pod -l app=flare-deployment -o jsonpath="{.items[0].metadata.name}")
