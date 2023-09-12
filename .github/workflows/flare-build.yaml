@@ -43,10 +43,7 @@ jobs:
         with:
           token: ${{ secrets.LINODE_TOKEN }}
       - name: Update deployment secrets
-        env:
-          LINODE_CLUSTER: Macepa-Ethiopia
         run: |
-          linode-cli k8s context-switch $LINODE_CLUSTER
           cat << EOF >> flare/.env.prod
           DEBUG=${{ secrets.DEBUG }}
           DB_NAME=${{ secrets.DB_NAME }}
