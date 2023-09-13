@@ -1,0 +1,23 @@
+primary:
+  persistence:
+    enabled: true
+  extendedConfiguration: |
+    max_connections=100
+    shared_buffers= 1GB
+    effective_cache_size= 3GB
+    maintenance_work_mem= 256MB
+    checkpoint_completion_target= 0.9
+    wal_buffers= 16MB
+    default_statistics_target= 100
+  pgHbaConfiguration: |
+    hostssl  all             all             0.0.0.0/0               md5
+    host     all             all             0.0.0.0/0               md5
+    host     flare             all           0.0.0.0/0               md5
+    local    all             all                                     md5
+    host     all             all        127.0.0.1/32                 md5
+    host     replication     all             0.0.0.0/0               md5
+postgresql:
+  auth:
+    username: flare
+    password: "Mt731B$hun$k5Y0rZt$$&CM6Z"
+    database: flare
