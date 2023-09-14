@@ -10,14 +10,15 @@ primary:
     wal_buffers= 16MB
     default_statistics_target= 100
   pgHbaConfiguration: |
-    hostssl  all             all             0.0.0.0/0               md5
-    host     all             all             0.0.0.0/0               md5
-    host     flare             all           0.0.0.0/0               md5
-    local    all             all                                     md5
-    host     all             all        127.0.0.1/32                 md5
-    host     replication     all             0.0.0.0/0               md5
-postgresql:
-  auth:
-    username: flare
-    password: "Mt731B$hun$k5Y0rZt$$&CM6Z"
-    database: flare
+    hostssl  all             all             0.0.0.0/0               trust
+    host     all             all             0.0.0.0/0               trust
+    local    all             all                                     trust
+    host     all             all        127.0.0.1/32                 trust
+    host     replication     all             0.0.0.0/0               trust
+global:
+  postgresql:
+    auth:
+      postgresPassword: "Mt731B$hun$k5Y0rZt$$&CM6Z"
+      username: "flare"
+      password: "Mt731B$hun$k5Y0rZt$$&CM6Z"
+      database: "flare"
