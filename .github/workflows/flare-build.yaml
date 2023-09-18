@@ -60,10 +60,10 @@ jobs:
           MENU_ITEMS_SIZE=${{ secrets.MENU_ITEMS_SIZE }}
           SECRET_KEY=${{ secrets.SECRET_KEY }}
           DJANGO_SETTINGS_MODULE=${{ secrets.DJANGO_SETTINGS_MODULE }}
-          LINODE_BUCKET=${{ LINODE_BUCKET }}
-          LINODE_BUCKET_REGION=${{ LINODE_BUCKET_REGION }}
-          LINODE_BUCKET_ACCESS_KEY=${{ LINODE_BUCKET_ACCESS_KEY }}
-          LINODE_BUCKET_SECRET_KEY=${{ LINODE_BUCKET_SECRET_KEY }}
+          LINODE_BUCKET=${{ secrets.LINODE_BUCKET }}
+          LINODE_BUCKET_REGION=${{ secrets.LINODE_BUCKET_REGION }}
+          LINODE_BUCKET_ACCESS_KEY=${{ secrets.LINODE_BUCKET_ACCESS_KEY }}
+          LINODE_BUCKET_SECRET_KEY=${{ secrets.LINODE_BUCKET_SECRET_KEY }}
           EOF
           kubectl delete secret flare-secret --ignore-not-found
           kubectl create secret generic flare-secret --from-env-file=flare/.env.prod
@@ -77,3 +77,4 @@ jobs:
         run: |
           export SINGLE_POD_NAME=$(kubectl get pod -l app=flare -o jsonpath="{.items[0].metadata.name}")
           kubectl exec -it $SINGLE_POD_NAME -- bash /flare/migrate.sh
+          kubectl exec -it $SINGLE_POD_NAME -- bash /flare/collectstatic.sh
