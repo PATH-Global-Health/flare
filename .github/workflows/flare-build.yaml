@@ -59,6 +59,11 @@ jobs:
           INSTITUTE_NAME=${{ secrets.INSTITUTE_NAME }}
           MENU_ITEMS_SIZE=${{ secrets.MENU_ITEMS_SIZE }}
           SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE=${{ secrets.DJANGO_SETTINGS_MODULE }}
+          LINODE_BUCKET=${{ LINODE_BUCKET }}
+          LINODE_BUCKET_REGION=${{ LINODE_BUCKET_REGION }}
+          LINODE_BUCKET_ACCESS_KEY=${{ LINODE_BUCKET_ACCESS_KEY }}
+          LINODE_BUCKET_SECRET_KEY=${{ LINODE_BUCKET_SECRET_KEY }}
           EOF
           kubectl delete secret flare-secret --ignore-not-found
           kubectl create secret generic flare-secret --from-env-file=flare/.env.prod
