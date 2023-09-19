@@ -84,6 +84,26 @@ spec:
                 secretKeyRef:
                   name: flare-secret
                   key: MENU_ITEMS_SIZE
+            - name: LINODE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: LINODE_BUCKET
+            - name: LINODE_BUCKET_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: LINODE_BUCKET_REGION
+            - name: LINODE_BUCKET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: LINODE_BUCKET_ACCESS_KEY
+            - name: LINODE_BUCKET_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: flare-secret
+                  key: LINODE_BUCKET_SECRET_KEY
           ports:
             - containerPort: 8000
       imagePullSecrets:
