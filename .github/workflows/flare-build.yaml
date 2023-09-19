@@ -33,7 +33,7 @@ jobs:
           docker buildx build \
             --platform linux/amd64 \
             -f Dockerfile.prod \
-            -t belendia/flare:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5} \
+            -t belendia/flare:${GITHUB_SHA::7} \
             -t belendia/flare:latest .
       - name: Push image
         run: |
@@ -67,9 +67,12 @@ jobs:
           EOF
           kubectl delete secret flare-secret --ignore-not-found
           kubectl create secret generic flare-secret --from-env-file=flare/.env.prod
-      - name: Update Deployment image
+      - name: Update deployment image
         run: |
-          kubectl set image deployment/flare-deployment flare=belendia/flare:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
+          sed -i "s/image: belendia\/flare:IMAGE_TAG/image: belendia\/flare:${GITHUB_SHA::7}/" flare/k8s/flare-deployment.yaml
+      - name: Deploy the flare app
+        run: |
+          kubectl apply -f flare/k8s/flare-deployment.yaml
       - name: Wait for rollout to finish
         run: |
           kubectl rollout status deployment/flare-deployment

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: flare
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: flare
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: flare
-          image: belendia/flare:latest
+          image: belendia/flare:IMAGE_TAG
           imagePullPolicy: Always
           env:
             - name: SECRET_KEY
