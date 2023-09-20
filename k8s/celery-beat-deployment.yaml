@@ -108,3 +108,5 @@ spec:
                 secretKeyRef:
                   name: flare-secret
                   key: LINODE_BUCKET_SECRET_KEY
+      imagePullSecrets:
+        - name: docker-hub-registry-secret
