@@ -67,7 +67,7 @@ jobs:
           EOF
           kubectl delete secret flare-secret --ignore-not-found
           kubectl create secret generic flare-secret --from-env-file=flare/.env.prod
-      - name: Update deployment image
+      - name: Update flare deployment image
         run: |
           sed -i "s/image: belendia\/flare:IMAGE_TAG/image: belendia\/flare:${GITHUB_SHA::7}/" k8s/flare-deployment.yaml
       - name: Deploy the flare app
@@ -81,3 +81,11 @@ jobs:
           export SINGLE_POD_NAME=$(kubectl get pod -l app=flare -o jsonpath="{.items[0].metadata.name}")
           kubectl exec -it $SINGLE_POD_NAME -- bash /flare/migrate.sh
           kubectl exec -it $SINGLE_POD_NAME -- bash /flare/collectstatic.sh
+      - name: Update celery deployment image
+        run: |
+          sed -i "s/image: belendia\/flare:IMAGE_TAG/image: belendia\/flare:${GITHUB_SHA::7}/" k8s/celery-beat-deployment.yaml
+          sed -i "s/image: belendia\/flare:IMAGE_TAG/image: belendia\/flare:${GITHUB_SHA::7}/" k8s/celery-worker-deployment.yaml
+      - name: Deploy the celery beat and worker
+        run: |
+          kubectl apply -f k8s/celery-beat-deployment.yaml
+          kubectl apply -f k8s/celery-worker-deployment.yaml
