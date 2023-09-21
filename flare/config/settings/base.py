@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'apps.common',
     'apps.accounts',
     'apps.dhis',
+    'apps.frontend',
     'rest_framework',
     'corsheaders',
     'knox',
     'django_celery_beat',
+
 ]
 
 MIDDLEWARE = [
@@ -62,7 +64,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(os.path.dirname(BASE_DIR), 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
