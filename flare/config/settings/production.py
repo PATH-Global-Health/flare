@@ -3,6 +3,12 @@ from .base import INSTALLED_APPS
 
 ALLOWED_HOSTS = ["ethiodata.cc"]
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(os.path.dirname(BASE_DIR), 'static')
+]
+
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
@@ -11,12 +17,8 @@ LINODE_BUCKET_REGION = os.getenv('LINODE_BUCKET_REGION')
 LINODE_BUCKET_ACCESS_KEY = os.getenv('LINODE_BUCKET_ACCESS_KEY')
 LINODE_BUCKET_SECRET_KEY = os.getenv('LINODE_BUCKET_SECRET_KEY')
 
-STATIC_URL = f'https://{LINODE_BUCKET}.{LINODE_BUCKET_REGION}.linodeobjects.com/'
+# STATIC_URL = f'https://{LINODE_BUCKET}.{LINODE_BUCKET_REGION}.linodeobjects.com/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(BASE_DIR), 'static')
-]
 
 AWS_S3_ENDPOINT_URL = f'https://{LINODE_BUCKET_REGION}.linodeobjects.com'
 AWS_ACCESS_KEY_ID = LINODE_BUCKET_ACCESS_KEY
