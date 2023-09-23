@@ -42,6 +42,7 @@ services:
       - ./flare:/flare
       - ./flare/config/staticfiles/admin:/usr/share/nginx/html/static/admin
       - ./flare/config/staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
+      - ./flare/config/staticfiles/frontend:/usr/share/nginx/html/static/frontend
     ports:
       - "8000:8000"
     depends_on:
@@ -101,5 +102,6 @@ services:
     volumes:
       - ./flare/config/staticfiles/admin:/usr/share/nginx/html/static/admin
       - ./flare/config/staticfiles/rest_framework:/usr/share/nginx/html/static/rest_framework
+      - ./flare/config/staticfiles/frontend:/usr/share/nginx/html/static/frontend
     depends_on:
       - web
